@@ -1,0 +1,47 @@
+<!-- initial landing page for the site. option to search by city? or signin/signup -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates - Find Bakers Near You</title>
+    <!-- ADD STYLE INFO -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <!-- Your existing HTML content... -->
+    <div id="nav">
+        <h1>BAKEMATES</h1>
+        <div class="nav-buttons">
+            <button class="nav-item" onclick="location.href='login.html'">Sign In</button>
+            <button class="nav-item" onclick="location.href='signup.html'">Sign Up</button>
+        </div>
+    </div>
+    <div class="landing-container">
+        <!-- some sort of phrase about finding bakers near you -->
+        <div class="phrase">
+            <p>Find local bakers near you!</p>
+        </div>
+        <!-- City search section -->
+        <div class="city-search-section">
+            <div class="search-box">  
+                <!-- Input box for entering the city -->
+                <input type="text" id="cityInput" placeholder="Enter City">
+                <!-- Button for searching -->
+                <button onclick="searchBakers()">Search Here</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function searchBakers() {
+            // Get the entered city
+            var city = document.getElementById("cityInput").value;
+
+            // Redirect to the page showing bakers in the specified city
+            window.location.href = "browse.html?city=" + city;
+        }
+    </script>
+</body>
+</html>
