@@ -9,8 +9,12 @@ con = mysql.connector.connect(
 
 cur = con.cursor()
 
-# users table
+cur.execute("DROP TABLE IF EXISTS Buyer")
+cur.execute("DROP TABLE IF EXISTS Baker")
 cur.execute("DROP TABLE IF EXISTS User")
+cur.execute("DROP TABLE IF EXISTS Item")
+
+# users table
 cur.execute('''CREATE TABLE User
                (UserID VARCHAR(50) PRIMARY KEY,
                 Name VARCHAR(50),
@@ -19,7 +23,6 @@ cur.execute('''CREATE TABLE User
                 Age INT)''')
 
 # Buyer table
-cur.execute("DROP TABLE IF EXISTS Buyer")
 cur.execute('''CREATE TABLE Buyer
                (UserID VARCHAR(50) PRIMARY KEY,
                 Bio TEXT,
@@ -27,7 +30,6 @@ cur.execute('''CREATE TABLE Buyer
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
 #Baker table
-cur.execute("DROP TABLE IF EXISTS Baker")
 cur.execute('''CREATE TABLE Baker
                (UserID VARCHAR(50) PRIMARY KEY,
                 Address VARCHAR(50),
@@ -38,7 +40,6 @@ cur.execute('''CREATE TABLE Baker
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
 # item table
-cur.execute("DROP TABLE IF EXISTS Item")
 cur.execute('''CREATE TABLE Item
                (ItemID VARCHAR(50) PRIMARY KEY,
                 ItemName TEXT,
