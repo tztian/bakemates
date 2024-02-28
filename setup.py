@@ -12,13 +12,13 @@ cur = con.cursor()
 # users table
 cur.execute("DROP TABLE IF EXISTS User")
 cur.execute('''CREATE TABLE User
-               (UserID TEXT PRIMARY KEY,
+               (UserID VARCHAR(50) PRIMARY KEY,
                 Age INT)''')
 
 # item table
 cur.execute("DROP TABLE IF EXISTS Item")
 cur.execute('''CREATE TABLE Item
-               (ItemID TEXT PRIMARY KEY,
+               (ItemID VARCHAR(50) PRIMARY KEY,
                 ItemName TEXT,
                 ItemDescription TEXT,
                 Price FLOAT(2))''')
