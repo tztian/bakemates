@@ -18,8 +18,7 @@ cur.execute('''CREATE TABLE items (
 cur.execute("DROP TABLE IF EXISTS User")
 cur.execute('''CREATE TABLE User
                (UserID TEXT PRIMARY KEY,
-                Age INT,
-                Sex TEXT)''')
+                Age INT)''')
 
 # item table
 cur.execute("DROP TABLE IF EXISTS Item")
