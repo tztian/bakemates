@@ -18,11 +18,22 @@ cur.execute('''CREATE TABLE User
                 Phone VARCHAR(50),
                 Age INT)''')
 
-# users table
+# Buyer table
 cur.execute("DROP TABLE IF EXISTS Buyer")
 cur.execute('''CREATE TABLE Buyer
                (UserID VARCHAR(50) PRIMARY KEY,
                 Bio TEXT,
+                FOREIGN KEY (UserID) REFERENCES User (UserID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION)''')
+
+#Baker table
+cur.execute("DROP TABLE IF EXISTS Baker")
+cur.execute('''CREATE TABLE Baker
+               (UserID VARCHAR(50) PRIMARY KEY,
+                Address VARCHAR(50),
+                Description TEXT,
+                Rating DECIMAL(2,1),
+                Website TEXT,
                 FOREIGN KEY (UserID) REFERENCES User (UserID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
