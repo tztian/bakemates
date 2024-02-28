@@ -7,6 +7,8 @@ con = mysql.connector.connect(
   database = "bakemates"
 )
 
+cur = con.cursor()
+
 # users table
 cur.execute("DROP TABLE IF EXISTS User")
 cur.execute('''CREATE TABLE User
