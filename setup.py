@@ -14,6 +14,13 @@ cur.execute('''CREATE TABLE items (
                 price REAL
               )''')
 
+# users table
+cur.execute("DROP TABLE IF EXISTS User")
+cur.execute('''CREATE TABLE User
+               (UserID TEXT PRIMARY KEY,
+                Age INT,
+                Sex TEXT)''')
+
 cur.execute("SHOW TABLES")
 for x in cur:
     print(x)
