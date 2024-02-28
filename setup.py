@@ -9,7 +9,7 @@ con = mysql.connector.connect(
 
 cur = con.cursor()
 
-cur.execute("DROP TABLE IF EXISTS Order")
+cur.execute("DROP TABLE IF EXISTS Orders")
 cur.execute("DROP TABLE IF EXISTS Item")
 cur.execute("DROP TABLE IF EXISTS Buyer")
 cur.execute("DROP TABLE IF EXISTS Baker")
@@ -43,7 +43,7 @@ cur.execute('''CREATE TABLE Baker
 # item table
 cur.execute('''CREATE TABLE Item
                (ItemID VARCHAR(50) PRIMARY KEY,
-                BakerID VARCHAR (50),
+                BakerID VARCHAR(50),
                 ItemCount INT,
                 ItemName TEXT,
                 ItemDescription TEXT,
@@ -52,9 +52,9 @@ cur.execute('''CREATE TABLE Item
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
 # order table
-cur.execute('''CREATE TABLE Order
+cur.execute('''CREATE TABLE Orders
                (OrderID VARCHAR(50) PRIMARY KEY,
-                ItemID VARCHAR (50),
+                ItemID VARCHAR(50),
                 BuyerID VARCHAR(50),
                 Notes TEXT,
                 Status VARCHAR(50),
