@@ -9,16 +9,16 @@ con = mysql.connector.connect(
 
 cur = con.cursor()
 
+cur.execute("DROP TABLE IF EXISTS Item")
 cur.execute("DROP TABLE IF EXISTS Buyer")
 cur.execute("DROP TABLE IF EXISTS Baker")
 cur.execute("DROP TABLE IF EXISTS User")
-cur.execute("DROP TABLE IF EXISTS Item")
 
 # users table
 cur.execute('''CREATE TABLE User
                (UserID VARCHAR(50) PRIMARY KEY,
-                Name VARCHAR(50),
                 Email VARCHAR(50),
+                Name VARCHAR(50),
                 Phone VARCHAR(50),
                 Age INT)''')
 
@@ -42,9 +42,13 @@ cur.execute('''CREATE TABLE Baker
 # item table
 cur.execute('''CREATE TABLE Item
                (ItemID VARCHAR(50) PRIMARY KEY,
+                UserID VARCHAR (50),
+                ItemCount INT,
                 ItemName TEXT,
                 ItemDescription TEXT,
-                Price FLOAT(2))''')
+                Price FLOAT(2),
+                FOREIGN KEY (UserID) REFERENCES Baker (UserID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION))''')
 
 cur.execute("SHOW TABLES")
 for x in cur:
