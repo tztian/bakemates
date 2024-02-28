@@ -20,7 +20,7 @@ cur.execute('''CREATE TABLE User
 
 # users table
 cur.execute("DROP TABLE IF EXISTS Buyer")
-cur.execute('''CREATE TABLE User
+cur.execute('''CREATE TABLE Buyer
                (UserID VARCHAR(50) PRIMARY KEY,
                 Bio TEXT,
                 FOREIGN KEY (UserID) REFERENCES User (UserID)
