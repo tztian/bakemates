@@ -47,8 +47,8 @@ cur.execute('''CREATE TABLE Item
                 ItemName TEXT,
                 ItemDescription TEXT,
                 Price FLOAT(2),
-                FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)
-                    ON DELETE CASCADE ON UPDATE NO ACTION))''')
+                FOREIGN KEY (UserID) REFERENCES Baker (UserID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
 
 
