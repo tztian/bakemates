@@ -35,7 +35,6 @@ cur.execute('''CREATE TABLE Baker
                (BakerID VARCHAR(50) PRIMARY KEY,
                 Address VARCHAR(50),
                 Description TEXT,
-                Rating DECIMAL(2,1),
                 Website TEXT,
                 FOREIGN KEY (BakerID) REFERENCES User (UserID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
@@ -65,6 +64,17 @@ cur.execute('''CREATE TABLE Orders
                 FOREIGN KEY (BuyerID) REFERENCES Buyer (BuyerID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
+# Review table
+cur.execute('''CREATE TABLE Review
+               (ReviewID VARCHAR(50) PRIMARY KEY,
+                BakerID VARCHAR(50),
+                BuyerID VARCHAR(50),
+                Comments TEXT,
+                Rating DECIMAL(2,1),
+                FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION,
+                FOREIGN KEY (BuyerID) REFERENCES Buyer (BuyerID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
 
 cur.execute("SHOW TABLES")
