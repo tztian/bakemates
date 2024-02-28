@@ -50,6 +50,20 @@ cur.execute('''CREATE TABLE Item
                 FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
+# order table
+cur.execute('''CREATE TABLE Order
+               (OrderID VARCHAR(50) PRIMARY KEY,
+                ItemID VARCHAR (50),
+                BuyerID VARCHAR(50),
+                Notes TEXT,
+                Status VARCHAR(50),
+                Time DATETIME,
+                Cost FLOAT(2),
+                FOREIGN KEY (ItemID) REFERENCES Item (ItemID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION,
+                FOREIGN KEY (BuyerID) REFERENCES Buyer (BuyerID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION)''')
+
 
 
 cur.execute("SHOW TABLES")
