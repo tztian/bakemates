@@ -24,31 +24,33 @@ cur.execute('''CREATE TABLE User
 
 # Buyer table
 cur.execute('''CREATE TABLE Buyer
-               (UserID VARCHAR(50) PRIMARY KEY,
+               (BuyerID VARCHAR(50) PRIMARY KEY,
                 Bio TEXT,
-                FOREIGN KEY (UserID) REFERENCES User (UserID)
+                FOREIGN KEY (BuyerID) REFERENCES User (UserID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
 #Baker table
 cur.execute('''CREATE TABLE Baker
-               (UserID VARCHAR(50) PRIMARY KEY,
+               (BakerID VARCHAR(50) PRIMARY KEY,
                 Address VARCHAR(50),
                 Description TEXT,
                 Rating DECIMAL(2,1),
                 Website TEXT,
-                FOREIGN KEY (UserID) REFERENCES User (UserID)
+                FOREIGN KEY (BakerID) REFERENCES User (UserID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
 # item table
 cur.execute('''CREATE TABLE Item
                (ItemID VARCHAR(50) PRIMARY KEY,
-                UserID VARCHAR (50),
+                BakerID VARCHAR (50),
                 ItemCount INT,
                 ItemName TEXT,
                 ItemDescription TEXT,
                 Price FLOAT(2),
-                FOREIGN KEY (UserID) REFERENCES Baker (UserID)
+                FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)
                     ON DELETE CASCADE ON UPDATE NO ACTION))''')
+
+
 
 cur.execute("SHOW TABLES")
 for x in cur:
