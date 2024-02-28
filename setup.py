@@ -9,6 +9,7 @@ con = mysql.connector.connect(
 
 cur = con.cursor()
 
+cur.execute("DROP TABLE IF EXISTS Order")
 cur.execute("DROP TABLE IF EXISTS Item")
 cur.execute("DROP TABLE IF EXISTS Buyer")
 cur.execute("DROP TABLE IF EXISTS Baker")
