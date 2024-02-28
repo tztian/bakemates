@@ -13,6 +13,9 @@ cur = con.cursor()
 cur.execute("DROP TABLE IF EXISTS User")
 cur.execute('''CREATE TABLE User
                (UserID VARCHAR(50) PRIMARY KEY,
+                Name VARCHAR(50),
+                Email VARCHAR(50),
+                Phone VARCHAR(50),
                 Age INT)''')
 
 # item table
