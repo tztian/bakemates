@@ -7,13 +7,6 @@ con = mysql.connector.connect(
   database = "bakemates"
 )
 
-cur = con.cursor()
-cur.execute("DROP TABLE IF EXISTS items")
-cur.execute('''CREATE TABLE items (
-                itemID VARCHAR(10) PRIMARY KEY,
-                price REAL
-              )''')
-
 # users table
 cur.execute("DROP TABLE IF EXISTS User")
 cur.execute('''CREATE TABLE User
