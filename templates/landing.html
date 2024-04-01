@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bakemates - Find Bakers Near You</title>
     <!-- ADD STYLE INFO -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rampart+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 
@@ -13,7 +19,20 @@
 <body>
     <!-- Your existing HTML content... -->
     <div id="nav">
-        <h1>BAKEMATES</h1>
+        <div class = "container">
+            <img src = "photos/taylor-heery-71sp4JBYO-U-unsplash.jpg">
+            <div class = "text">BAKEMATES</div>
+            <div class = "text2">i'm craving....</div>
+            <div class = "box">
+                <div class = "container">
+                    <img src = "photos/cupcake-icon-614x460.png">
+                </div>
+                <input type = "text" placeholder= " something sweet...">
+                    <i class = "fas fa-search"></i>
+                </a>
+            </div>
+        </div>
+        <p></p>
         <div class="nav-buttons">
             <button class="nav-item" onclick="location.href='login.html'">Sign In</button>
             <button class="nav-item" onclick="location.href='signup.html'">Sign Up</button>

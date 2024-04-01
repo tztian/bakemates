@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Filters Section -->
+    <div class="filters">
+        <!-- Form for filtering items by category -->
+        <form action="/filter" method="post">
+            <select name="category">
+                <!-- default to show all items -->
+                <option value="All">All</option>
+                <!-- Loop through categories and dynamically generate options -->
+                {% for category in categories %}
+                <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+            <!-- Button to submit the form and apply the filter -->
+            <button type="apply">Filter</button>
+        </form>
+    </div>
+
+    <!-- Listings Section -->
+    <div class="listings-container">
+        <!-- Loop through items and display them in a grid -->
+        {% for item in items %}
+        <a href="{{ url_for('item_details', item_id=item.id) }}" class="item-box">
+            <img src="{{ item.image_url }}" alt="{{ item.item_name }}">
+            <h3>{{ item.item_name }}</h3>
+            <p>{{ item.bakery_name }}</p>
+            <p>{{ item.location }}</p>
+            <p>Price: ${{ item.price }}</p>
+        </a>
+        {% endfor %}
+    </div>
+</body>
+</html>
