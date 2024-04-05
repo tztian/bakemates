@@ -13,13 +13,8 @@ body, html {
 
 
 /******LANDING PAGE******/
-/* Landing page container styles */
-.landing-container {
-    margin-top: 120px; 
-    text-align: center;
-}
 
-/* Styles for the search button */
+/* Styles for the search button 
 button {
     padding: 10px;
     font-size: 14px;
@@ -30,9 +25,11 @@ button {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-}
+} */
 
-.container{
+
+.container {
+    position: relative;
     width: 100%;
     height: auto;
     justify-content: center;
@@ -40,18 +37,47 @@ button {
     display: flex;
 }
 
+
+/* Styles for the login and sign up buttons */
+.nav-item {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: rgb(247, 226, 248);
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 2%; 
+    right: 2%; 
+    border-radius: 30px;
+}
+
+.nav-item:hover {
+    background-color: rgb(231, 199, 233);
+    color: rgb(4, 15, 45);
+    transition: 0.5s;
+}
+
+.signup-btn {
+    right: 11%; /* Adjust right position for signup button */
+}
+.login-btn {
+    right: 5%; /* Adjust right position for login button */
+}
+
 .container img{
     width: 100%
 }
 
-.container .text{
+.container .title{
     position: absolute;
     color: white;
     font-family: "Rampart One";
-    right: 10%;
-    top: 25%;
+    right: 22%;
+    top: 10%;
     font-size: 150px;
-    transform: translate(-50%, -50%)
 }
 .container .text2{
     position: absolute;
@@ -62,7 +88,7 @@ button {
     font-size: 50px;
 }
 
-.container .box{
+.container .search-box{
     position: absolute;
     top: 55%;
     height: 50px;
@@ -76,20 +102,20 @@ button {
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
-.container .box .container{
+.container .search-box .container{
     width: 30px;
     height: 30px;
 }
 
-.container .box .container .img{
+.container .search-box .container .img{
     width: auto;
 }
 
-.container .box:hover input{
+.container .search-box:hover input{
     width : 200px;
 }
 
-.container .box input{
+.container .search-box input{
     width: 0;
     outline: none;
     border: none;
@@ -98,8 +124,7 @@ button {
     background: transparent;
 }
 
-
-.container .box a .fas{
+.container .search-box a .fas{
     color:black;
     font-size: 18px;
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bakemates - Find Bakers Near You</title>
-    <!-- ADD STYLE INFO -->
+    <!-- STYLE INFO -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap" rel="stylesheet">
@@ -15,25 +15,19 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <!-- Landing page content wrapped in a div with id and class -->
-    <div id="landingPage" class="landing-container">
-        <div class="container">
-            <img src="../static/photos/taylor-heery-71sp4JBYO-U-unsplash.jpg"> <!-- Correct the path to the image -->
-            <div class="text">BAKEMATES</div>
-            <div class="text2">i'm craving....</div>
-            <div class="box">
-                <div class="container">
-                    <img src="../static/photos/cupcake-icon-614x460.png"> <!-- Correct the path to the image -->
-                </div>
-                <input type="text" placeholder=" something sweet...">
-                <i class="fas fa-search"></i>
+    <div id="landingPage" class="container">
+        <img src="../static/photos/taylor-heery-71sp4JBYO-U-unsplash.jpg"> 
+        <div class="title">BAKEMATES</div>
+        <div class="text2">i'm craving...</div>
+        <button class="nav-item login-btn" onclick="location.href='login.html'">Sign In</button>
+        <button class="nav-item signup-btn" onclick="location.href='signup.html'">Sign Up</button>
+        <div class="search-box">
+            <div class="container">
+                <img src="../static/photos/cupcake-icon-614x460.png"> 
             </div>
+            <input type="text" placeholder=" something sweet...">
+            <i class="fas fa-search"></i>
         </div>
-        <p></p>
-        <div class="nav-buttons">
-            <button class="nav-item" onclick="location.href='login.html'">Sign In</button>
-            <button class="nav-item" onclick="location.href='signup.html'">Sign Up</button>
-        </div>
-    </div>
+</div>
 </body>
 </html>
