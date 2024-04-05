@@ -14,20 +14,6 @@ body, html {
 
 /******LANDING PAGE******/
 
-/* Styles for the search button 
-button {
-    padding: 10px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-} */
-
-
 .container {
     position: relative;
     width: 100%;
@@ -70,6 +56,19 @@ button {
 .container img{
     width: 100%
 }
+
+/* Styles for the search button 
+button {
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+} */
 
 .container .title{
     position: absolute;
@@ -128,7 +127,17 @@ button {
     color:black;
     font-size: 18px;
 }
+.search-btn {
+    background-color: transparent; /* Transparent background */
+    border: none; /* No border */
+    cursor: pointer;
+}
 
+/* Style for the Font Awesome search icon */
+.search-btn i {
+    color: black; /* Icon color */
+    font-size: 18px; /* Icon size */
+}
 .rampart-one-regular {
     font-family: "Rampart One", sans-serif;
     font-weight: 400;
