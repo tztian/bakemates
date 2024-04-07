@@ -7,22 +7,51 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <div id="listings-nav">
+        <a href="login.html" class="listings-nav-item">Login</a>
+        <a href="signup.html" class="listings-nav-item">Signup</a>
+        <!-- Add more links/buttons as needed -->
+    </div>
+
     <!-- Filters Section -->
     <div class="filters">
-        <!-- Form for filtering items by category -->
+        <!-- Form for filtering items -->
         <form action="/filter" method="post">
-            <select name="category">
-                <!-- default to show all items -->
-                <option value="All">All</option>
-                <!-- Loop through categories and dynamically generate options -->
-                {% for category in categories %}
-                <option value="{{ category }}">{{ category }}</option>
-                {% endfor %}
-            </select>
-            <!-- Button to submit the form and apply the filter -->
-            <button type="apply">Filter</button>
+            <div class="filter-item">
+                <input type="checkbox" id="type-dropdown">
+                <label class="dropdown-label" for="type-dropdown">Type</label>
+                <div class="dropdown-content">
+                    <label><input type="checkbox" name="type" value="Cake"> Cake</label>
+                    <label><input type="checkbox" name="type" value="Cupcake"> Cupcake</label>
+                    <label><input type="checkbox" name="type" value="Cookie"> Cookie</label>
+                    <label><input type="checkbox" name="type" value="Cookie"> Pie</label>
+                    <!-- Add more options as needed -->
+                </div>
+            </div>
+            <div class="filter-item">
+                <input type="checkbox" id="flavor-dropdown">
+                <label class="dropdown-label" for="flavor-dropdown">Flavor</label>
+                <div class="dropdown-content">
+                    <label><input type="checkbox" name="flavor" value="Chocolate"> Chocolate</label>
+                    <label><input type="checkbox" name="flavor" value="Vanilla"> Vanilla</label>
+                    <label><input type="checkbox" name="flavor" value="Strawberry"> Fruit</label>
+                    <!-- Add more options as needed -->
+                </div>
+            </div>
+            <div class="filter-item">
+                <input type="checkbox" id="diet-dropdown">
+                <label class="dropdown-label" for="diet-dropdown">Dietary Restriction</label>
+                <div class="dropdown-content">
+                    <label><input type="checkbox" name="diet" value="GlutenF"> Gluten Free</label>
+                    <label><input type="checkbox" name="diet" value="Vegan"> Vegan</label>
+                    <!-- Add more options as needed -->
+                </div>
+            </div>
+          <button type="apply">Apply Filters</button>
         </form>
     </div>
+
 
     <!-- Listings Section -->
     <div class="listings-container">

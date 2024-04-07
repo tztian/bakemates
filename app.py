@@ -18,10 +18,8 @@ def search():
 
 @app.route('/listings')
 def listings():
-    global user_location
-    #get items by location and cateory from databases
-    # return render_template('listings.html', items=items, categories=categories)
-    return render_template('listings.html', location=user_location)
+    # get items from database
+    return render_template('listings.html')
 
 @app.route('/filter', methods=['POST'])
 def filter_items():
@@ -30,7 +28,7 @@ def filter_items():
         return redirect('/listings')
     else:
         # get items filtered by category from database
-        return render_template('listings.html', items=filtered_items)
+        return render_template('listings.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

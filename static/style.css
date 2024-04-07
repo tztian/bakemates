@@ -24,7 +24,7 @@ body, html {
 }
 
 
-/* Styles for the login and sign up buttons */
+/* Styles for the login and sign up buttons on landing */
 .nav-item {
     color: rgb(0, 0, 0);
     text-decoration: none;
@@ -47,28 +47,15 @@ body, html {
 }
 
 .signup-btn {
-    right: 11%; /* Adjust right position for signup button */
+    right: 11%; 
 }
 .login-btn {
-    right: 5%; /* Adjust right position for login button */
+    right: 5%; 
 }
 
 .container img{
     width: 100%
 }
-
-/* Styles for the search button 
-button {
-    padding: 10px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-} */
 
 .container .title{
     position: absolute;
@@ -153,27 +140,57 @@ button {
 
 
 /******LISTINGS PAGE******/
-/* Styles for the filters container */
-.filters {
-    width: 20%;
-    background-color: #fff;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-right: 20px;
-    display: flex;
-    flex-direction: column;
+
+/******NAVIGATION BAR******/
+/* Navigation bar styles */
+#listings-nav {
+    background-color: rgb(213, 189, 165);
+    overflow: hidden;
+    position: fixed;
+    display: block;
+    top: 0%;
+    left: 0%;
+    right: 0%;
+    transition: top 0.4s;
+    box-shadow: 2px 2px 5px rgb(186, 159, 131);
+    z-index: 1;
 }
 
-/* Styles for each filter item */
-.filter-item {
-    margin-bottom: 10px;
+.listings-nav-item {
+    color: #000000;
+    float: right;
+    display: block;
+    text-align: center;
+    padding: 22px;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.listings-nav-item:hover {
+    background-color: rgb(213, 189, 165);
+    color: #000000;
+    transition: 0.5s;
+}
+
+.listings-nav-item:hover:after {
+    transform: scaleX(1);
+}
+
+.listings-nav-item::after {
+    display: block;
+    content: '';
+    border-bottom: solid 3px #f387ff;  
+    transform: scaleX(0);  
+    transition: 350ms ease-in-out;
+    transform-origin: 0% 50%;
 }
 
 /* Styles for the listings container */
 .listings-container {
     width: 80%;
     background-color: #fff;
+    margin-top: 60px;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -181,7 +198,7 @@ button {
     flex-wrap: wrap;
     justify-content: flex-start;
 }
-
+/**********ITEM BOXES**********/
 /* Item box styles */
 .item-box {
     width: calc(33.33% - 20px);
@@ -215,24 +232,43 @@ button {
     margin: 5px 0;
 }
 
-/* REALLY AWFUL COLORS JUST TO SEE WHATS WHAT */
-/* Navigation bar styles */
-#full_nav {
-    background-color: rgb(54, 54, 176);
-    overflow: hidden;
-    position: fixed;
+/**********FILTERS**********/
+/* Styles for the filters container */
+.filters {
+    width: 20%;
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 20px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    top: 0;
-    left: 0;
-    right: 0;
-    transition: top 0.4s;
-    box-shadow: 2px 2px 5px rgb(237, 160, 241);
-    z-index: 1;
+    flex-direction: column;
+    position: fixed; /* Set the position to fixed */
+    top: 70px; /* Adjust the top position to make it below the navigation bar */
+    left: 0; /* Align it to the left side of the page */
 }
 
-/* Styles for the navigation buttons container */
-.full-nav-buttons {
-    display: flex;
+/* Styles for each filter item */
+.filter-item {
+    margin-bottom: 10px;
+}
+/* Styles for the dropdown labels */
+.dropdown-label {
+    cursor: pointer;
+}
+
+/* Styles for the dropdown content */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+/* Show the dropdown content when the checkbox is checked */
+.filter-item input[type="checkbox"]:checked + .dropdown-label + .dropdown-content {
+    display: block;
 }
