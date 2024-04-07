@@ -1,56 +1,36 @@
-from flask import Flask, render_template, request, redirect
-import mysql.connector
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__, static_url_path='/static')
 
-# Function to connect to MySQL database
-def get_db_connection():
-    connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="bakemates"
-    )
-    return connection
+# Global variable to store the user's location
+user_location = None
 
 @app.route('/')
 def index():
     return render_template('landing.html')
 
-# Route to handle search form submission and redirect to listings page
 @app.route('/search', methods=['POST'])
 def search():
-    query = request.form.get('query')
-    # HERE WE SHOULD CHECK IF IT IS VALID 
-    return redirect('/listings')
+    global user_location
+    user_location = request.form.get('location')
+    #  validate the location and perform any necessary processing
+    return redirect(url_for('listings'))
 
 @app.route('/listings')
 def listings():
-   # connection = get_db_connection()
-   # cursor = connection.cursor(dictionary=True)
-   # cursor.execute('SELECT DISTINCT category FROM Item')  # Fetch distinct categories
-   # categories = [row['category'] for row in cursor.fetchall()]
-   # cursor.execute('SELECT * FROM Item')
-   # items = cursor.fetchall()
-   # cursor.close()
-   # connection.close()
-   # return render_template('listings.html', items=items, categories=categories)
-    return render_template('listings.html')
+    global user_location
+    #get items by location and cateory from databases
+    # return render_template('listings.html', items=items, categories=categories)
+    return render_template('listings.html', location=user_location)
 
-# Route to filter items by category for listings page
 @app.route('/filter', methods=['POST'])
 def filter_items():
     category = request.form['category']
     if category == 'All':
         return redirect('/listings')
     else:
-      #  connection = get_db_connection()
-      #  cursor = connection.cursor(dictionary=True)
-      #  cursor.execute('SELECT * FROM Item WHERE category = %s', (category,))
-      #  items = cursor.fetchall()
-      #  cursor.close()
-      #  connection.close()
-        return render_template('listings.html', items=items)
+        # get items filtered by category from database
+        return render_template('listings.html', items=filtered_items)
 
 if __name__ == "__main__":
     app.run(debug=True)

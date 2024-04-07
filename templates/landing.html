@@ -12,24 +12,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rampart+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div id="landingPage" class="container">
         <img src="../static/photos/taylor-heery-71sp4JBYO-U-unsplash.jpg"> 
         <div class="title">BAKEMATES</div>
-        <div class="text2">I'm craving...</div>
+        <div class="text2">enter your location</div>
         <button class="nav-item login-btn" onclick="location.href='login.html'">Sign In</button>
         <button class="nav-item signup-btn" onclick="location.href='signup.html'">Sign Up</button>
         <div class="search-box">
-            <div class="container">
-                <img src="../static/photos/cupcake-icon-614x460.png"> 
-            </div>
-            <input id="searchInput" type="text" name="query" placeholder="something sweet...">
-            <!-- Font Awesome search icon -->
-            <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+            <form action="/search" method="post">
+                <div class="container">
+                    <img src="../static/photos/cupcake-icon-614x460.png"> 
+                </div>
+                <input id="searchInput" type="text" name="location" placeholder="city name">
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+            </form>
         </div>
+     
+        
     </div>
 </body>
 </html>

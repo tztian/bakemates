@@ -15,8 +15,8 @@ body, html {
 /******LANDING PAGE******/
 
 .container {
-    position: relative;
-    width: 100%;
+    position: relative; 
+    width: auto;
     height: auto;
     justify-content: center;
     align-items: center;
