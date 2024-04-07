@@ -30,5 +30,7 @@ def filter_items():
         # get items filtered by category from database
         return render_template('listings.html')
 
+#NEED TO ADD ALL BAKER STUFF
+
 if __name__ == "__main__":
     app.run(debug=True)

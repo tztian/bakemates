@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Baker Navigation Bar -->
+    <div id="baker-listings-nav">
+        <a href="additem.html" class="baker-listings-nav-item">Post Item</a>
+        <a href="editbaker.html" class="baker-listings-nav-item">Edit Profile</a>
+        <!-- Add more links/buttons as needed -->
+    </div>
+    <!-- should show all items the bakery has currently listed -->
+    <!-- i want there to be a header welcoming the baker or something at the top -->
+    <h1>Welcome, {{ bakery_name }}!</h1>
+    <!-- message saying current listings then show all the current listings for their bakery -->
+    <h2>Current Listings</h2>
+    <!-- Listings Section -->
+    <div class="listings-container">
+        <!-- ONLY THE LOGGED IN BAKERS ITEMS Loop through items and display them in a grid -->
+        {% for item in items %}
+        
+          
+</body>
+</html>
