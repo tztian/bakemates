@@ -77,34 +77,32 @@ body, html {
 .container .search-box{
     position: absolute;
     top: 55%;
-    height: 50px;
+    right:49%;
+    height: 45px;
     align-items: center;
     display: flex;
     cursor: pointer;
     padding: 10px 20px;
     background: white;
     border-radius: 30px;
-    align-items: left;
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
 .container .search-box .container{
+    right: 5px;
     width: 30px;
     height: 30px;
 }
 
-.container .search-box .container .img{
-    width: auto;
-}
-
 .container .search-box:hover input{
-    width : 200px;
+    width : 350px;
 }
 
 .container .search-box input{
     width: 0;
     outline: none;
     border: none;
+    font-size: 30px;
     font-weight: 500;
     transition: 0.8s;
     background: transparent;
@@ -115,16 +113,13 @@ body, html {
     font-size: 18px;
 }
 .search-btn {
+    width: auto;
     background-color: transparent; /* Transparent background */
     border: none; /* No border */
     cursor: pointer;
 }
 
-/* Style for the Font Awesome search icon */
-.search-btn i {
-    color: black; /* Icon color */
-    font-size: 18px; /* Icon size */
-}
+
 .rampart-one-regular {
     font-family: "Rampart One", sans-serif;
     font-weight: 400;
