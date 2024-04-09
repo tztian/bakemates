@@ -31,6 +31,8 @@ def filter_items():
         return render_template('listings.html')
 
 #NEED TO ADD ALL BAKER STUFF
+#NEED TO ADD BAKERHOME.html
+#NEED TO ADD ADDITEM.html
 
 if __name__ == "__main__":
     app.run(debug=True)
