@@ -47,7 +47,7 @@ def add_item():
 
 @app.route('/editbaker')
 def edit_baker():
-    # Logic to handle editing the baker's profile
+    #edit what is displayed to buyers when they look at the bakery profile
     return render_template('editbaker.html')
 
 if __name__ == "__main__":

@@ -268,32 +268,6 @@ body, html {
 
 
 /********BAKER HOME PAGE********/
-/* Styles for the baker home page */
-#baker-nav {
-    background-color: rgb(213, 189, 165);
-    overflow: hidden;
-    position: fixed;
-    display: block;
-    top: 0%;
-    left: 0%;
-    right: 0%;
-    transition: top 0.4s;
-    box-shadow: 2px 2px 5px rgb(186, 159, 131);
-    z-index: 1;
-}
-
-.baker-nav-item {
-    float: right;
-    display: block;
-    color: #000;
-    text-align: center;
-    padding: 14px 20px;
-    text-decoration: none;
-}
-
-.baker-nav-item:hover {
-    background-color: #ddd;
-}
 
 /* Content Styles */
 .baker-content {
