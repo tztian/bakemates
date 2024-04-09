@@ -30,9 +30,25 @@ def filter_items():
         # get items filtered by category from database
         return render_template('listings.html')
 
-#NEED TO ADD ALL BAKER STUFF
-#NEED TO ADD BAKERHOME.html
-#NEED TO ADD ADDITEM.html
+# Routes for baker-specific functionality
+@app.route('/bakerhome')
+def baker_home():
+    #retrieve and display information for the baker's home page
+    #get bakery name from database, and somehow knowing whos logged in.
+    #all items from the database for that bakery
+    #return render_template('bakerhome.html', bakery_name=bakery_name, items=items)
+    return render_template('bakerhome.html')
+
+@app.route('/additem')
+def add_item():
+    #needs to work with the form from additem.html
+    #also needs to send everything from the form into the database
+    return render_template('additem.html')
+
+@app.route('/editbaker')
+def edit_baker():
+    # Logic to handle editing the baker's profile
+    return render_template('editbaker.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
