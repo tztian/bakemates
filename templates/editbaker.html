@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates-Your Bakery</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Baker Navigation Bar -->
+    <!-- SHOULD ADD NAME OR LOGO ON THE LEFT OF THE BAR. already signed in so no reason to have those buttons-->
+    <div id="listings-nav">
+        <a href="{{ url_for('baker_profile') }}" class="listings-nav-item">Profile</a>
+        <a href="{{ url_for('add_item') }}" class="listings-nav-item">Post Item</a>
+        <a href="{{ url_for('edit_baker') }}" class="listings-nav-item">Edit Profile</a>
+        <a href="{{ url_for('baker_home') }}" class="listings-nav-item">Home</a>
+        <!-- Add more links/buttons as needed -->
+    </div>
+
+    <div id="edit-baker-form">
+        <br><br><br>
+        <!-- maybe take the bakery name from datbase to print as like "edit NAME info"-->
+        <h1>Edit Bakery Info</h1>
+        
+        <!-- not every thing is required, if input blank dont change anything-->
+        <!-- would be cool if it was auto filled with the info they already have -->
+        <form action="/editbaker" method="post">
+            <label for="bakery-name">Bakery Name:</label>
+            <input type="text" id="item-name" name="item_name" >
+            <br>
+            <!-- pagraph abt the bakery, so input box needs to be bigger -->
+            <label for="bakery-description">Bakery Description:</label><br>
+            <input type="text" id="bakery-description" name="bakery_description" >
+            <br>
+            <!-- bakery image -->
+            <label for="bakery-image">Bakery Image:</label><br>
+            <input type="file" id="bakery-image" name="bakery_image" accept="image/png, image/jpeg" >
+            <br>
+            <!-- not sure what else the bakery will have in the database -->
+
+        </form>
+    </div>
+</body>
+</html>

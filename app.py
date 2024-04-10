@@ -50,5 +50,10 @@ def edit_baker():
     #edit what is displayed to buyers when they look at the bakery profile
     return render_template('editbaker.html')
 
+@app.route('/bakerprofile')
+def baker_profile():
+    #edit what is displayed to buyers when they look at the bakery profile
+    return render_template('bakerprofile.html')
+
 if __name__ == "__main__":
     app.run(debug=True)
