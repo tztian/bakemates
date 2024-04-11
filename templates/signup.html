@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates-Login</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- login form. should be different info for baker and buyer-->
+        <!-- should add icons for each thing-->
+        <!-- this website has a tutorial for that https://www.w3schools.com/howto/howto_css_form_icon.asp -->
+    <div id="login-form">
+        <br><br><br>
+        <h1>Sign up</h1>
+        <form action="/signup" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+            <br>
+            <button type="submit">Sign up</button>
+
+        <!-- lower on the page -->
+        <h2>Already have an account?</h2>
+        <a href="{{ url_for('login') }}" class="nav-item login-btn">Sign In</a>
+    </div>
+
+</body>

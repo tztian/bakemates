@@ -16,6 +16,14 @@ def search():
     #  validate the location and perform any necessary processing
     return redirect(url_for('listings'))
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
+
+
 @app.route('/listings')
 def listings():
     # get items from database
@@ -54,6 +62,8 @@ def edit_baker():
 def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
     return render_template('bakerprofile.html')
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
