@@ -132,29 +132,31 @@ with open('./data/items.json', 'r') as file:
     con.commit()
 # role based access
 cur.execute("CREATE ROLE Admin")
-cur.execute("GRANT ALL PRIVILEGES ON * TO Admin")
+cur.execute("GRANT ALL PRIVILEGES ON bakemates.* TO Admin")
 
 cur.execute("CREATE ROLE Baker")
-cur.execute("GRANT insert, update, delete ON Item TO Baker")
-cur.execute("GRANT update(Status) ON Orders TO Baker")
-cur.execute("GRANT update(Description), update(Website) ON Baker to Baker")
-cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) ON User to Baker")
+cur.execute("GRANT select, insert, update, delete ON bakemates.* TO Baker")
+cur.execute("GRANT insert, update, delete ON bakemates.Item TO Baker")
+cur.execute("GRANT update(Status) ON bakemates.Orders TO Baker")
+cur.execute("GRANT update(Description), update(Website) ON bakemates.Baker to Baker")
+cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) ON bakemates.User to Baker")
 
 
 cur.execute("CREATE ROLE Buyer")
-cur.execute("GRANT insert, update, delete ON Review TO Buyer")
-cur.execute("GRANT update(Notes) ON Orders TO Buyer")
-cur.execute("GRANT update(Bio), update(DietaryRestrictions) ON Buyer TO Buyer")
-cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) ON User To Buyer")
+cur.execute("GRANT select ON bakemates.* TO Buyer")
+cur.execute("GRANT select, insert, update, delete ON bakemates.Review TO Buyer")
+cur.execute("GRANT update(Notes) ON bakemates.Orders TO Buyer")
+cur.execute("GRANT update(Bio), update(DietaryRestrictions) ON bakemates.Buyer TO Buyer")
+cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) ON bakemates.User To Buyer")
 
 # to create accounts and add roles to users, use the following:
 # CREATE USER 'username'@'hostname' IDENTIFIED BY 'username'
 # GRANT 'role' to 'username'@'hostname'
 
 cur.execute("CREATE USER 'test'@'localhost' IDENTIFIED BY 'test'")
-cur.execute("GRANT 'Baker' to 'test'@'localhost'")
+cur.execute("GRANT 'Admin' to 'test'@'localhost'")
 
-cur.execute("CREATE USER 'BK001'@'localhost' IDENTIFIED BY 'passwords'")
+cur.execute("CREATE USER 'BK001'@'localhost' IDENTIFIED BY 'password'")
 cur.execute("GRANT 'Baker' to 'BK001'@'localhost'")
 cur.execute("CREATE USER 'BK002'@'localhost' IDENTIFIED BY 'bakemates'")
 cur.execute("GRANT 'Baker' to 'BK001'@'localhost'")

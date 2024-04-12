@@ -19,8 +19,8 @@ app = Flask(__name__, static_url_path='/static')
 
 # Global variable to store the user's information
 user_location = None
-current_user = "root" 
-password = ""
+current_user = "BK001" 
+password = "password"
 
 @app.route('/')
 def index():
@@ -67,12 +67,12 @@ def baker_home():
     # check if current user is a baker (TODO: CHANGE THIS PART TO USER IN MYSQL LATER!!!)
     with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
         cur = con.cursor()
-        cur.execute("SELECT Name FROM User WHERE UserID = %s", ("BK001",))
+        cur.execute("SELECT Name FROM User WHERE UserID = %s", (current_user,))
         baker_name = cur.fetchone()
         if baker_name:
             baker_name = baker_name[0]
         cur.execute('''SELECT ItemID, ItemName, ItemCount, ItemType, Flavor, DietaryRestriction,
-                    ItemDescription, Price FROM Item WHERE BakerID = %s''', ("BK001",))
+                    ItemDescription, Price FROM Item WHERE BakerID = %s''', (current_user,))
         rows = cur.fetchall()
 
     return render_template('bakerhome.html', baker_name = baker_name, rows = rows)
