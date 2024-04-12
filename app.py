@@ -27,9 +27,20 @@ def signin():
 @app.route('/buyersignup')
 def buyer_signup():
     return render_template('buyersignup.html')
+
+@app.route('/signupbuyer', methods=['POST'])
+def signupbuyer():
+    # get the form data
+    return redirect(url_for('listings'))
+
 @app.route('/bakersignup')
 def baker_signup():
     return render_template('bakersignup.html')
+
+@app.route('/signupbaker', methods=['POST'])
+def signupbaker():
+    # get the form data
+    return redirect(url_for('baker_home'))
 
 
 @app.route('/listings', methods = ['POST','GET'])
