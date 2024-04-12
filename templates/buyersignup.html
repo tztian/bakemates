@@ -27,14 +27,34 @@
         <!-- this website has a tutorial for that https://www.w3schools.com/howto/howto_css_form_icon.asp -->
     <div class = signup-container>
         <br><br><br>
-        <div class = signup-title>Welcome to BAKEMATES!</div>
-        <div class = signup-subtitle>sign up now</div>
-        <!-- lower on the page -->
-        <div class = switch>
-            <h2>are you a baker or a taster?</h2>
+        <div class = signup-title>Sign Up</div>
+        <div class="signup-form">
+            <form action="/signup" method="post">
+
+                <div class="input-container">
+                    <i class="fa fa-user icon"></i>
+                    <input class="input-field" type="text" placeholder="Username" name="usrnm">
+                  </div>
+                
+                  <div class="input-container">
+                    <i class="fa fa-envelope icon"></i>
+                    <input class="input-field" type="text" placeholder="Email" name="email">
+                  </div>
+                  
+                  <div class="input-container">
+                    <i class="fa fa-key icon"></i>
+                    <input class="input-field" type="password" placeholder="Password" name="psw">
+                  </div>
+                
+                  <button type="submit" class="btn">Register</button>
+            </form>
         </div>
-            <a href="{{ url_for('buyer_signup') }}" class="signin-btn-3">Taster!</a>
-            <a href="{{ url_for('baker_signup') }}" class="signin-btn-4">Baker!</a>
+
+        <!-- lower on the page -->
+        <div class = switch-to-login>
+            <h2>already have an account?</h2>
+        </div>
+            <a href="{{ url_for('signin') }}" class="signin-btn-2">Sign In</a>
     </div>
 
 </body>

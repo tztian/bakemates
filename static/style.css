@@ -146,9 +146,18 @@ body, html {
     color: rgba(59,23, 0, 255);
     font-family: "Rampart One";
     
-    top: 10%;
+    top: 2%;
     left: 10%;
-    font-size: 150px;
+    font-size: 90px;
+}
+.signup-container .signup-subtitle{
+    position: absolute;
+    color: rgba(59,23, 0, 255);
+    font-family: "Rampart One";
+    
+    top: 40%;
+    left: 30%;
+    font-size: 50px;
 }
 .signup-container .signup-form{
     position: absolute;
@@ -161,6 +170,14 @@ body, html {
 .signup-container .switch-to-login{
     font-family: "Dancing Script";
     color: rgba(59,23, 0, 255);
+}
+.signup-container .switch{
+    position: absolute;
+    font-family: "Dancing Script";
+    color: rgba(59,23, 0, 255);
+    top: 55%;
+    left: 25%;
+    font-size: 25px;
 }
 
 .signin-btn-2 {
@@ -177,7 +194,35 @@ body, html {
     right: 50%; 
     border-radius: 30px;
 }
-.signup-btn-2 {
+.signin-btn-3 {
+    color: rgba(59,23, 0, 255);
+    text-decoration: none;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: 500;
+    background-color: pink;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 75%; 
+    left: 30%; 
+    border-radius: 30px;
+}
+.signin-btn-3 {
+    color: rgba(59,23, 0, 255);
+    text-decoration: none;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: 500;
+    background-color: pink;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 75%; 
+    left: 30%; 
+    border-radius: 30px;
+}
+.signup-btn-4 {
     color: rgba(59,23, 0, 255);
     text-decoration: none;
     padding: 10px;
@@ -217,7 +262,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 }
 
 .input-field:focus {
-    border: 2px solid dodgerblue;
+    border: 2px solid rgb(255, 30, 244);
 }
 
  /* Set a style for the submit button */

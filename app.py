@@ -24,6 +24,13 @@ def signup():
 def signin():
     return render_template('signin.html')
 
+@app.route('/buyersignup')
+def buyer_signup():
+    return render_template('buyersignup.html')
+@app.route('/bakersignup')
+def baker_signup():
+    return render_template('bakersignup.html')
+
 
 @app.route('/listings')
 def listings():
