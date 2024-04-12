@@ -16,12 +16,13 @@ def search():
     #  validate the location and perform any necessary processing
     return redirect(url_for('listings'))
 
-@app.route('/login')
-def login():
-    return render_template('login.html')
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
+
+@app.route('/signin')
+def signin():
+    return render_template('signin.html')
 
 
 @app.route('/listings')
