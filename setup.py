@@ -9,10 +9,18 @@ con = mysql.connector.connect(
 
 cur = con.cursor()
 
+# dropping existing tables
+cur.execute("DROP TABLE IF EXISTS Review")
+cur.execute("DROP TABLE IF EXISTS Orders")
 cur.execute("DROP TABLE IF EXISTS Item")
 cur.execute("DROP TABLE IF EXISTS Buyer")
 cur.execute("DROP TABLE IF EXISTS Baker")
 cur.execute("DROP TABLE IF EXISTS User")
+
+# dropping existing roles
+cur.execute("DROP ROLE IF EXISTS Admin")
+cur.execute("DROP ROLE IF EXISTS Baker")
+cur.execute("DROP ROLE IF EXISTS Buyer")
 
 # users table
 cur.execute('''CREATE TABLE User
@@ -20,21 +28,20 @@ cur.execute('''CREATE TABLE User
                 Email VARCHAR(50),
                 Name VARCHAR(50),
                 Phone VARCHAR(50),
-                Age INT)''')
+                Address TEXT)''')
 
 # Buyer table
 cur.execute('''CREATE TABLE Buyer
                (BuyerID VARCHAR(50) PRIMARY KEY,
                 Bio TEXT,
+                DietaryRestrictions TEXT,
                 FOREIGN KEY (BuyerID) REFERENCES User (UserID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
-#Baker table
+# Baker table
 cur.execute('''CREATE TABLE Baker
                (BakerID VARCHAR(50) PRIMARY KEY,
-                Address VARCHAR(50),
                 Description TEXT,
-                Rating DECIMAL(2,1),
                 Website TEXT,
                 FOREIGN KEY (BakerID) REFERENCES User (UserID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
@@ -42,16 +49,76 @@ cur.execute('''CREATE TABLE Baker
 # item table
 cur.execute('''CREATE TABLE Item
                (ItemID VARCHAR(50) PRIMARY KEY,
-                BakerID VARCHAR (50),
+                BakerID VARCHAR(50),
                 ItemCount INT,
                 ItemName TEXT,
+                ItemType TEXT,
+                Flavor TEXT,
+                DietaryRestriction TEXT,
                 ItemDescription TEXT,
                 Price FLOAT(2),
                 FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
+# order table
+cur.execute('''CREATE TABLE Orders
+               (OrderID VARCHAR(50) PRIMARY KEY,
+                ItemID VARCHAR(50),
+                BuyerID VARCHAR(50),
+                Notes TEXT,
+                Status VARCHAR(50),
+                Time DATETIME,
+                Cost FLOAT(2),
+                FOREIGN KEY (ItemID) REFERENCES Item (ItemID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION,
+                FOREIGN KEY (BuyerID) REFERENCES Buyer (BuyerID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION)''')
+
+# Review table
+cur.execute('''CREATE TABLE Review
+               (ReviewID VARCHAR(50) PRIMARY KEY,
+                BakerID VARCHAR(50),
+                BuyerID VARCHAR(50),
+                Comments TEXT,
+                Rating DECIMAL(2,1),
+                FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION,
+                FOREIGN KEY (BuyerID) REFERENCES Buyer (BuyerID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION)''')
+
+# role based access
+cur.execute("CREATE ROLE Admin")
+cur.execute("GRANT ALL PRIVILEGES ON * TO Admin")
+
+cur.execute("CREATE ROLE Baker")
+cur.execute("GRANT insert, update, delete ON Item TO Baker")
+cur.execute("GRANT update(Status) ON Orders TO Baker")
+cur.execute("GRANT update(Description), update(Website) ON Baker to Baker")
+cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) ON User to Baker")
 
 
+cur.execute("CREATE ROLE Buyer")
+cur.execute("GRANT insert, update, delete ON Review TO Buyer")
+cur.execute("GRANT update(Notes) ON Orders TO Buyer")
+cur.execute("GRANT update(Bio), update(DietaryRestrictions) ON Buyer TO Buyer")
+cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) ON User To Buyer")
+
+# to create accounts and add roles to users, use the following:
+# CREATE USER 'username'@'hostname' IDENTIFIED BY 'username'
+# GRANT 'role' to 'username'@'hostname'
+
+cur.execute("CREATE USER 'test'@'localhost' IDENTIFIED BY 'test'")
+cur.execute("GRANT 'Baker' to 'test'@'localhost'")
+
+con.commit()
+
+# checking the database generation is successful (delete this part later)
 cur.execute("SHOW TABLES")
 for x in cur:
     print(x)
+
+cur.execute("SELECT grantee, privilege_type FROM information_schema.user_privileges WHERE grantee LIKE '%_role%'")
+role_privileges = cur.fetchall()
+print(role_privileges)
+for role, privilege in role_privileges:
+    print(f"Role: {role}, Privilege: {privilege}")
