@@ -1,4 +1,6 @@
 import mysql.connector
+import json
+
 
 con = mysql.connector.connect(
   host="localhost",
@@ -17,6 +19,9 @@ cur.execute("DROP TABLE IF EXISTS Buyer")
 cur.execute("DROP TABLE IF EXISTS Baker")
 cur.execute("DROP TABLE IF EXISTS User")
 
+#drop exisiting users
+cur.execute("DROP USER IF EXISTS 'test'@'localhost'")
+
 # dropping existing roles
 cur.execute("DROP ROLE IF EXISTS Admin")
 cur.execute("DROP ROLE IF EXISTS Baker")
@@ -28,7 +33,8 @@ cur.execute('''CREATE TABLE User
                 Email VARCHAR(50),
                 Name VARCHAR(50),
                 Phone VARCHAR(50),
-                Address TEXT)''')
+                Address TEXT,
+                Password CHAR(50))''')
 
 # Buyer table
 cur.execute('''CREATE TABLE Buyer
@@ -42,6 +48,7 @@ cur.execute('''CREATE TABLE Buyer
 cur.execute('''CREATE TABLE Baker
                (BakerID VARCHAR(50) PRIMARY KEY,
                 Description TEXT,
+                Rating FLOAT,
                 Website TEXT,
                 FOREIGN KEY (BakerID) REFERENCES User (UserID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
@@ -86,6 +93,40 @@ cur.execute('''CREATE TABLE Review
                 FOREIGN KEY (BuyerID) REFERENCES Buyer (BuyerID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
+con.commit()
+
+# Load user data from users.json
+with open('./data/users.json', 'r') as file:
+    data = json.load(file)
+    users = data['users']
+    for user in users:
+        cur.execute('''
+        INSERT INTO User (UserID, Email, Name, Phone, Address, Password)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (user['UserID'], user['Email'], user['Name'], user['Phone'], user['Address'], user['Password']))
+    con.commit()
+
+# Load baker data from bakers.json
+with open('./data/bakers.json', 'r') as file:
+    data = json.load(file)
+    bakers = data['bakers']
+    for baker in bakers:
+        cur.execute('''
+        INSERT INTO Baker (BakerID, Description, Rating, Website)
+        VALUES (%s, %s, %s, %s)
+        ''', (baker['BakerID'], baker['Description'], baker['Rating'], baker['Website']))
+    con.commit()
+
+# Load and insert data from items.json
+with open('./data/items.json', 'r') as file:
+    data = json.load(file)
+    items = data['items']
+    for item in items:
+        cur.execute('''
+        INSERT INTO Item (ItemID, BakerID, ItemCount, ItemName, ItemDescription, Price)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (item['ItemID'], item['BakerID'], item['ItemCount'], item['ItemName'], item['ItemDescription'], item['Price']))
+    con.commit()
 # role based access
 cur.execute("CREATE ROLE Admin")
 cur.execute("GRANT ALL PRIVILEGES ON * TO Admin")
@@ -122,3 +163,7 @@ role_privileges = cur.fetchall()
 print(role_privileges)
 for role, privilege in role_privileges:
     print(f"Role: {role}, Privilege: {privilege}")
+
+#close cursors
+cur.close()
+con.close()

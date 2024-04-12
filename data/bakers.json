@@ -1,0 +1,22 @@
+{
+    "bakers": [
+        {
+            "BakerID": "BK001",
+            "Description": "Specializes in cakes",
+            "Rating": 4.5,
+            "Website": "http://bk001.com"
+        },
+        {
+            "BakerID": "BK002",
+            "Description": "Artisan breads",
+            "Rating": 4.8,
+            "Website": "http://bk002.com"
+        },
+        {
+            "BakerID": "BK003",
+            "Description": "French pastries",
+            "Rating": 4.9,
+            "Website": "http://bk003.com"
+        }
+    ]
+}
