@@ -64,15 +64,15 @@ def baker_home():
     #all items from the database for that bakery
     #return render_template('bakerhome.html', bakery_name=bakery_name, items=items)
 
-    # check if current user is a baker
+    # check if current user is a baker (TODO: CHANGE THIS PART TO USER IN MYSQL LATER!!!)
     with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
         cur = con.cursor()
-        cur.execute("SELECT Name FROM User WHERE UserID = %s", (current_user,))
+        cur.execute("SELECT Name FROM User WHERE UserID = %s", ("BK001",))
         baker_name = cur.fetchone()
         if baker_name:
             baker_name = baker_name[0]
         cur.execute('''SELECT ItemID, ItemName, ItemCount, ItemType, Flavor, DietaryRestriction,
-                    ItemDescription, Price FROM Item WHERE BakerID = %s''', (current_user,))
+                    ItemDescription, Price FROM Item WHERE BakerID = %s''', ("BK001",))
         rows = cur.fetchall()
 
     return render_template('bakerhome.html', baker_name = baker_name, rows = rows)
