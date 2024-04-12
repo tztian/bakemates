@@ -19,6 +19,9 @@ cur.execute("DROP TABLE IF EXISTS Buyer")
 cur.execute("DROP TABLE IF EXISTS Baker")
 cur.execute("DROP TABLE IF EXISTS User")
 
+#drop exisiting users
+cur.execute("DROP USER IF EXISTS 'test'@'localhost'")
+
 # dropping existing roles
 cur.execute("DROP ROLE IF EXISTS Admin")
 cur.execute("DROP ROLE IF EXISTS Baker")
@@ -30,7 +33,8 @@ cur.execute('''CREATE TABLE User
                 Email VARCHAR(50),
                 Name VARCHAR(50),
                 Phone VARCHAR(50),
-                Address TEXT)''')
+                Address TEXT,
+                Password CHAR(50))''')
 
 # Buyer table
 cur.execute('''CREATE TABLE Buyer
@@ -97,9 +101,9 @@ with open('./data/users.json', 'r') as file:
     users = data['users']
     for user in users:
         cur.execute('''
-        INSERT INTO User (UserID, Email, Name, Phone, Address)
-        VALUES (%s, %s, %s, %s, %s)
-        ''', (user['UserID'], user['Email'], user['Name'], user['Phone'], user['Address']))
+        INSERT INTO User (UserID, Email, Name, Phone, Address, Password)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (user['UserID'], user['Email'], user['Name'], user['Phone'], user['Address'], user['Password']))
     con.commit()
 
 # Load baker data from bakers.json
