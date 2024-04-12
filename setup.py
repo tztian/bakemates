@@ -21,6 +21,9 @@ cur.execute("DROP TABLE IF EXISTS User")
 
 #drop exisiting users
 cur.execute("DROP USER IF EXISTS 'test'@'localhost'")
+cur.execute("DROP USER IF EXISTS 'BK001'@'localhost'")
+cur.execute("DROP USER IF EXISTS 'BK002'@'localhost'")
+cur.execute("DROP USER IF EXISTS 'BK003'@'localhost'")
 
 # dropping existing roles
 cur.execute("DROP ROLE IF EXISTS Admin")
@@ -150,6 +153,14 @@ cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) O
 
 cur.execute("CREATE USER 'test'@'localhost' IDENTIFIED BY 'test'")
 cur.execute("GRANT 'Baker' to 'test'@'localhost'")
+
+cur.execute("CREATE USER 'BK001'@'localhost' IDENTIFIED BY 'passwords'")
+cur.execute("GRANT 'Baker' to 'BK001'@'localhost'")
+cur.execute("CREATE USER 'BK002'@'localhost' IDENTIFIED BY 'bakemates'")
+cur.execute("GRANT 'Baker' to 'BK001'@'localhost'")
+cur.execute("CREATE USER 'BK003'@'localhost' IDENTIFIED BY 'baker'")
+cur.execute("GRANT 'Baker' to 'BK001'@'localhost'")
+
 
 con.commit()
 
