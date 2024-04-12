@@ -104,8 +104,11 @@ cur.execute("GRANT update(Bio), update(DietaryRestrictions) ON Buyer TO Buyer")
 cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) ON User To Buyer")
 
 # to create accounts and add roles to users, use the following:
-# CREATE USER 'username'@'hostname' IDENTIFIED BY 'username';
+# CREATE USER 'username'@'hostname' IDENTIFIED BY 'username'
 # GRANT 'role' to 'username'@'hostname'
+
+cur.execute("CREATE USER 'test'@'localhost' IDENTIFIED BY 'test'")
+cur.execute("GRANT 'Baker' to 'test'@'localhost'")
 
 con.commit()
 
