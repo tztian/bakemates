@@ -1,0 +1,28 @@
+{
+    "users": [
+        {
+            "UserID": "BK001",
+            "Email": "contact@bk001.com",
+            "Name": "Baker One",
+            "Phone": "123-456-7890",
+            "Address": "123 Bakery St",
+            "Password": "password"
+        },
+        {
+            "UserID": "BK002",
+            "Email": "info@bk002.com",
+            "Name": "Baker Two",
+            "Phone": "234-567-8901",
+            "Address": "456 Bread Ave",
+            "Password": "bakemates"
+        },
+        {
+            "UserID": "BK003",
+            "Email": "hello@bk003.com",
+            "Name": "Baker Three",
+            "Phone": "345-678-9012",
+            "Address": "789 Pastry Rd",
+            "Password": "baker"
+        }
+    ]
+}

@@ -53,7 +53,6 @@ def listings():
         
             con = sql.connect("bakemates.db")
             con.row_factory = sql.Row
-
             cur = con.cursor()
             cur.execute("SELECT *")
 
