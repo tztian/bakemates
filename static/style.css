@@ -130,6 +130,33 @@ body, html {
   font-style: medium;
 }
 
+/******SIGNUP PAGE******/
+.signup-container {
+    position: fixed; 
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-image: url('../static/photos/copy-space-ingredients-cookies.jpg');
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+.signup-container .signup-title{
+    position: absolute;
+    color: black;
+    font-family: "Rampart One";
+    
+    top: 10%;
+    left: 10%;
+    font-size: 150px;
+}
+.signup-container .signup-form{
+    position: absolute;
+    width: 300px;
+    height: 500px;
+    top: 50%;
+    left: 10%;
+}
 
 /******LISTINGS PAGE******/
 
