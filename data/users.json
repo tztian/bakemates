@@ -5,21 +5,21 @@
             "Email": "contact@bk001.com",
             "Name": "Baker One",
             "Phone": "123-456-7890",
-            "Age": 34
+            "Address": "123 Bakery St"
         },
         {
             "UserID": "BK002",
             "Email": "info@bk002.com",
             "Name": "Baker Two",
             "Phone": "234-567-8901",
-            "Age": 29
+            "Address": "456 Bread Ave"
         },
         {
             "UserID": "BK003",
             "Email": "hello@bk003.com",
             "Name": "Baker Three",
             "Phone": "345-678-9012",
-            "Age": 41
+            "Address": "789 Pastry Rd"
         }
     ]
 }

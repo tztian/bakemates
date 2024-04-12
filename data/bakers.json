@@ -2,21 +2,18 @@
     "bakers": [
         {
             "BakerID": "BK001",
-            "Address": "123 Bakery St",
             "Description": "Specializes in cakes",
             "Rating": 4.5,
             "Website": "http://bk001.com"
         },
         {
             "BakerID": "BK002",
-            "Address": "456 Bread Ave",
             "Description": "Artisan breads",
             "Rating": 4.8,
             "Website": "http://bk002.com"
         },
         {
             "BakerID": "BK003",
-            "Address": "789 Pastry Rd",
             "Description": "French pastries",
             "Rating": 4.9,
             "Website": "http://bk003.com"

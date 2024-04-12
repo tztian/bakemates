@@ -44,6 +44,7 @@ cur.execute('''CREATE TABLE Buyer
 cur.execute('''CREATE TABLE Baker
                (BakerID VARCHAR(50) PRIMARY KEY,
                 Description TEXT,
+                Rating FLOAT,
                 Website TEXT,
                 FOREIGN KEY (BakerID) REFERENCES User (UserID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
@@ -96,9 +97,9 @@ with open('./data/users.json', 'r') as file:
     users = data['users']
     for user in users:
         cur.execute('''
-        INSERT INTO User (UserID, Email, Name, Phone, Age)
+        INSERT INTO User (UserID, Email, Name, Phone, Address)
         VALUES (%s, %s, %s, %s, %s)
-        ''', (user['UserID'], user['Email'], user['Name'], user['Phone'], user['Age']))
+        ''', (user['UserID'], user['Email'], user['Name'], user['Phone'], user['Address']))
     con.commit()
 
 # Load baker data from bakers.json
@@ -107,9 +108,9 @@ with open('./data/bakers.json', 'r') as file:
     bakers = data['bakers']
     for baker in bakers:
         cur.execute('''
-        INSERT INTO Baker (BakerID, Address, Description, Rating, Website)
-        VALUES (%s, %s, %s, %s, %s)
-        ''', (baker['BakerID'], baker['Address'], baker['Description'], baker['Rating'], baker['Website']))
+        INSERT INTO Baker (BakerID, Description, Rating, Website)
+        VALUES (%s, %s, %s, %s)
+        ''', (baker['BakerID'], baker['Description'], baker['Rating'], baker['Website']))
     con.commit()
 
 # Load and insert data from items.json
