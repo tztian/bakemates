@@ -19,6 +19,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rampart+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+    body {font-family: Arial, Helvetica, sans-serif;}
+    * {box-sizing: border-box;}
+
+    .input-container {
+    display: -ms-flexbox; /* IE10 */
+    display: flex;
+    width: 100%;
+    margin-bottom: 15px;
+    }
+
+    .icon {
+    padding: 10px;
+    background: pink;
+    color: white;
+    min-width: 40px;
+    text-align: center;
+    }
+
+    .input-field {
+    width: 100%;
+    padding: 10px;
+    outline: none;
+    }
+
+    .input-field:focus {
+    border: 2px solid dodgerblue;
+    }
+
+    /* Set a style for the submit button */
+    .btn {
+    background-color: pink;
+    color: white;
+    padding: 15px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.8;
+    }
+
+    .btn:hover {
+    opacity: 1;
+    }
+    </style>
 </head>
 <body>
     <!-- login form. should be different info for baker and buyer-->
@@ -29,7 +74,7 @@
         <div class = signup-title>Sign Up</div>
         <div class="signup-form">
             <form action="/signup" method="post">
-                <label for="username">Username:</label>
+              <!--  <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>
                 <br>
                 <label for="password">Password:</label>
@@ -41,7 +86,24 @@
                 <label for="city">City:</label>
                 <input type="text" id="city" name="city" required>
                 <br>
-                <button type="submit">Sign up</button>
+                <button type="submit">Sign up</button> -->
+
+                <div class="input-container">
+                    <i class="fa fa-user icon"></i>
+                    <input class="input-field" type="text" placeholder="Username" name="usrnm">
+                  </div>
+                
+                  <div class="input-container">
+                    <i class="fa fa-envelope icon"></i>
+                    <input class="input-field" type="text" placeholder="Email" name="email">
+                  </div>
+                  
+                  <div class="input-container">
+                    <i class="fa fa-key icon"></i>
+                    <input class="input-field" type="password" placeholder="Password" name="psw">
+                  </div>
+                
+                  <button type="submit" class="btn">Register</button>
             </form>
         </div>
 
@@ -53,3 +115,4 @@
     </div>
 
 </body>
+
