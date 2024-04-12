@@ -11,6 +11,8 @@ con = mysql.connector.connect(
 
 cur = con.cursor()
 
+cur.execute("DROP TABLE IF EXISTS Review")
+cur.execute("DROP TABLE IF EXISTS Orders")
 cur.execute("DROP TABLE IF EXISTS Item")
 cur.execute("DROP TABLE IF EXISTS Buyer")
 cur.execute("DROP TABLE IF EXISTS Baker")
@@ -36,7 +38,6 @@ cur.execute('''CREATE TABLE Baker
                (BakerID VARCHAR(50) PRIMARY KEY,
                 Address VARCHAR(50),
                 Description TEXT,
-                Rating DECIMAL(2,1),
                 Website TEXT,
                 FOREIGN KEY (BakerID) REFERENCES User (UserID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
@@ -44,12 +45,38 @@ cur.execute('''CREATE TABLE Baker
 # item table
 cur.execute('''CREATE TABLE Item
                (ItemID VARCHAR(50) PRIMARY KEY,
-                BakerID VARCHAR (50),
+                BakerID VARCHAR(50),
                 ItemCount INT,
                 ItemName TEXT,
                 ItemDescription TEXT,
                 Price FLOAT(2),
                 FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION)''')
+
+# order table
+cur.execute('''CREATE TABLE Orders
+               (OrderID VARCHAR(50) PRIMARY KEY,
+                ItemID VARCHAR(50),
+                BuyerID VARCHAR(50),
+                Notes TEXT,
+                Status VARCHAR(50),
+                Time DATETIME,
+                Cost FLOAT(2),
+                FOREIGN KEY (ItemID) REFERENCES Item (ItemID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION,
+                FOREIGN KEY (BuyerID) REFERENCES Buyer (BuyerID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION)''')
+
+# Review table
+cur.execute('''CREATE TABLE Review
+               (ReviewID VARCHAR(50) PRIMARY KEY,
+                BakerID VARCHAR(50),
+                BuyerID VARCHAR(50),
+                Comments TEXT,
+                Rating DECIMAL(2,1),
+                FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)
+                    ON DELETE CASCADE ON UPDATE NO ACTION,
+                FOREIGN KEY (BuyerID) REFERENCES Buyer (BuyerID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
 con.commit()
