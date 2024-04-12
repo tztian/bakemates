@@ -9,12 +9,35 @@ user_location = None
 def index():
     return render_template('landing.html')
 
-@app.route('/search', methods=['POST'])
+@app.route('/search', methods=['POST', 'GET'])
 def search():
     global user_location
-    user_location = request.form.get('location')
+    global item_name
+
+    if request.method == 'POST':
+        try:
+            user_location = request.form['location']
+            item_name = request.form['item']
+            con = sql.connect("bakemates.db")
+            con.row_factory = sql.Row
+   
+            cur = con.cursor()
+            cur.execute("SELECT *")
+   
+            items = cur.fetchall()
+
+            if items.length > 0:
+                return render_template("listings.html", items = items)
+        except:
+            return render_template("error.html")
+        finally:
+            return render_template("error.html", msg="no results found")
     #  validate the location and perform any necessary processing
-    return redirect(url_for('listings'))
+    #return redirect(url_for('listings'))
+        
+@app.route('/error')
+def error():
+    return render_template('error.html')
 
 @app.route('/signup')
 def signup():
@@ -45,28 +68,7 @@ def signupbaker():
 
 @app.route('/listings', methods = ['POST','GET'])
 def listings():
-    # get items from database
-    if request.method == 'POST':
-        try:
-            itm = request.form['item']
-            loc = request.form['location']
-        
-            con = sql.connect("bakemates.db")
-            con.row_factory = sql.Row
-            cur = con.cursor()
-            cur.execute("SELECT *")
-
-            rows = cur.fetchall()
-            if len(rows) != 0:
-                cur.execute()
-                items = cur.fetchall()
-    
-        except:
-            con.rollback()
-    
-        finally:
-            return render_template('listings.html')
-        con.close()
+    return render_template("listings.html")
 
 
 @app.route('/filter', methods=['POST'])

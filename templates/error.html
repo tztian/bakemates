@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<body>
+    <!-- Navigation Bar -->
+    <div id="listings-nav">
+        <a href="{{ url_for('signin') }}" class="listings-nav-item">Sign In</a>
+        <a href="{{ url_for('signup') }}" class="listings-nav-item">Sign Up</a>
+        <!-- Add more links/buttons as needed -->
+
+    <!-- Listings Section -->
+    <div class="listings-container">
+        <!-- Loop through items and display them in a grid -->
+        <label>{{msg}}</label>
+    </div>
+</body>
+</html>
