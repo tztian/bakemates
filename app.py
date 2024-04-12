@@ -32,10 +32,32 @@ def baker_signup():
     return render_template('bakersignup.html')
 
 
-@app.route('/listings')
+@app.route('/listings', methods = ['POST','GET'])
 def listings():
     # get items from database
-    return render_template('listings.html')
+    if request.method == 'POST':
+        try:
+            itm = request.form['item']
+            loc = request.form['location']
+        
+            con = sql.connect("bakemates.db")
+            con.row_factory = sql.Row
+
+            cur = con.cursor()
+            cur.execute("SELECT *")
+
+            rows = cur.fetchall()
+            if len(rows) != 0:
+                cur.execute()
+                items = cur.fetchall()
+    
+        except:
+            con.rollback()
+    
+        finally:
+            return render_template('listings.html')
+        con.close()
+
 
 @app.route('/filter', methods=['POST'])
 def filter_items():

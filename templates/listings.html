@@ -23,17 +23,6 @@
             <!-- Form for filtering items -->
             <form action="/filter" method="post">
                 <div class="filter-item">
-                    <input type="checkbox" id="type-dropdown">
-                    <label class="dropdown-label" for="type-dropdown">Type</label>
-                    <div class="dropdown-content">
-                        <label><input type="checkbox" name="type" value="Cake"> Cake</label>
-                        <label><input type="checkbox" name="type" value="Cupcake"> Cupcake</label>
-                        <label><input type="checkbox" name="type" value="Cookie"> Cookie</label>
-                        <label><input type="checkbox" name="type" value="Cookie"> Pie</label>
-                        <!-- Add more options as needed -->
-                    </div>
-                </div>
-                <div class="filter-item">
                     <input type="checkbox" id="flavor-dropdown">
                     <label class="dropdown-label" for="flavor-dropdown">Flavor</label>
                     <div class="dropdown-content">
@@ -53,6 +42,9 @@
                         <!-- Add more options as needed -->
                     </div>
                 </div>
+                <body>
+                    <label></label>
+                </body>
             <button type="apply">Apply Filters</button>
             </form>
         </div>
