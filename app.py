@@ -1,26 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 
-########################################################
-# Need to change this part later to log in as the user #
-########################################################
-con = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password = "",
-  database = "bakemates"
-)
-cur = con.cursor()
-
-###########################
-# Actual application part #
-###########################
 app = Flask(__name__, static_url_path='/static')
 
 # Global variable to store the user's information
 user_location = None
-current_user = "BK001" 
-password = "password"
+current_user = None 
+password = None
 
 @app.route('/')
 def index():
@@ -63,6 +49,29 @@ def signup():
 @app.route('/signin')
 def signin():
     return render_template('signin.html')
+
+@app.route('/signin', methods=['POST', 'GET'])
+def signin_to_page():
+    if request.method == 'POST':
+        global current_user 
+        global password
+        current_user = request.form['usrnm']
+        password = request.form['psw']
+
+        with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
+            cur = con.cursor()
+            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s AND Password = %s", (current_user, password))
+            num = cur.fetchone()[0]
+            if num != 1:
+                return render_template("error.html")
+            
+            cur.execute("SELECT COUNT(*) FROM Buyer WHERE BuyerID = %s", (current_user,))
+            num = cur.fetchone()[0]
+            if num  == 1:
+                return redirect(url_for('listings'))
+            else:
+                return redirect(url_for('baker_home'))
+
 
 @app.route('/buyersignup')
 def buyer_signup():
