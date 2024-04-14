@@ -67,6 +67,7 @@ cur.execute('''CREATE TABLE Item
                 DietaryRestriction TEXT,
                 ItemDescription TEXT,
                 Price FLOAT(2),
+                ImagePath VARCHAR(255),
                 FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
@@ -126,11 +127,13 @@ with open('./data/items.json', 'r') as file:
     items = data['items']
     for item in items:
         cur.execute('''
-        INSERT INTO Item (ItemID, BakerID, ItemCount, ItemName, ItemDescription, Price)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        ''', (item['ItemID'], item['BakerID'], item['ItemCount'], item['ItemName'], item['ItemDescription'], item['Price']))
+        INSERT INTO Item (ItemID, BakerID, ItemCount, ItemName, ItemDescription, Price, ImagePath)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        ''', (item['ItemID'], item['BakerID'], item['ItemCount'], item['ItemName'], item['ItemDescription'], item['Price'], item['ImagePath']))
     con.commit()
 # role based access
+
+
 cur.execute("CREATE ROLE Admin")
 cur.execute("GRANT ALL PRIVILEGES ON bakemates.* TO Admin")
 
@@ -158,10 +161,17 @@ cur.execute("GRANT 'Admin' to 'test'@'localhost'")
 
 cur.execute("CREATE USER 'BK001'@'localhost' IDENTIFIED BY 'password'")
 cur.execute("GRANT 'Baker' to 'BK001'@'localhost'")
+cur.execute("SET DEFAULT ROLE 'Baker' to 'BK001'@'localhost'")
+
 cur.execute("CREATE USER 'BK002'@'localhost' IDENTIFIED BY 'bakemates'")
-cur.execute("GRANT 'Baker' to 'BK001'@'localhost'")
+cur.execute("GRANT 'Baker' to 'BK002'@'localhost'")
+cur.execute("SET DEFAULT ROLE 'Baker' to 'BK002'@'localhost'")
+
 cur.execute("CREATE USER 'BK003'@'localhost' IDENTIFIED BY 'baker'")
-cur.execute("GRANT 'Baker' to 'BK001'@'localhost'")
+cur.execute("GRANT 'Baker' to 'BK003'@'localhost'")
+cur.execute("SET DEFAULT ROLE 'Baker' to 'BK003'@'localhost'")
+
+cur.execute("FLUSH PRIVILEGES")
 
 
 con.commit()
