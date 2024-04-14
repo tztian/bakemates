@@ -1,9 +1,26 @@
 from flask import Flask, render_template, request, redirect, url_for
+import mysql.connector
 
+########################################################
+# Need to change this part later to log in as the user #
+########################################################
+con = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password = "",
+  database = "bakemates"
+)
+cur = con.cursor()
+
+###########################
+# Actual application part #
+###########################
 app = Flask(__name__, static_url_path='/static')
 
-# Global variable to store the user's location
+# Global variable to store the user's information
 user_location = None
+current_user = "BK001" 
+password = "password"
 
 @app.route('/')
 def index():
@@ -87,7 +104,19 @@ def baker_home():
     #get bakery name from database, and somehow knowing whos logged in.
     #all items from the database for that bakery
     #return render_template('bakerhome.html', bakery_name=bakery_name, items=items)
-    return render_template('bakerhome.html')
+
+    # check if current user is a baker (TODO: CHANGE THIS PART TO USER IN MYSQL LATER!!!)
+    with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
+        cur = con.cursor()
+        cur.execute("SELECT Name FROM User WHERE UserID = %s", (current_user,))
+        baker_name = cur.fetchone()
+        if baker_name:
+            baker_name = baker_name[0]
+        cur.execute('''SELECT ItemID, ItemName, ItemCount, ItemType, Flavor, DietaryRestriction,
+                    ItemDescription, Price FROM Item WHERE BakerID = %s''', (current_user,))
+        rows = cur.fetchall()
+
+    return render_template('bakerhome.html', baker_name = baker_name, rows = rows)
 
 @app.route('/additem')
 def add_item():
