@@ -337,6 +337,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 
 /* Styles for the listings container */
 .listings-container {
+    position: absolute;
     width: 80%;
     background-color: #fff;
     margin-top: 60px;
@@ -441,6 +442,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 }
 
 .items-container {
+    position: fixed;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;

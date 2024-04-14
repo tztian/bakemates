@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
-import mysql.connector
+import mysql as sql
+import mysql.connector as connector
 
 ########################################################
 # Need to change this part later to log in as the user #
 ########################################################
-con = mysql.connector.connect(
+con = connector.connect(
   host="localhost",
   user="root",
   password = "",
@@ -35,20 +36,17 @@ def search():
         try:
             user_location = request.form['location']
             item_name = request.form['item']
-            con = sql.connect("bakemates.db")
-            con.row_factory = sql.Row
-   
-            cur = con.cursor()
-            cur.execute("SELECT *")
-   
-            items = cur.fetchall()
 
-            if items.length > 0:
+            cur = con.cursor()
+
+            cur.execute("SELECT * FROM User")
+            items = cur.fetchall()  
+
+            if len(items) > 0:
                 return render_template("listings.html", items = items)
+            return render_template("error.html", msg="no results found")
         except Exception as e:
             return render_template("error.html", msg = str(e))
-        finally:
-            return render_template("error.html", msg="no results found")
     #  validate the location and perform any necessary processing
     #return redirect(url_for('listings'))
         
@@ -106,7 +104,7 @@ def baker_home():
     #return render_template('bakerhome.html', bakery_name=bakery_name, items=items)
 
     # check if current user is a baker (TODO: CHANGE THIS PART TO USER IN MYSQL LATER!!!)
-    with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
+    with connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
         cur = con.cursor()
         cur.execute("SELECT Name FROM User WHERE UserID = %s", (current_user,))
         baker_name = cur.fetchone()
