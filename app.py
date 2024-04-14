@@ -28,8 +28,8 @@ def search():
 
             if items.length > 0:
                 return render_template("listings.html", items = items)
-        except:
-            return render_template("error.html")
+        except Exception as e:
+            return render_template("error.html", msg = str(e))
         finally:
             return render_template("error.html", msg="no results found")
     #  validate the location and perform any necessary processing
