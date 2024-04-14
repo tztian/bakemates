@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 import mysql as sql
-import mysql.connector as connector
+import mysql.connector
 
 ########################################################
 # Need to change this part later to log in as the user #
 ########################################################
-con = connector.connect(
+con = mysql.connector.connect(
   host="localhost",
   user="root",
   password = "",
@@ -39,11 +39,12 @@ def search():
 
             cur = con.cursor()
 
-            cur.execute("SELECT * FROM User")
+            cur.execute("SELECT * FROM Item")
             items = cur.fetchall()  
 
             if len(items) > 0:
-                return render_template("listings.html", items = items)
+                print(items)
+                return render_template("listings.html", items=items)
             return render_template("error.html", msg="no results found")
         except Exception as e:
             return render_template("error.html", msg = str(e))
@@ -104,7 +105,7 @@ def baker_home():
     #return render_template('bakerhome.html', bakery_name=bakery_name, items=items)
 
     # check if current user is a baker (TODO: CHANGE THIS PART TO USER IN MYSQL LATER!!!)
-    with connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
+    with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
         cur = con.cursor()
         cur.execute("SELECT Name FROM User WHERE UserID = %s", (current_user,))
         baker_name = cur.fetchone()
