@@ -114,7 +114,6 @@ def baker_home():
     #all items from the database for that bakery
     #return render_template('bakerhome.html', bakery_name=bakery_name, items=items)
 
-    # check if current user is a baker (TODO: CHANGE THIS PART TO USER IN MYSQL LATER!!!)
     with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
         cur = con.cursor()
         cur.execute("SELECT Name FROM User WHERE UserID = %s", (current_user,))
@@ -133,10 +132,37 @@ def add_item():
     #also needs to send everything from the form into the database
     return render_template('additem.html')
 
-@app.route('/editbaker')
+@app.route('/editbaker', methods = ['POST','GET'])
 def edit_baker():
     #edit what is displayed to buyers when they look at the bakery profile
-    return render_template('editbaker.html')
+    try:
+        # Ensure connection uses correct credentials
+        con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+        cur = con.cursor()
+        if request.method == 'POST':
+            pass
+        else:
+            cur.execute("SELECT BakeryName, Description, Website, ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
+            baker_data = cur.fetchone()
+            if baker_data:
+                baker_info = {
+                    'name': baker_data[0],
+                    'description': baker_data[1],
+                    'website': baker_data[2],
+                    'image_path': baker_data[3]
+                }
+            else:
+                # Handle case where no data is returned
+                baker_info = {'error': 'No bakery information found for this user.'}
+    except mysql.connector.Error as err:
+        print("Error: ", err)
+        baker_info = {'error': 'Database connection or execution issue'}
+    finally:
+        # Ensure the cursor and connection are closed properly
+        cur.close()
+        con.close()
+
+    return render_template('editbaker.html', baker=baker_info)
 
 @app.route('/bakerprofile')
 def baker_profile():
