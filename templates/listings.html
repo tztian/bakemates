@@ -53,10 +53,12 @@
             <!-- Loop through items and display them in a grid -->
             {% for item in items %}
             <div class="item-box">
-                <img src="{{ image_url }}" alt="{{ item.ItemName }}">
-                <h3>{{ item[3] }}</h3>
-                <p>bakery name</p>
-                <p>Price: ${{ item[8] }}</p>
+            <a href = "/displayItem", style="text-decoration: none;" >
+                    <img src= "{{item[9]}}">
+                    <h3>{{ item[3] }}</h3>
+                    <p>bakery name</p>
+                    <p>Price: ${{ item[8] }}</p>   
+            </a>     
             </div>
             {% endfor %}
         </div>

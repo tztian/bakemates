@@ -133,6 +133,10 @@ def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
     return render_template('bakerprofile.html')
 
+@app.route('/displayItem')
+def display_item():
+    return render_template('item.html')
+
 
 
 if __name__ == "__main__":
