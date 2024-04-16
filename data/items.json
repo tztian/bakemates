@@ -41,7 +41,7 @@
             "BakerID": "BK002",
             "ItemCount": 60,
             "ItemName": "Croissant",
-            "ItemDescription": "Buttery and flaky French pastries, freshly baked.",
+            "ItemDescription": "Buttery and flaky French pastries: freshly baked.",
             "Price": 2.50,
             "ImagePath": "../static/items/croissant.jpg"
         }

@@ -425,6 +425,40 @@ body {font-family: Arial, Helvetica, sans-serif;}
 }
 /**********FILTERS**********/
 /* Styles for the filters container */
+/* Popup container */
+.box {
+    background-color: white;
+    width: 10%;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.box a {
+    padding: 15px;
+    border-radius: 3px;
+    text-decoration: none;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.content {
+    position: relative;
+    background: white;
+    padding: 1em 2em;
+    border-radius: 4px;
+}
+
+.modal:target {
+    display: flex;
+}
 .filters {
     width: 20%;
     background-color: #fff;
@@ -435,8 +469,8 @@ body {font-family: Arial, Helvetica, sans-serif;}
     display: flex;
     flex-direction: column;
     position: fixed; /* Set the position to fixed */
-    top: 70px; /* Adjust the top position to make it below the navigation bar */
-    left: 0; /* Align it to the left side of the page */
+    top: 5%; /* Adjust the top position to make it below the navigation bar */
+    left: 5px; /* Align it to the left side of the page */
 }
 
 /* Styles for each filter item */
@@ -450,6 +484,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 
 /* Styles for the dropdown content */
 .dropdown-content {
+    width: 500px;
     display: none;
     position: absolute;
     background-color: #fff;

@@ -14,40 +14,58 @@
     <div id="listings-nav">
         <a href="{{ url_for('signin') }}" class="listings-nav-item">Sign In</a>
         <a href="{{ url_for('signup') }}" class="listings-nav-item">Sign Up</a>
+        <!-- Filters Section -->
+        <div class="box">
+            <a href="#popup-box" >Filter Results</a>
+        </div>
+        <div id="popup-box" class="modal">
+            <div class="filters">
+                <!-- Form for filtering items -->
+                <form action="/filter" method="POST">
+                    <div class="filter-item">
+                        <input type="checkbox" id="type-dropdown">
+                        <label class="dropdown-label" for="type-dropdown">Type of Treat</label>
+                        <div class="dropdown-content">
+                            <label><input type="checkbox" name="type" value="Pastry"> Pastry</label>
+                            <label><input type="checkbox" name="type" value="Bread"> Bread</label>
+                            <label><input type="checkbox" name="type" value="Cakes"> Cakes</label>
+                            <label><input type="checkbox" name="type" value="Cookies"> Cookies</label>
+                            <label><input type="checkbox" name="type" value="Ice Cream"> Ice Cream</label>
+                            <!-- Add more options as needed -->
+                            <!-- would be cool if we could figure out how to auto add these based on existing items in db -->
+                        </div>
+                    </div>
+                    <div class="filter-item">
+                        <input type="checkbox" id="diet-dropdown">
+                        <label class="dropdown-label" for="diet-dropdown">Dietary Restrictions</label>
+                        <div class="dropdown-content">
+                            <label><input type="checkbox" name="diet" value="GlutenF"> Gluten Free</label>
+                            <label><input type="checkbox" name="diet" value="GlutenF"> Dairy Free</label>
+                            <label><input type="checkbox" name="diet" value="Vegan"> Vegan</label>
+                            <label><input type="checkbox" name="diet" value="GlutenF"> Nut Free</label>
+                            <!-- Add more options as needed -->
+                        </div>
+                    </div>
+                <button type="apply">Apply Filters</button>
+                </form>
+                <a
+                    href="#"
+                    style="
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        color: #fe0606;
+                        font-size: 30px;
+                        text-decoration: none;
+                    "
+                    >&times;</a
+                >
+            </div>
+        </div>
         <!-- Add more links/buttons as needed -->
     </div>
     <div id = "listingsPage" class = "container">
         <img src = "../static/photos/beth-macdonald-V6LEV6CBVLw-unsplash.jpg">
-        <!-- Filters Section -->
-        <div class="filters">
-            <!-- Form for filtering items -->
-            <form action="/filter" method="POST">
-                <div class="filter-item">
-                    <input type="checkbox" id="flavor-dropdown">
-                    <label class="dropdown-label" for="flavor-dropdown">Flavor</label>
-                    <div class="dropdown-content">
-                        <label><input type="checkbox" name="flavor" value="Chocolate"> Chocolate</label>
-                        <label><input type="checkbox" name="flavor" value="Vanilla"> Vanilla</label>
-                        <label><input type="checkbox" name="flavor" value="Strawberry"> Fruit</label>
-                        <!-- Add more options as needed -->
-                        <!-- would be cool if we could figure out how to auto add these based on existing items in db -->
-                    </div>
-                </div>
-                <div class="filter-item">
-                    <input type="checkbox" id="diet-dropdown">
-                    <label class="dropdown-label" for="diet-dropdown">Dietary Restriction</label>
-                    <div class="dropdown-content">
-                        <label><input type="checkbox" name="diet" value="GlutenF"> Gluten Free</label>
-                        <label><input type="checkbox" name="diet" value="Vegan"> Vegan</label>
-                        <!-- Add more options as needed -->
-                    </div>
-                </div>
-                <body>
-                    <label></label>
-                </body>
-            <button type="apply">Apply Filters</button>
-            </form>
-        </div>
         <!-- Listings Section -->
         <div class="listings-container">
             <!-- Loop through items and display them in a grid -->
