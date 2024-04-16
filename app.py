@@ -86,6 +86,16 @@ def signupbaker():
 def listings():
     return render_template("listings.html")
 
+@app.route('/displayItem/', methods=['POST','GET'])
+def display_item():
+    item = request.args.get('item')
+    item = item[1:len(item)-1]
+    result = []
+    for val in item.split(', '):
+        if val[0] == "'":
+            val = val[1:len(val)-1]
+        result.append(val)
+    return render_template('item.html', item = result)
 
 @app.route('/filter', methods=['POST'])
 def filter_items():
@@ -132,10 +142,6 @@ def edit_baker():
 def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
     return render_template('bakerprofile.html')
-
-@app.route('/displayItem')
-def display_item():
-    return render_template('item.html')
 
 
 
