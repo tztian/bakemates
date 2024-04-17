@@ -34,7 +34,7 @@ def search():
 
     if request.method == 'POST':
         try:
-            #user_location = request.form['location']
+            user_location = request.form['location']
             item_name = request.form['item']
 
             # also check for items containing one word/ substring of item name
@@ -43,9 +43,10 @@ def search():
             cur = con.cursor(buffered=True)
 
             for s in sub:
-                cur.execute("SELECT * From Item WHERE ItemName LIKE CONCAT('%', CONCAT(%s, '%'))", [s])
-             
-            #cur.execute("SELECT * FROM Item WHERE ItemName = %s", [item_name])
+                cur.execute("DROP VIEW IF EXISTS Results")
+                cur.execute("CREATE VIEW Results AS SELECT * FROM Baker INNER JOIN User ON Baker.BakerID = User.UserID")
+                cur.execute("SELECT * From Item JOIN Results ON Item.BakerID = Results.BakerID WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%'))) AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [s, user_location])
+        
 
             items = cur.fetchall()  
             print(items)
