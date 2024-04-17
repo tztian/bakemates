@@ -34,19 +34,30 @@ def search():
 
     if request.method == 'POST':
         try:
-            user_location = request.form['location']
+            #user_location = request.form['location']
             item_name = request.form['item']
 
-            cur = con.cursor()
+            # also check for items containing one word/ substring of item name
+            sub = item_name.split(' ')
 
-            cur.execute("SELECT * FROM Item")
+            cur = con.cursor(buffered=True)
+
+            for s in sub:
+                cur.execute("SELECT * From Item WHERE ItemName LIKE CONCAT('%', CONCAT(%s, '%'))", [s])
+             
+            #cur.execute("SELECT * FROM Item WHERE ItemName = %s", [item_name])
+
             items = cur.fetchall()  
+            print(items)
 
             if len(items) > 0:
+                print("here")
                 print(items)
+                print("here2")
                 return render_template("listings.html", items=items)
             return render_template("error.html", msg="no results found")
         except Exception as e:
+            print(e)
             return render_template("error.html", msg = str(e))
     #  validate the location and perform any necessary processing
     #return redirect(url_for('listings'))
