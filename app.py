@@ -110,7 +110,32 @@ def buyer_signup():
 @app.route('/signupbuyer', methods=['POST'])
 def signupbuyer():
     # get the form data
-    return redirect(url_for('listings'))
+    if request.method == 'POST':
+        global current_user
+        global password
+        current_user = request.form['usrnm']
+        password = request.form['psw']
+        email = request.form['email']
+        
+        with mysql.connector.connect(host="localhost", user="root", password = "", database = "bakemates") as con:
+            cur = con.cursor()
+            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
+            num = cur.fetchone()[0]
+            if num > 0:
+                return render_template("error.html", msg = "user already exists")
+
+            cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
+            cur.execute("FLUSH PRIVILEGES")
+            cur.execute("CREATE USER %s@'localhost' IDENTIFIED BY %s", (current_user, password))
+            cur.execute("GRANT 'Buyer' TO %s@'localhost'", (current_user,))
+            cur.execute("SET DEFAULT ROLE 'Buyer' TO %s@'localhost'", (current_user,))
+            #cur.execute("FLUSH PRIVILEGES")
+
+            cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
+            cur.execute("INSERT INTO Buyer(BuyerID) VALUES(%s)", (current_user,))
+            con.commit()
+
+        return redirect(url_for('listings'))
 
 @app.route('/bakersignup')
 def baker_signup():
@@ -119,8 +144,33 @@ def baker_signup():
 @app.route('/signupbaker', methods=['POST'])
 def signupbaker():
     # get the form data
-    return redirect(url_for('baker_home'))
+    if request.method == 'POST':
+        global current_user
+        global password
+        current_user = request.form['usrnm']
+        bakery_name = request.form['bname']
+        password = request.form['psw']
+        email = request.form['email']
+        
+        with mysql.connector.connect(host="localhost", user="root", password = "", database = "bakemates") as con:
+            cur = con.cursor()
+            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
+            num = cur.fetchone()[0]
+            if num > 0:
+                return render_template("error.html", msg = "user already exists")
 
+            cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
+            cur.execute("FLUSH PRIVILEGES")
+            cur.execute("CREATE USER %s@'localhost' IDENTIFIED BY %s", (current_user, password))
+            cur.execute("GRANT 'Buyer' TO %s@'localhost'", (current_user,))
+            cur.execute("SET DEFAULT ROLE 'Buyer' TO %s@'localhost'", (current_user,))
+            #cur.execute("FLUSH PRIVILEGES")
+
+            cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
+            cur.execute("INSERT INTO Baker(BakerID, BakeryName) VALUES(%s, %s)", (current_user, bakery_name))
+            con.commit()
+
+    return redirect(url_for('baker_home'))
 
 @app.route('/listings', methods = ['POST','GET'])
 def listings():
