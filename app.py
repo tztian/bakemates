@@ -27,6 +27,10 @@ password = "password"
 def index():
     return render_template('landing.html')
 
+@app.route('/home')
+def home():
+    return render_template('landing.html')
+
 @app.route('/search', methods=['POST', 'GET'])
 def search():
     global user_location
@@ -113,21 +117,25 @@ def display_item():
 
 @app.route('/filter', methods=['POST'])
 def filter_items():
-    category = request.form['type']
-    if category == 'All':
-        return redirect('/listings')
-    else:
-        # get items filtered by category from database
-        cur = con.cursor(buffered=True)
-        print(category)
-        cur.execute("SELECT * From Item WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [category])
-        if category == "Bread":
-            cur.execute("SELECT * FROM Item WHERE (LOWER(Item.ItemName) LIKE'%muffin%' OR '%loaf%')")
-        if category == "Pastry":
-            cur.execute("SELECT * From Item WHERE (LOWER(Item.ItemName) LIKE'%pie%' OR '%tart%' OR '%puff%' OR CONCAT('%', 'roll%') OR CONCAT('%', 'eclair%')) ")
+    categories = request.form.getlist('type')
+    items = []
+    for category in categories:
+        if category == 'All':
+            return redirect('/listings')
+        else:
+            # get items filtered by category from database
+            cur = con.cursor(buffered=True)
+            cur.execute("SELECT * From Item WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [category])
+            if category == "Bread":
+                cur.execute("SELECT * FROM Item WHERE (LOWER(Item.ItemName) LIKE'%muffin%' OR '%loaf%')")
+            if category == "Pastry":
+                cur.execute("SELECT * From Item WHERE (LOWER(Item.ItemName) LIKE'%pie%' OR '%tart%' OR '%puff%' OR CONCAT('%', 'roll%') OR CONCAT('%', 'eclair%')) ")
                         
-        items = cur.fetchall()  
-        return render_template('listings.html', items = items)
+        items += cur.fetchall() 
+    if len(items) == 0:
+        print("here")
+        return render_template('error.html', msg = 'No Sweet Treats Found ☹')
+    return render_template('listings.html', items = items)
     
 @app.route('/clear', methods = ['POST'])
 def clear_filters():

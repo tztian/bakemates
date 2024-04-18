@@ -9,20 +9,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rampart+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 <body>
+<div class = "error">
+<!-- Listings Section -->
     <!-- Navigation Bar -->
     <div id="listings-nav">
         <a href="{{ url_for('signin') }}" class="listings-nav-item">Sign In</a>
         <a href="{{ url_for('signup') }}" class="listings-nav-item">Sign Up</a>
-        <div class = "err-msg">{{msg}}</div>
         <!-- Add more links/buttons as needed -->
     </div>
-    <!-- Listings Section -->
-    <div class="error-container" style = "color: black">
-        <br>
+    <div class="error-container">
         <br>
         <br>
         <br>
         <div class = "err-msg">{{msg}}</div>
+        <a href="{{ url_for('listings') }}" class="return-item">All Listings</a>
+        <a href="{{ url_for('home') }}" class="home-btn">New Search</a>
+        </div>
+</div>
 </body>
 </html>
