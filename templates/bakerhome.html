@@ -5,53 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bakemates-Your Bakery</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rampart+One&display=swap" rel="stylesheet">
 </head>
+<style>
+    table {
+    width: 100%; /* Full width tables */
+    border-collapse: collapse; /* Neater borders */
+}
+table, th, td {
+    border: 1px solid black;
+}
+h1 {
+    font-family: 'Rampart One', cursive; /* Ensure correct spelling and fallback */
+}
+</style>
 <body>
-    <!-- Baker Navigation Bar -->
-    <!-- SHOULD ADD NAME OR LOGO ON THE LEFT OF THE BAR. already signed in so no reason to have those buttons-->
-    <div class = baker-home-container>
-    <div id="listings-nav">
-        <a href="{{ url_for('baker_profile') }}" class="listings-nav-item">Profile</a>
-        <a href="{{ url_for('add_item') }}" class="listings-nav-item">Post Item</a>
-        <a href="{{ url_for('edit_baker') }}" class="listings-nav-item">Edit Profile</a>
-        <a href="{{ url_for('baker_home') }}" class="listings-nav-item">Home</a>
-        <!-- Add more links/buttons as needed -->
-    </div>
-    
-    <!-- once databases are set up, add bakery name to welcome message -->
-    <br><br><br>
-    <h1>Welcome to {{baker_name}}!</h1>
-    
-    <h2>Current Listings</h2>
-    <!-- Listings Section -->
-    <!-- <div class="listings-container">-->
-        <!-- ONLY THE LOGGED IN BAKERS BAKERY ITEMS Loop through items and display them in a grid -->
+    <div class="baker-home-container">
+        <!-- Navigation Bar -->
+        <div id="listings-nav">
+            <a href="{{ url_for('baker_profile') }}" class="listings-nav-item">Profile</a>
+            <a href="{{ url_for('add_item') }}" class="listings-nav-item">Post Item</a>
+            <a href="{{ url_for('edit_baker') }}" class="listings-nav-item">Edit Profile</a>
+            <a href="{{ url_for('baker_home') }}" class="listings-nav-item">Home</a>
+        </div>
         
-        <table border = 1>
+        <!-- Welcome Message -->
+        <h1>Welcome back, {{baker_name}}!</h1>
+        
+        <!-- Listings Section -->
+        <h2>Your Listings</h2>
+        <table>
+            <table border = "1">
             <thead>
-                <td>ID</td>
-                <td>Name</td>
-                <td>Count</td>
-                <td>Type</td>
-                <td>Flavor</td>
-                <td>Dietary Restriction</td>
-                <td>Description</td>
-                <td>Price</td>
-            </thead>
-            
-            {% for row in rows %}
                 <tr>
-                <td>{{row[0]}}</td>
-                <td>{{row[1]}}</td>
-                <td> {{row[2]}}</td>
-                <td>{{row[3]}}</td>	
-                <td>{{row[4]}}</td>	
-                <td>{{row[5]}}</td>	
-                <td>{{row[6]}}</td>	
-                <td>{{row[7]}}</td>	
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Count</th>
+                    <th>Type</th>
+                    <th>Flavor</th>
+                    <th>Dietary Restriction</th>
+                    <th>Description</th>
+                    <th>Price</th>
                 </tr>
-            {% endfor %}
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>
+                    <td>{{row[4]}}</td>
+                    <td>{{row[5]}}</td>
+                    <td>{{row[6]}}</td>
+                    <td>{{row[7]}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
-    
+    </div>
 </body>
 </html>

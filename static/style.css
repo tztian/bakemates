@@ -502,14 +502,17 @@ body {font-family: Arial, Helvetica, sans-serif;}
 
 /********BAKER HOME PAGE********/
 .baker-home-container {
-    position: fixed; 
+    position: relative; 
     width: 100%;
     height: 100%;
     background-size: cover;
-    background-image: url('../static/photos/294408504_106274052173938_956627209386893135_n.jpg');
+    background:rgb(235, 199, 237);
     justify-content: center;
     align-items: center;
     display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center-align the content horizontally */
+    padding: 20px; /* Add some padding around */
 }
 /* Content Styles */
 .baker-content {
