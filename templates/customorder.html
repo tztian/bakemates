@@ -21,6 +21,11 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+<style>
+textarea {
+  resize: none;
+}
+</style>
 <body>
     <!-- form to order custom item-->
     <div class = custom-order-container>
@@ -28,8 +33,8 @@
         <div class = custom-order-title>Create your custom order!</div>
         <div class="custom-order-form">
             <form action="/submit_custom_order" method="post">
-                <label for="item-name">Item Name:</label>
-                <input type="text" id="item-name" name="item_name" required>
+                <label for="bakery-name">Bakery Name:</label>
+                <input type="text" id="bakery-name" name="bakery_name" required>
                 <br>
                 <label for="item-quantity">Quantity:</label><br>
                 <input type="number" id="item-quantity" name="item_quantity" required>
@@ -46,8 +51,8 @@
                 <label for="item-flavor">Item Flavor:</label><br>
                 <input type="text" id="item-flavor" name="item_flavor" required>
                 <br>
-                <label for="item-description">Please add any details (example: frosting color):</label><br>
-                <input type="text" id="item-description" name="item_description" required>
+                <label for="item-description">Please add any details:</label><br>
+                <textarea id="item-description" name="item_description" rows="4" cols="50"></textarea> 
                 <br><br><br>
                 <button type="submit">Submit order request!</button>
                 <!-- should redirect to the buyers orders page and show that its pending then show accepted or rejected -->
