@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
+import os
+import time
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -136,15 +138,65 @@ def add_item():
 def edit_baker():
     #edit what is displayed to buyers when they look at the bakery profile
     try:
-        # Ensure connection uses correct credentials
         con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
         cur = con.cursor()
+
         if request.method == 'POST':
-            pass
+            # Retrieve form data
+            bakery_name = request.form.get('bakery_name')
+            bakery_description = request.form.get('bakery_description')
+            bakery_website = request.form.get('bakery_website')
+            bakery_image = request.files['bakery_image']
+
+            if bakery_image and bakery_image.filename != '':
+                #Combine a timestamp with the filename for a unique filename to prevent overwrites
+                timestamp = int(time.time())
+                unique_filename = f"{timestamp}_{bakery_image.filename}"
+                bakery_image_path = os.path.join('./images/bakers', unique_filename)
+                bakery_image.save(bakery_image_path)
+                # Update statement for bakery details
+                update_query = """
+                UPDATE Baker SET
+                    BakeryName = %s,
+                    Description = %s,
+                    Website = %s,
+                    ImagePath = %s
+                WHERE BakerID = %s
+                """
+                update_values = (
+                    bakery_name,
+                    bakery_description,
+                    bakery_website,
+                    bakery_image_path,
+                    current_user
+                )
+                cur.execute(update_query, update_values)
+                con.commit()
+                
+                return redirect(url_for('baker_home'))
+            # Update statement for bakery details
+            update_query = """
+            UPDATE Baker SET
+                BakeryName = %s,
+                Description = %s,
+                Website = %s
+            WHERE BakerID = %s
+            """
+            update_values = (
+                bakery_name,
+                bakery_description,
+                bakery_website,
+                current_user
+            )
+            cur.execute(update_query, update_values)
+            con.commit()
+                
+            return redirect(url_for('baker_home'))
+
         else:
             cur.execute("SELECT BakeryName, Description, Website, ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
             baker_data = cur.fetchone()
-            if baker_data:
+            if baker_data:  
                 baker_info = {
                     'name': baker_data[0],
                     'description': baker_data[1],
@@ -152,13 +204,11 @@ def edit_baker():
                     'image_path': baker_data[3]
                 }
             else:
-                # Handle case where no data is returned
                 baker_info = {'error': 'No bakery information found for this user.'}
     except mysql.connector.Error as err:
         print("Error: ", err)
         baker_info = {'error': 'Database connection or execution issue'}
     finally:
-        # Ensure the cursor and connection are closed properly
         cur.close()
         con.close()
 
