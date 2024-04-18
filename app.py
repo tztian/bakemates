@@ -1,27 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
 import mysql as sql
 import mysql.connector
+import os
+import time
 
-########################################################
-# Need to change this part later to log in as the user #
-########################################################
-con = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password = "",
-  database = "bakemates"
-)
-cur = con.cursor()
-
-###########################
-# Actual application part #
-###########################
 app = Flask(__name__, static_url_path='/static')
 
 # Global variable to store the user's information
 user_location = None
-current_user = "BK001" 
-password = "password"
+current_user = None 
+password = None
 
 @app.route('/')
 def index():
@@ -74,6 +62,29 @@ def signup():
 def signin():
     return render_template('signin.html')
 
+@app.route('/signin', methods=['POST', 'GET'])
+def signin_to_page():
+    if request.method == 'POST':
+        global current_user 
+        global password
+        current_user = request.form['usrnm']
+        password = request.form['psw']
+
+        with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
+            cur = con.cursor()
+            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s AND Password = %s", (current_user, password))
+            num = cur.fetchone()[0]
+            if num != 1:
+                return render_template("error.html")
+            
+            cur.execute("SELECT COUNT(*) FROM Buyer WHERE BuyerID = %s", (current_user,))
+            num = cur.fetchone()[0]
+            if num  == 1:
+                return redirect(url_for('listings'))
+            else:
+                return redirect(url_for('baker_home'))
+
+
 @app.route('/buyersignup')
 def buyer_signup():
     return render_template('buyersignup.html')
@@ -125,7 +136,6 @@ def baker_home():
     #all items from the database for that bakery
     #return render_template('bakerhome.html', bakery_name=bakery_name, items=items)
 
-    # check if current user is a baker (TODO: CHANGE THIS PART TO USER IN MYSQL LATER!!!)
     with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
         cur = con.cursor()
         cur.execute("SELECT Name FROM User WHERE UserID = %s", (current_user,))
@@ -144,10 +154,94 @@ def add_item():
     #also needs to send everything from the form into the database
     return render_template('additem.html')
 
-@app.route('/editbaker')
+@app.route('/editbaker', methods = ['POST','GET'])
 def edit_baker():
     #edit what is displayed to buyers when they look at the bakery profile
-    return render_template('editbaker.html')
+    try:
+        con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+        cur = con.cursor()
+
+        if request.method == 'POST':
+            # Retrieve form data
+            bakery_name = request.form.get('bakery_name')
+            bakery_description = request.form.get('bakery_description')
+            bakery_website = request.form.get('bakery_website')
+            bakery_image = request.files['bakery_image']
+
+            if bakery_image and bakery_image.filename != '':
+                #Combine a timestamp with the filename for a unique filename to prevent overwrites
+                timestamp = int(time.time())
+                unique_filename = f"{timestamp}_{bakery_image.filename}"
+                bakery_image_path = os.path.join('./images/bakers', unique_filename)
+                bakery_image.save(bakery_image_path)
+                
+                # Get the current image path from the database
+                cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
+                existing_image = cur.fetchone()
+                existing_image_path = existing_image[0] if existing_image else None
+
+                # Update statement for bakery details
+                update_query = """
+                UPDATE Baker SET
+                    BakeryName = %s,
+                    Description = %s,
+                    Website = %s,
+                    ImagePath = %s
+                WHERE BakerID = %s
+                """
+                update_values = (
+                    bakery_name,
+                    bakery_description,
+                    bakery_website,
+                    bakery_image_path,
+                    current_user
+                )
+                cur.execute(update_query, update_values)
+                con.commit()
+
+                if existing_image_path:
+                    os.remove(existing_image_path)
+                
+                return redirect(url_for('baker_home'))
+            # Update statement for bakery details
+            update_query = """
+            UPDATE Baker SET
+                BakeryName = %s,
+                Description = %s,
+                Website = %s
+            WHERE BakerID = %s
+            """
+            update_values = (
+                bakery_name,
+                bakery_description,
+                bakery_website,
+                current_user
+            )
+            cur.execute(update_query, update_values)
+            con.commit()
+                
+            return redirect(url_for('baker_home'))
+
+        else:
+            cur.execute("SELECT BakeryName, Description, Website, ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
+            baker_data = cur.fetchone()
+            if baker_data:  
+                baker_info = {
+                    'name': baker_data[0],
+                    'description': baker_data[1],
+                    'website': baker_data[2],
+                    'image_path': baker_data[3]
+                }
+            else:
+                baker_info = {'error': 'No bakery information found for this user.'}
+    except mysql.connector.Error as err:
+        print("Error: ", err)
+        baker_info = {'error': 'Database connection or execution issue'}
+    finally:
+        cur.close()
+        con.close()
+
+    return render_template('editbaker.html', baker=baker_info)
 
 @app.route('/bakerprofile')
 def baker_profile():

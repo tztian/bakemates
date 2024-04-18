@@ -7,37 +7,36 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <!-- Baker Navigation Bar -->
-    <!-- SHOULD ADD NAME OR LOGO ON THE LEFT OF THE BAR. already signed in so no reason to have those buttons-->
     <div id="listings-nav">
         <a href="{{ url_for('baker_profile') }}" class="listings-nav-item">Profile</a>
         <a href="{{ url_for('add_item') }}" class="listings-nav-item">Post Item</a>
         <a href="{{ url_for('edit_baker') }}" class="listings-nav-item">Edit Profile</a>
         <a href="{{ url_for('baker_home') }}" class="listings-nav-item">Home</a>
-        <!-- Add more links/buttons as needed -->
     </div>
 
     <div id="edit-baker-form">
         <br><br><br>
-        <!-- maybe take the bakery name from datbase to print as like "edit NAME info"-->
         <h1>Edit Bakery Info</h1>
-        
-        <!-- not every thing is required, if input blank dont change anything-->
-        <!-- would be cool if it was auto filled with the info they already have -->
-        <form action="/editbaker" method="post">
+        <form action="{{ url_for('edit_baker') }}" method="post" enctype="multipart/form-data">
             <label for="bakery-name">Bakery Name:</label>
-            <input type="text" id="item-name" name="item_name" >
+            <input type="text" id="bakery-name" name="bakery_name" value="{{ baker.name if baker else '' }}">
             <br>
-            <!-- pagraph abt the bakery, so input box needs to be bigger -->
-            <label for="bakery-description">Bakery Description:</label><br>
-            <input type="text" id="bakery-description" name="bakery_description" >
+            <label for="bakery-description">Bakery Description:</label>
+            <textarea id="bakery-description" name="bakery_description" rows="4" cols="50">{{ baker.description if baker else '' }}</textarea>
             <br>
-            <!-- bakery image -->
-            <label for="bakery-image">Bakery Image:</label><br>
-            <input type="file" id="bakery-image" name="bakery_image" accept="image/png, image/jpeg" >
+            <label for="bakery-website">Website:</label>
+            <input type="url" id="bakery-website" name="bakery_website" value="{{ baker.website if baker else '' }}">
             <br>
-            <!-- not sure what else the bakery will have in the database -->
-
+            <label for="bakery-image">Current Image:</label>
+            <br>
+            {% if baker and baker.image_path %}
+                <img src="{{ baker.image_path }}" alt="Current Bakery Image" style="width: 100px; height: auto;">
+            {% endif %}
+            <br>
+            <label for="bakery-image">Change Bakery Image:</label>
+            <input type="file" id="bakery-image" name="bakery_image" accept="image/png, image/jpeg">
+            <br>
+            <button type="submit">Update Bakery Info</button>
         </form>
     </div>
 </body>
