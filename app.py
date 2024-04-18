@@ -154,6 +154,12 @@ def edit_baker():
                 unique_filename = f"{timestamp}_{bakery_image.filename}"
                 bakery_image_path = os.path.join('./images/bakers', unique_filename)
                 bakery_image.save(bakery_image_path)
+                
+                # Get the current image path from the database
+                cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
+                existing_image = cur.fetchone()
+                existing_image_path = existing_image[0] if existing_image else None
+
                 # Update statement for bakery details
                 update_query = """
                 UPDATE Baker SET
@@ -172,6 +178,9 @@ def edit_baker():
                 )
                 cur.execute(update_query, update_values)
                 con.commit()
+
+                if existing_image_path:
+                    os.remove(existing_image_path)
                 
                 return redirect(url_for('baker_home'))
             # Update statement for bakery details
