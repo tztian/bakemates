@@ -14,16 +14,15 @@
     <div id="listings-nav">
         <a href="{{ url_for('signin') }}" class="listings-nav-item">Sign In</a>
         <a href="{{ url_for('signup') }}" class="listings-nav-item">Sign Up</a>
+        <div class = "err-msg">{{msg}}</div>
         <!-- Add more links/buttons as needed -->
-
-    <!-- Listings Section -->
-    <div class="listings-container">
-        <!-- Loop through items and display them in a grid -->
-        <br>
-        <br>
-        <br>
-        <br>
-        <label>{{msg}}</label>
     </div>
+    <!-- Listings Section -->
+    <div class="error-container" style = "color: black">
+        <br>
+        <br>
+        <br>
+        <br>
+        <div class = "err-msg">{{msg}}</div>
 </body>
 </html>

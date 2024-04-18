@@ -511,6 +511,15 @@ body {font-family: Arial, Helvetica, sans-serif;}
     align-items: center;
     display: flex;
 }
+
+/******Error PAGE**********/
+.error-container{
+    width: 25%;
+    height: 25%;
+}
+.error-container .err-msg{
+    color: black
+}
 /* Content Styles */
 .baker-content {
     margin-top: 80px; /* Adjust based on the height of the navigation bar */

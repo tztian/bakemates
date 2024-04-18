@@ -49,12 +49,9 @@ def search():
         
 
             items = cur.fetchall()  
-            print(items)
 
             if len(items) > 0:
-                print("here")
                 print(items)
-                print("here2")
                 return render_template("listings.html", items=items)
             return render_template("error.html", msg="no results found")
         except Exception as e:
@@ -96,7 +93,12 @@ def signupbaker():
 
 @app.route('/listings', methods = ['POST','GET'])
 def listings():
-    return render_template("listings.html")
+    cur = con.cursor(buffered=True)
+        
+    cur.execute("SELECT * From Item")
+
+    items = cur.fetchall()
+    return render_template("listings.html", items = items)
 
 @app.route('/displayItem/', methods=['POST','GET'])
 def display_item():
@@ -111,12 +113,25 @@ def display_item():
 
 @app.route('/filter', methods=['POST'])
 def filter_items():
-    category = request.form['category']
+    category = request.form['type']
     if category == 'All':
         return redirect('/listings')
     else:
         # get items filtered by category from database
-        return render_template('listings.html')
+        cur = con.cursor(buffered=True)
+        print(category)
+        cur.execute("SELECT * From Item WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [category])
+        if category == "Bread":
+            cur.execute("SELECT * FROM Item WHERE (LOWER(Item.ItemName) LIKE'%muffin%' OR '%loaf%')")
+        if category == "Pastry":
+            cur.execute("SELECT * From Item WHERE (LOWER(Item.ItemName) LIKE'%pie%' OR '%tart%' OR '%puff%' OR CONCAT('%', 'roll%') OR CONCAT('%', 'eclair%')) ")
+                        
+        items = cur.fetchall()  
+        return render_template('listings.html', items = items)
+    
+@app.route('/clear', methods = ['POST'])
+def clear_filters():
+    return redirect('/listings')
 
 # Routes for baker-specific functionality
 @app.route('/bakerhome')

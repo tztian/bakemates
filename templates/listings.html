@@ -28,8 +28,8 @@
                         <div class="dropdown-content">
                             <label><input type="checkbox" name="type" value="Pastry"> Pastry</label>
                             <label><input type="checkbox" name="type" value="Bread"> Bread</label>
-                            <label><input type="checkbox" name="type" value="Cakes"> Cakes</label>
-                            <label><input type="checkbox" name="type" value="Cookies"> Cookies</label>
+                            <label><input type="checkbox" name="type" value="Cake"> Cakes</label>
+                            <label><input type="checkbox" name="type" value="Cookie"> Cookies</label>
                             <label><input type="checkbox" name="type" value="Ice Cream"> Ice Cream</label>
                             <!-- Add more options as needed -->
                             <!-- would be cool if we could figure out how to auto add these based on existing items in db -->
@@ -48,6 +48,8 @@
                     </div>
                 <button type="apply">Apply Filters</button>
                 </form>
+                <form action = "/clear" method="POST">
+                    <button type="apply">Clear Filters</button></form>
                 <a
                     href="#"
                     style="
