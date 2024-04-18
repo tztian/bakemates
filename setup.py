@@ -65,9 +65,11 @@ cur.execute('''CREATE TABLE Item
                 ItemCount INT,
                 ItemName TEXT,
                 ItemType TEXT,
-                Flavor TEXT,
-                DietaryRestriction TEXT,
                 ItemDescription TEXT,
+                GlutenFree BOOL,
+                Vegan BOOL,
+                DairyFree BOOL,
+                NutFree BOOL,
                 Price FLOAT(2),
                 ImagePath VARCHAR(255),
                 FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)

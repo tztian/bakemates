@@ -7,7 +7,7 @@
             "ItemName": "Chocolate Cake",
             "ItemDescription": "Rich and moist chocolate layer cake with chocolate frosting.",
             "Price": 20.00,
-            "ImagePath": "/images/items/chocolate-cake.jpg"
+            "ImagePath": "../static/items/chocolate-cake.jpg"
         },
         {
             "ItemID": "IT002",
@@ -16,7 +16,7 @@
             "ItemName": "Blueberry Muffin",
             "ItemDescription": "Soft and fluffy muffins loaded with fresh blueberries.",
             "Price": 3.50,
-            "ImagePath": "/images/items/blueberry-muffin.jpg"
+            "ImagePath": "../static/items/blueberry-muffins.jpg"
         },
         {
             "ItemID": "IT003",
@@ -25,7 +25,7 @@
             "ItemName": "Banana Bread",
             "ItemDescription": "Moist bread made with ripe bananas and a hint of cinnamon.",
             "Price": 12.00,
-            "ImagePath": "/images/items/banana-bread.jpg"
+            "ImagePath": "../static/items/banana-bread.jpg"
         },
         {
             "ItemID": "IT004",
@@ -34,16 +34,16 @@
             "ItemName": "Apple Pie",
             "ItemDescription": "Traditional apple pie with a buttery crust and a hint of cinnamon.",
             "Price": 15.00,
-            "ImagePath": "/images/items/apple-pie.jpg"
+            "ImagePath": "../static/items/apple-pie.jpg"
         },
         {
             "ItemID": "IT005",
             "BakerID": "BK002",
             "ItemCount": 60,
             "ItemName": "Croissant",
-            "ItemDescription": "Buttery and flaky French pastries, freshly baked.",
+            "ItemDescription": "Buttery and flaky French pastries: freshly baked.",
             "Price": 2.50,
-            "ImagePath": "/images/items/croissant.jpg"
+            "ImagePath": "../static/items/croissant.jpg"
         }
     ]
 }

@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <!-- STYLE INFO -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rampart+One&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+     </head>
+    <body style="background-color: #ddd;">
+        <div class = item-container >
+            <div class = item-title>{{ item[3] }}</div>
+            <img src= "{{item[9]}}"> 
+            <div class = "bakery">bakery name
+                <div class = "info">
+                    {{ item[7] }}<br>${{ item[8] }}
+                </div></div>
+        </div>
+    </body>
+</html>

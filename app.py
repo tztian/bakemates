@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+import mysql as sql
 import mysql.connector
 import os
 import time
@@ -21,22 +22,31 @@ def search():
 
     if request.method == 'POST':
         try:
-            user_location = request.form['location']
+            #user_location = request.form['location']
             item_name = request.form['item']
-            con = sql.connect("bakemates.db")
-            con.row_factory = sql.Row
-   
-            cur = con.cursor()
-            cur.execute("SELECT *")
-   
-            items = cur.fetchall()
 
-            if items.length > 0:
-                return render_template("listings.html", items = items)
-        except Exception as e:
-            return render_template("error.html", msg = str(e))
-        finally:
+            # also check for items containing one word/ substring of item name
+            sub = item_name.split(' ')
+
+            cur = con.cursor(buffered=True)
+
+            for s in sub:
+                cur.execute("SELECT * From Item WHERE ItemName LIKE CONCAT('%', CONCAT(%s, '%'))", [s])
+             
+            #cur.execute("SELECT * FROM Item WHERE ItemName = %s", [item_name])
+
+            items = cur.fetchall()  
+            print(items)
+
+            if len(items) > 0:
+                print("here")
+                print(items)
+                print("here2")
+                return render_template("listings.html", items=items)
             return render_template("error.html", msg="no results found")
+        except Exception as e:
+            print(e)
+            return render_template("error.html", msg = str(e))
     #  validate the location and perform any necessary processing
     #return redirect(url_for('listings'))
         
@@ -98,6 +108,16 @@ def signupbaker():
 def listings():
     return render_template("listings.html")
 
+@app.route('/displayItem/', methods=['POST','GET'])
+def display_item():
+    item = request.args.get('item')
+    item = item[1:len(item)-1]
+    result = []
+    for val in item.split(', '):
+        if val[0] == "'":
+            val = val[1:len(val)-1]
+        result.append(val)
+    return render_template('item.html', item = result)
 
 @app.route('/filter', methods=['POST'])
 def filter_items():
