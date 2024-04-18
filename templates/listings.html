@@ -75,10 +75,10 @@
             {% for item in items %}
             <div class="item-box">
                 <a href = "/displayItem/?item={{item}}", style = "text-decoration: none; color: rgb(99, 48, 48); font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
-                    <img src= "{{item[9]}}">
+                    <img src= "{{item[11]}}">
                     <h3>{{ item[3] }}</h3>
                     <p>bakery name</p>
-                    <p>Price: ${{ item[8] }}</p>   
+                    <p>Price: ${{ item[10] }}</p>   
             </a>     
             </div>
             {% endfor %}

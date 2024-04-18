@@ -31,13 +31,29 @@ def search():
 
             # also check for items containing one word/ substring of item name
             sub = item_name.split(' ')
-
+            if current_user == None:
+                con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
+            else:
+                con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+            
             cur = con.cursor(buffered=True)
 
             for s in sub:
-                cur.execute("DROP VIEW IF EXISTS Results")
-                cur.execute("CREATE VIEW Results AS SELECT * FROM Baker INNER JOIN User ON Baker.BakerID = User.UserID")
-                cur.execute("SELECT * From Item JOIN Results ON Item.BakerID = Results.BakerID WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%'))) AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [s, user_location])
+                # cur.execute("DROP VIEW IF EXISTS Results")
+                # cur.execute("CREATE VIEW Results AS SELECT * FROM Baker INNER JOIN User ON Baker.BakerID = User.UserID")
+                # cur.execute('''SELECT * From Item JOIN Results ON Item.BakerID = Results.BakerID 
+                #            WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%'))) 
+                #            AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))''', [s, user_location])
+
+                cur.execute('''SELECT *
+                                FROM Item
+                                JOIN (
+                                    SELECT *
+                                    FROM Baker
+                                    INNER JOIN User ON Baker.BakerID = User.UserID
+                                ) AS Results ON Item.BakerID = Results.BakerID
+                                WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))
+                                AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))''', [s, user_location])
         
 
             items = cur.fetchall()  
@@ -108,6 +124,11 @@ def signupbaker():
 
 @app.route('/listings', methods = ['POST','GET'])
 def listings():
+    if current_user == None:
+                con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
+    else:
+        con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+
     cur = con.cursor(buffered=True)
         
     cur.execute("SELECT * From Item")
@@ -135,6 +156,11 @@ def filter_items():
             return redirect('/listings')
         else:
             # get items filtered by category from database
+            if current_user == None:
+                con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
+            else:
+                con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+
             cur = con.cursor(buffered=True)
             cur.execute("SELECT * From Item WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [category])
             if category == "Bread":
@@ -172,18 +198,24 @@ def baker_home():
 
     return render_template('bakerhome.html', baker_name = baker_name, rows = rows)
 
-@app.route('/additem')
+@app.route('/add_item')
 def add_item():
     #needs to work with the form from additem.html
     #also needs to send everything from the form into the database
     return render_template('additem.html')
 
 
-@app.route('/edititem')
+@app.route('/edit_item')
 def edit_item():
     #needs to work with the form from additem.html
     #also needs to send everything from the form into the database
     return render_template('edititem.html')
+
+@app.route('/delete_item')
+def delete_item():
+    #needs to work with the form from additem.html
+    #also needs to send everything from the form into the database
+    return render_template('deleteitem.html')
 
 @app.route('/editbaker', methods = ['POST','GET'])
 def edit_baker():
