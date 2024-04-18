@@ -142,7 +142,7 @@ def baker_home():
         baker_name = cur.fetchone()
         if baker_name:
             baker_name = baker_name[0]
-        cur.execute('''SELECT ItemID, ItemName, ItemCount, ItemType, Flavor, DietaryRestriction,
+        cur.execute('''SELECT ItemID, ItemName, ItemCount, ItemType,
                     ItemDescription, Price FROM Item WHERE BakerID = %s''', (current_user,))
         rows = cur.fetchall()
 
@@ -247,6 +247,10 @@ def edit_baker():
 def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
     return render_template('bakerprofile.html')
+
+@app.route('/checkout')
+def checkout():
+    return render_template('checkout.html')
 
 @app.route('/custom_order')
 def custom_order():
