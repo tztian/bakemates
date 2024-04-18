@@ -168,6 +168,12 @@ def add_item():
     #also needs to send everything from the form into the database
     return render_template('additem.html')
 
+@app.route('/edititem')
+def edit_item():
+    #needs to work with the form from additem.html
+    #also needs to send everything from the form into the database
+    return render_template('edititem.html')
+
 @app.route('/editbaker')
 def edit_baker():
     #edit what is displayed to buyers when they look at the bakery profile

@@ -46,7 +46,7 @@ body, html {
 }
 
 .signup-btn {
-    right: 11%; 
+    right: 7%; 
 }
 .login-btn {
     right: 5%; 
@@ -563,6 +563,19 @@ body {font-family: Arial, Helvetica, sans-serif;}
     top: 53%; 
     right: 42%; 
     border-radius: 30px;
+}
+
+.nav-item .add-btn{
+    top: 50%;
+    right: 20%;
+}
+.nav-item .edit-btn{
+    top: 60%;
+    right: 20%;
+}
+.nav-item .delete-btn{
+    top: 70%;
+    right: 20%;
 }
 
 /* Content Styles */
