@@ -172,7 +172,7 @@ def edit_baker():
                 #Combine a timestamp with the filename for a unique filename to prevent overwrites
                 timestamp = int(time.time())
                 unique_filename = f"{timestamp}_{bakery_image.filename}"
-                bakery_image_path = os.path.join('./images/bakers', unique_filename)
+                bakery_image_path = os.path.join('./static/bakers', unique_filename)
                 bakery_image.save(bakery_image_path)
                 
                 # Get the current image path from the database
