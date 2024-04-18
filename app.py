@@ -154,6 +154,10 @@ def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
     return render_template('bakerprofile.html')
 
+@app.route('/checkout')
+def checkout():
+    return render_template('checkout.html')
+
 @app.route('/custom_order')
 def custom_order():
     return render_template('customorder.html')
