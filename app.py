@@ -15,6 +15,10 @@ password = None
 def index():
     return render_template('landing.html')
 
+@app.route('/home')
+def home():
+    return render_template('landing.html')
+
 @app.route('/search', methods=['POST', 'GET'])
 def search():
     global user_location
@@ -22,7 +26,7 @@ def search():
 
     if request.method == 'POST':
         try:
-            #user_location = request.form['location']
+            user_location = request.form['location']
             item_name = request.form['item']
 
             # also check for items containing one word/ substring of item name
@@ -31,17 +35,15 @@ def search():
             cur = con.cursor(buffered=True)
 
             for s in sub:
-                cur.execute("SELECT * From Item WHERE ItemName LIKE CONCAT('%', CONCAT(%s, '%'))", [s])
-             
-            #cur.execute("SELECT * FROM Item WHERE ItemName = %s", [item_name])
+                cur.execute("DROP VIEW IF EXISTS Results")
+                cur.execute("CREATE VIEW Results AS SELECT * FROM Baker INNER JOIN User ON Baker.BakerID = User.UserID")
+                cur.execute("SELECT * From Item JOIN Results ON Item.BakerID = Results.BakerID WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%'))) AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [s, user_location])
+        
 
             items = cur.fetchall()  
-            print(items)
 
             if len(items) > 0:
-                print("here")
                 print(items)
-                print("here2")
                 return render_template("listings.html", items=items)
             return render_template("error.html", msg="no results found")
         except Exception as e:
@@ -106,7 +108,12 @@ def signupbaker():
 
 @app.route('/listings', methods = ['POST','GET'])
 def listings():
-    return render_template("listings.html")
+    cur = con.cursor(buffered=True)
+        
+    cur.execute("SELECT * From Item")
+
+    items = cur.fetchall()
+    return render_template("listings.html", items = items)
 
 @app.route('/displayItem/', methods=['POST','GET'])
 def display_item():
@@ -121,12 +128,29 @@ def display_item():
 
 @app.route('/filter', methods=['POST'])
 def filter_items():
-    category = request.form['category']
-    if category == 'All':
-        return redirect('/listings')
-    else:
-        # get items filtered by category from database
-        return render_template('listings.html')
+    categories = request.form.getlist('type')
+    items = []
+    for category in categories:
+        if category == 'All':
+            return redirect('/listings')
+        else:
+            # get items filtered by category from database
+            cur = con.cursor(buffered=True)
+            cur.execute("SELECT * From Item WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [category])
+            if category == "Bread":
+                cur.execute("SELECT * FROM Item WHERE (LOWER(Item.ItemName) LIKE'%muffin%' OR '%loaf%')")
+            if category == "Pastry":
+                cur.execute("SELECT * From Item WHERE (LOWER(Item.ItemName) LIKE'%pie%' OR '%tart%' OR '%puff%' OR CONCAT('%', 'roll%') OR CONCAT('%', 'eclair%')) ")
+                        
+        items += cur.fetchall() 
+    if len(items) == 0:
+        print("here")
+        return render_template('error.html', msg = 'No Sweet Treats Found ☹')
+    return render_template('listings.html', items = items)
+    
+@app.route('/clear', methods = ['POST'])
+def clear_filters():
+    return redirect('/listings')
 
 # Routes for baker-specific functionality
 @app.route('/bakerhome')
@@ -153,6 +177,13 @@ def add_item():
     #needs to work with the form from additem.html
     #also needs to send everything from the form into the database
     return render_template('additem.html')
+
+
+@app.route('/edititem')
+def edit_item():
+    #needs to work with the form from additem.html
+    #also needs to send everything from the form into the database
+    return render_template('edititem.html')
 
 @app.route('/editbaker', methods = ['POST','GET'])
 def edit_baker():
