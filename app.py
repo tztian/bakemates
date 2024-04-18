@@ -154,6 +154,26 @@ def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
     return render_template('bakerprofile.html')
 
+@app.route('/custom_order')
+def custom_order():
+    return render_template('customorder.html')
+
+#CUSTOM ORDER FORM SUBMISSION
+@app.route('/submit_custom_order', methods=['POST'])
+def submit_custom_order():
+    # Extract form data to send to bakery somehow ??
+    item_name = request.form['item_name']
+    item_quantity = request.form['item_quantity']
+    item_date = request.form['item_date']
+    item_type = request.form['item_type']
+    dietary_restrictions = request.form['dietary-restrictions']
+    item_flavor = request.form['item_flavor']
+    item_description = request.form['item_description']
+    
+    # Process data (e.g., save to database, send email, etc.)
+    
+    # Redirect to another page after processing
+    return redirect(url_for('order_confirmation'))  # Redirect to an order confirmation page
 
 
 if __name__ == "__main__":
