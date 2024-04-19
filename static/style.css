@@ -30,7 +30,7 @@ body, html {
     padding: 10px;
     font-size: 14px;
     font-weight: 500;
-    background-color: rgb(247, 226, 248);
+    background-color: #ffe5ec;
     border: none;
     cursor: pointer;
     position: absolute;
@@ -40,7 +40,7 @@ body, html {
 }
 
 .nav-item:hover {
-    background-color: rgb(231, 199, 233);
+    background-color: #f7c1d0;
     color: rgb(4, 15, 45);
     transition: 0.5s;
 }
@@ -60,7 +60,7 @@ body, html {
     position: absolute;
     color: white;
     font-family: "Rampart One";
-    
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.392); /* horizontal-offset vertical-offset blur-radius shadow-color */
     top: 10%;
     font-size: 150px;
 }
@@ -69,6 +69,7 @@ body, html {
     color: white;
     font-family: "Dancing Script";
     text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.392); /* horizontal-offset vertical-offset blur-radius shadow-color */
     top: 46%;
     font-size: 50px;
 }
@@ -186,7 +187,7 @@ body, html {
     padding: 10px;
     font-size: 14px;
     font-weight: 500;
-    background-color: pink;
+    background-color: #ffe5ec;
     border: none;
     cursor: pointer;
     position: absolute;
@@ -200,7 +201,7 @@ body, html {
     padding: 20px;
     font-size: 24px;
     font-weight: 500;
-    background-color: pink;
+    background-color: #ffe5ec;
     border: none;
     cursor: pointer;
     position: absolute;
@@ -214,7 +215,7 @@ body, html {
     padding: 20px;
     font-size: 24px;
     font-weight: 500;
-    background-color: pink;
+    background-color: #ffe5ec;
     border: none;
     cursor: pointer;
     position: absolute;
@@ -228,7 +229,7 @@ body, html {
     padding: 10px;
     font-size: 14px;
     font-weight: 500;
-    background-color: pink;
+    background-color: #ffe5ec;
     border: none;
     cursor: pointer;
     position: absolute;
@@ -249,7 +250,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 
 .icon {
     padding: 10px;
-    background: pink;
+    background: #ffe5ec;
     color: white;
     min-width: 40px;
     text-align: center;
@@ -265,9 +266,8 @@ body {font-family: Arial, Helvetica, sans-serif;}
     border: 2px solid rgb(255, 30, 244);
 }
 
- /* Set a style for the submit button */
 .btn {
-    background-color: pink;
+    background-color: #ffe5ec;
     color: white;
     padding: 15px 20px;
     border: none;
@@ -285,7 +285,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 /******NAVIGATION BAR******/
 /* Navigation bar styles */
 #listings-nav {
-    background-color: rgb(247, 226, 248);
+    background-color: #ffe5ec;
     overflow: hidden;
     position: fixed;
     display: block;
@@ -387,7 +387,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 .item-container{
     height: 200%;
     width: 100%;
-    background: pink;
+    background: #ffe5ec;
     display: grid;
     align-items: flex-start;
     grid-template-columns: 1fr 1fr;
