@@ -10,6 +10,7 @@
     <!-- Baker Navigation Bar -->
     <!-- SHOULD ADD NAME OR LOGO ON THE LEFT OF THE BAR. already signed in so no reason to have those buttons-->
     <div id="listings-nav">
+        <a href="{{ url_for('logout') }}" class="listings-nav-item">Log Out</a>
         <a href="{{ url_for('baker_profile') }}" class="listings-nav-item">Profile</a>
         <a href="{{ url_for('add_item') }}" class="listings-nav-item">Post Item</a>
         <a href="{{ url_for('edit_baker') }}" class="listings-nav-item">Edit Profile</a>

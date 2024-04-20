@@ -45,7 +45,13 @@
         </div>
 
         <div class = switch-to-login>
-            <h2>new to bakemates?</h2>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                    <h2>{{ messages[0] }}</h2>
+            {% else %}
+                <h2>new to bakemates?</h2>
+            {% endif %}
+            {% endwith %}
         </div>
             <a href="{{ url_for('signup') }}" class="signin-btn-2">Sign Up</a>
     </div>
