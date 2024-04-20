@@ -61,7 +61,7 @@ def search():
 
             if len(items) > 0:
                 print(items)
-                return render_template("listings.html", items=items)
+                return render_template("listings.html", items=items, user = current_user)
             return render_template("error.html", msg="no results found")
         except Exception as e:
             print(e)
@@ -203,7 +203,7 @@ def listings():
     cur.execute("SELECT * From Item")
 
     items = cur.fetchall()
-    return render_template("listings.html", items = items)
+    return render_template("listings.html", items = items, user = current_user)
 
 @app.route('/displayItem/', methods=['POST','GET'])
 def display_item():
@@ -241,7 +241,7 @@ def filter_items():
     if len(items) == 0:
         print("here")
         return render_template('error.html', msg = 'No Sweet Treats Found ☹')
-    return render_template('listings.html', items = items)
+    return render_template('listings.html', items = items, user = current_user)
     
 @app.route('/clear', methods = ['POST'])
 def clear_filters():
@@ -377,6 +377,14 @@ def edit_baker():
 def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
     return render_template('bakerprofile.html')
+
+@app.route('/buyer_profile')
+def buyer_profile():
+    return render_template('buyerprofile.html')
+
+@app.route('/edit_buyer', methods=['GET', 'POST'])
+def edit_buyer():
+    return render_template('editbuyer.html')
 
 @app.route('/checkout')
 def checkout():

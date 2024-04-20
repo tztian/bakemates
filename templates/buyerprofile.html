@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates-Your Bakery</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Baker Navigation Bar -->
+    <!-- SHOULD ADD NAME OR LOGO ON THE LEFT OF THE BAR. already signed in so no reason to have those buttons-->
+    <div id="listings-nav">
+        <a href="{{ url_for('logout') }}" class="listings-nav-item">Log Out</a>
+        <a href="{{ url_for('edit_buyer') }}" class="listings-nav-item">Edit Profile</a>
+        <a href="{{ url_for('listings') }}" class="listings-nav-item">Home</a>
+        <!-- Add more links/buttons as needed -->
+    </div>
+
+    <!--need to decide what to show here-->
+    <!-- show the profile pic, about page, etc. should be the same as what the buyer sees when they click on the listings bakery page-->
+
+</body>
