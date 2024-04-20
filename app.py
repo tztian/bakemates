@@ -388,7 +388,10 @@ def edit_buyer():
 
 @app.route('/checkout')
 def checkout():
-    return render_template('checkout.html')
+    if current_user != None:
+        return render_template('checkout.html')
+    else:
+        return redirect(url_for('signin'))
 
 @app.route('/custom_order')
 def custom_order():
