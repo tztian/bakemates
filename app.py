@@ -15,6 +15,10 @@ password = None
 def index():
     return render_template('landing.html')
 
+@app.route('/home')
+def home():
+    return render_template('landing.html')
+
 @app.route('/search', methods=['POST', 'GET'])
 def search():
     global user_location
@@ -22,26 +26,40 @@ def search():
 
     if request.method == 'POST':
         try:
-            #user_location = request.form['location']
+            user_location = request.form['location']
             item_name = request.form['item']
 
             # also check for items containing one word/ substring of item name
             sub = item_name.split(' ')
-
+            if current_user == None:
+                con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
+            else:
+                con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+            
             cur = con.cursor(buffered=True)
 
             for s in sub:
-                cur.execute("SELECT * From Item WHERE ItemName LIKE CONCAT('%', CONCAT(%s, '%'))", [s])
-             
-            #cur.execute("SELECT * FROM Item WHERE ItemName = %s", [item_name])
+                # cur.execute("DROP VIEW IF EXISTS Results")
+                # cur.execute("CREATE VIEW Results AS SELECT * FROM Baker INNER JOIN User ON Baker.BakerID = User.UserID")
+                # cur.execute('''SELECT * From Item JOIN Results ON Item.BakerID = Results.BakerID 
+                #            WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%'))) 
+                #            AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))''', [s, user_location])
+
+                cur.execute('''SELECT *
+                                FROM Item
+                                JOIN (
+                                    SELECT *
+                                    FROM Baker
+                                    INNER JOIN User ON Baker.BakerID = User.UserID
+                                ) AS Results ON Item.BakerID = Results.BakerID
+                                WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))
+                                AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))''', [s, user_location])
+        
 
             items = cur.fetchall()  
-            print(items)
 
             if len(items) > 0:
-                print("here")
                 print(items)
-                print("here2")
                 return render_template("listings.html", items=items)
             return render_template("error.html", msg="no results found")
         except Exception as e:
@@ -92,7 +110,32 @@ def buyer_signup():
 @app.route('/signupbuyer', methods=['POST'])
 def signupbuyer():
     # get the form data
-    return redirect(url_for('listings'))
+    if request.method == 'POST':
+        global current_user
+        global password
+        current_user = request.form['usrnm']
+        password = request.form['psw']
+        email = request.form['email']
+        
+        with mysql.connector.connect(host="localhost", user="root", password = "", database = "bakemates") as con:
+            cur = con.cursor()
+            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
+            num = cur.fetchone()[0]
+            if num > 0:
+                return render_template("error.html", msg = "user already exists")
+
+            cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
+            cur.execute("FLUSH PRIVILEGES")
+            cur.execute("CREATE USER %s@'localhost' IDENTIFIED BY %s", (current_user, password))
+            cur.execute("GRANT 'Buyer' TO %s@'localhost'", (current_user,))
+            cur.execute("SET DEFAULT ROLE 'Buyer' TO %s@'localhost'", (current_user,))
+            #cur.execute("FLUSH PRIVILEGES")
+
+            cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
+            cur.execute("INSERT INTO Buyer(BuyerID) VALUES(%s)", (current_user,))
+            con.commit()
+
+        return redirect(url_for('listings'))
 
 @app.route('/bakersignup')
 def baker_signup():
@@ -101,12 +144,47 @@ def baker_signup():
 @app.route('/signupbaker', methods=['POST'])
 def signupbaker():
     # get the form data
-    return redirect(url_for('baker_home'))
+    if request.method == 'POST':
+        global current_user
+        global password
+        current_user = request.form['usrnm']
+        bakery_name = request.form['bname']
+        password = request.form['psw']
+        email = request.form['email']
+        
+        with mysql.connector.connect(host="localhost", user="root", password = "", database = "bakemates") as con:
+            cur = con.cursor()
+            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
+            num = cur.fetchone()[0]
+            if num > 0:
+                return render_template("error.html", msg = "user already exists")
 
+            cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
+            cur.execute("FLUSH PRIVILEGES")
+            cur.execute("CREATE USER %s@'localhost' IDENTIFIED BY %s", (current_user, password))
+            cur.execute("GRANT 'Buyer' TO %s@'localhost'", (current_user,))
+            cur.execute("SET DEFAULT ROLE 'Buyer' TO %s@'localhost'", (current_user,))
+            #cur.execute("FLUSH PRIVILEGES")
+
+            cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
+            cur.execute("INSERT INTO Baker(BakerID, BakeryName) VALUES(%s, %s)", (current_user, bakery_name))
+            con.commit()
+
+    return redirect(url_for('baker_home'))
 
 @app.route('/listings', methods = ['POST','GET'])
 def listings():
-    return render_template("listings.html")
+    if current_user == None:
+                con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
+    else:
+        con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+
+    cur = con.cursor(buffered=True)
+        
+    cur.execute("SELECT * From Item")
+
+    items = cur.fetchall()
+    return render_template("listings.html", items = items)
 
 @app.route('/displayItem/', methods=['POST','GET'])
 def display_item():
@@ -121,12 +199,34 @@ def display_item():
 
 @app.route('/filter', methods=['POST'])
 def filter_items():
-    category = request.form['category']
-    if category == 'All':
-        return redirect('/listings')
-    else:
-        # get items filtered by category from database
-        return render_template('listings.html')
+    categories = request.form.getlist('type')
+    items = []
+    for category in categories:
+        if category == 'All':
+            return redirect('/listings')
+        else:
+            # get items filtered by category from database
+            if current_user == None:
+                con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
+            else:
+                con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+
+            cur = con.cursor(buffered=True)
+            cur.execute("SELECT * From Item WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [category])
+            if category == "Bread":
+                cur.execute("SELECT * FROM Item WHERE (LOWER(Item.ItemName) LIKE'%muffin%' OR '%loaf%')")
+            if category == "Pastry":
+                cur.execute("SELECT * From Item WHERE (LOWER(Item.ItemName) LIKE'%pie%' OR '%tart%' OR '%puff%' OR CONCAT('%', 'roll%') OR CONCAT('%', 'eclair%')) ")
+                        
+        items += cur.fetchall() 
+    if len(items) == 0:
+        print("here")
+        return render_template('error.html', msg = 'No Sweet Treats Found ☹')
+    return render_template('listings.html', items = items)
+    
+@app.route('/clear', methods = ['POST'])
+def clear_filters():
+    return redirect('/listings')
 
 # Routes for baker-specific functionality
 @app.route('/bakerhome')
@@ -142,17 +242,30 @@ def baker_home():
         baker_name = cur.fetchone()
         if baker_name:
             baker_name = baker_name[0]
-        cur.execute('''SELECT ItemID, ItemName, ItemCount, ItemType, Flavor, DietaryRestriction,
+        cur.execute('''SELECT ItemID, ItemName, ItemCount, ItemType,
                     ItemDescription, Price FROM Item WHERE BakerID = %s''', (current_user,))
         rows = cur.fetchall()
 
     return render_template('bakerhome.html', baker_name = baker_name, rows = rows)
 
-@app.route('/additem')
+@app.route('/add_item')
 def add_item():
     #needs to work with the form from additem.html
     #also needs to send everything from the form into the database
     return render_template('additem.html')
+
+
+@app.route('/edit_item')
+def edit_item():
+    #needs to work with the form from additem.html
+    #also needs to send everything from the form into the database
+    return render_template('edititem.html')
+
+@app.route('/delete_item')
+def delete_item():
+    #needs to work with the form from additem.html
+    #also needs to send everything from the form into the database
+    return render_template('deleteitem.html')
 
 @app.route('/editbaker', methods = ['POST','GET'])
 def edit_baker():
@@ -172,7 +285,7 @@ def edit_baker():
                 #Combine a timestamp with the filename for a unique filename to prevent overwrites
                 timestamp = int(time.time())
                 unique_filename = f"{timestamp}_{bakery_image.filename}"
-                bakery_image_path = os.path.join('./images/bakers', unique_filename)
+                bakery_image_path = os.path.join('./static/bakers', unique_filename)
                 bakery_image.save(bakery_image_path)
                 
                 # Get the current image path from the database
@@ -248,6 +361,30 @@ def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
     return render_template('bakerprofile.html')
 
+@app.route('/checkout')
+def checkout():
+    return render_template('checkout.html')
+
+@app.route('/custom_order')
+def custom_order():
+    return render_template('customorder.html')
+
+#CUSTOM ORDER FORM SUBMISSION
+@app.route('/submit_custom_order', methods=['POST'])
+def submit_custom_order():
+    # Extract form data to send to bakery somehow ??
+    item_name = request.form['item_name']
+    item_quantity = request.form['item_quantity']
+    item_date = request.form['item_date']
+    item_type = request.form['item_type']
+    dietary_restrictions = request.form['dietary-restrictions']
+    item_flavor = request.form['item_flavor']
+    item_description = request.form['item_description']
+    
+    # Process data (e.g., save to database, send email, etc.)
+    
+    # Redirect to another page after processing
+    return redirect(url_for('order_confirmation'))  # Redirect to an order confirmation page
 
 
 if __name__ == "__main__":

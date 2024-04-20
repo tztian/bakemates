@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates-Custom</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates - Find Bakers Near You</title>
+    <!-- STYLE INFO -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rampart+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<style>
+textarea {
+  resize: none;
+}
+</style>
+<body>
+    <!-- form to order custom item-->
+    <div class = custom-order-container>
+        <br><br><br>
+        <div class = custom-order-title>Create your custom order!</div>
+        <div class="custom-order-form">
+            <form action="/submit_custom_order" method="post">
+                <label for="bakery-name">Bakery Name:</label>
+                <input type="text" id="bakery-name" name="bakery_name" required>
+                <br>
+                <label for="item-quantity">Quantity:</label><br>
+                <input type="number" id="item-quantity" name="item_quantity" required>
+                <br>
+                <label for="item-date">Date you would like it by:</label><br>
+                <input type="date" id="item-date" name="item_date" required>
+                <br>
+                <label for="item-type">Item Type:</label><br>
+                <input type="text" id="item-type" name="item_type" required>
+                <br>
+                <label for="dietary-restrictions">Dietary Restrictions:</label><br>
+                <input type="text" id="dietary-restrictions" name="dietary_restrictions" required>
+                <br>
+                <label for="item-flavor">Item Flavor:</label><br>
+                <input type="text" id="item-flavor" name="item_flavor" required>
+                <br>
+                <label for="item-description">Please add any details:</label><br>
+                <textarea id="item-description" name="item_description" rows="4" cols="50"></textarea> 
+                <br><br><br>
+                <button type="submit">Submit order request!</button>
+                <!-- should redirect to the buyers orders page and show that its pending then show accepted or rejected -->
+                <!-- also gotta send contact info to the bakery. so maybe rather than a page to see its status we just say the baker will email you??-->
+            </form>
+        </div>
+
+      
+    </div>
+
+</body>
