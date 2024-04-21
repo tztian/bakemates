@@ -12,23 +12,25 @@
         width: 50%;
         margin: auto;
         border-collapse: collapse;
-        border: 1px solid #ddd;
+        border: 1px solid #f0c0cd;
+        background-color: #ffe5ec;
     }
 
     th, td {
         padding: 12px;
         text-align: left;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #f0c0cd;
+        background-color: #ffe5ec;
     }
 
     th {
-        background-color: #f2f2f2;
+        background-color: #ffe5ec;
     }
 
-    .edit-btn {
+    .edit2-btn {
         display: inline-block;
-        background-color: #007bff;
-        color: #fff;
+        background-color: #ffe5ec;
+        color: #000000;
         padding: 8px 12px;
         text-decoration: none;
         border-radius: 5px;
@@ -36,7 +38,7 @@
     }
 
     .edit-btn:hover {
-        background-color: #0056b3;
+        background-color: #ff8cea;
     }
 
     .edit-btn-container {
@@ -62,11 +64,12 @@
     }
 
     .listing-table th {
-        background-color: #f2f2f2;
+        background-color: #ffe5ec;
     }
 
 
 h1 {
+    top:20%;
     font-family: 'Rampart One', cursive; /* Ensure correct spelling and fallback */
 }
 </style>
@@ -80,14 +83,7 @@ h1 {
         </div>
         
         <!-- Welcome Message -->
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
+       <h1><br></h1> <!-- makes it space right -->
         <h1>Welcome to {{ baker_info[1] }}!</h1>
         <h2>Your Profile</h2>
         <table>
@@ -130,7 +126,7 @@ h1 {
             </table>
         
             <div class="edit-btn-container">
-                <a href="/edit_baker" class="edit-btn">Edit Profile</a>
+                <a href="/edit_baker" class="edit2-btn">Edit Profile</a>
             </div>
 
         <!-- Listings Section -->
