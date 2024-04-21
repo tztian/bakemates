@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+load_dotenv()
 from flask import Flask, render_template, request, redirect, url_for
 import mysql as sql
 import mysql.connector
@@ -425,7 +427,7 @@ def execute():
         cur.execute(update_order, data_update)
         con.commit()
         cur.close()
-        conn.close()
+        con.close()
         return render_template("landing.html")
     else:
         #put error code here
