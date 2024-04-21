@@ -1,11 +1,11 @@
 from dotenv import load_dotenv
 load_dotenv()
 import mysql as sql
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import mysql.connector
 import os
 import paypalrestsdk
-import time
+import datetime
 
 # create flask application
 app = Flask(__name__, static_url_path='/static')
@@ -21,11 +21,9 @@ paypal_client_id = os.getenv('PAYPAL_CLIENT_ID')
 paypal_client_secret = os.getenv('PAYPAL_CLIENT_SECRET')
 paypalrestsdk.configure({
     "mode": "sandbox",
-    "client_id": "PAYPAL_CLIENT_ID",
-    "client_secret": "PAYPAL_CLIENT_SECRET"
+    "client_id": paypal_client_id,
+    "client_secret": paypal_client_secret
 })
-
-
 
 @app.route('/')
 def index():
@@ -315,7 +313,7 @@ def edit_baker():
 
             if bakery_image and bakery_image.filename != '':
                 #Combine a timestamp with the filename for a unique filename to prevent overwrites
-                timestamp = int(time.time())
+                timestamp = int(datetime.datetime.now())
                 unique_filename = f"{timestamp}_{bakery_image.filename}"
                 bakery_image_path = os.path.join('./static/bakers', unique_filename)
                 bakery_image.save(bakery_image_path)
@@ -390,68 +388,43 @@ def edit_baker():
 
 @app.route('/pay', methods=['POST'])
 def pay():
+    data = request.get_json()
+    order_id = data['orderID']
+    payer_id = data['payerID']
+    payment_id = data['paymentID']
+    item_id = data['item_id']
+    total = data['total']
+    notes = data['notes']
+
     con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
     cur = con.cursor()
-    # Extracting form data from the checkout page
-    name = request.form['firstname']
-    buyer_email = request.form['email']
-    address = request.form['address']
-    city = request.form['city']
-    state = request.form['state']
-    zip_code = request.form['zip']
-    item_id = request.form['item_id']
-    total = request.form['item_id']
 
-    payment = paypalrestsdk.Payment({
-        "intent": "sale",
-        "payer": {
-            "payment_method": "paypal"},
-        "redirect_urls": {
-            "return_url": "http://localhost:5000/payment/execute",
-            "cancel_url": "http://localhost:5000/payment/cancel"},
-        "transactions": [{
-            "amount": {
-                "total": total,
-                "currency": "USD"},
-            "description": "Purchase from My Shop"}]})
+    add_order = ("INSERT INTO Orders (OrderID, ItemID, BuyerID, Notes, Status, Time, Cost) "
+                 "VALUES (%s, %s, %s, %s, %s, %s, %s)")
+    data_order = (order_id, item_id, current_user, notes, 'Pending', datetime.datetime.now(), total)
+    cur.execute(add_order, data_order)
+    con.commit()
+    cur.close()
+    con.close()
 
-    if payment.create():
-        #do this later
-        order_id = str("Put an order ID")
-        add_order = ("INSERT INTO Orders "
-                     "(OrderID, BuyerID, Notes, Status, Time, Cost) "
-                     "VALUES (%s, %s, %s, %s, %s, %s)")
-        data_order = (order_id, buyer_email, 'Payment initiated', 'Initiated', time.datetime.now(), total)
-        cur.execute(add_order, data_order)
-        con.commit()
-        cur.close()
-        con.close()
-
-        for link in payment.links:
-            if link.rel == "approval_url":
-                return jsonify({'approval_url': link.href}), 200
-    else:
-        return jsonify({'error': payment.error}), 500
+    return jsonify({'success': True}), 200
 
 @app.route('/payment/execute', methods=['GET'])
 def execute():
-    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
-    cur = con.cursor()
     payment_id = request.args.get('paymentId')
     payer_id = request.args.get('PayerID')
-    payment = paypalrestsdk.Payment.find(payment_id)
 
-    if payment.execute({"payer_id": payer_id}):
-        update_order = ("UPDATE Orders SET Status = %s WHERE OrderID = %s")
-        data_update = ('Completed', payment_id)
-        cur.execute(update_order, data_update)
-        con.commit()
-        cur.close()
-        con.close()
-        return render_template("landing.html")
-    else:
-        #put error code here
-        return ""
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+
+    update_order = ("UPDATE Orders SET Status = %s WHERE OrderID = %s")
+    data_update = ('Paid', payment_id)
+    cur.execute(update_order, data_update)
+    con.commit()
+    cur.close()
+    con.close()
+
+    return render_template("landing.html")
 
 
 
@@ -480,7 +453,7 @@ def checkout():
     con.close()
     
     if item:
-        return render_template('checkout.html', item=item)
+        return render_template('checkout.html', client_id=paypal_client_id, item=item)
     else:
         return "Item not found", 404
 
