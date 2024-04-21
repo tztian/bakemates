@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_bcrypt import Bcrypt
 import mysql.connector
 import os
 import time
@@ -6,6 +7,7 @@ import time
 # create flask application
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'secret_key'
+bcrypt = Bcrypt(app)
 
 # Global variable to store the user's information
 user_location = None
@@ -84,24 +86,21 @@ def signin():
 @app.route('/signin', methods=['POST', 'GET'])
 def signin_to_page():
     if request.method == 'POST':
-        global current_user 
-        global password
+        global current_user
+        global password 
         current_user = request.form['usrnm']
-        password = request.form['psw']
+        unhashed_password = request.form['psw']
 
         with mysql.connector.connect(host="localhost",user='root',password='',database="bakemates") as con:
             cur = con.cursor()
-            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
-            num = cur.fetchone()[0]
-            if num < 1:
+            cur.execute("SELECT Password FROM User WHERE UserID = %s", (current_user,))
+            password = cur.fetchone()[0]
+            if len(password) == 0:
                 flash('User does not exist')
                 current_user = None
                 password = None
                 return redirect(url_for('signin'))
-            
-            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s AND Password = %s", (current_user, password))
-            num = cur.fetchone()[0]
-            if num < 1:
+            if not bcrypt.check_password_hash(password, unhashed_password):
                 flash('Password incorrect')
                 current_user = None
                 password = None
@@ -121,7 +120,7 @@ def buyer_signup():
         global current_user
         global password
         current_user = request.form['usrnm']
-        password = request.form['psw']
+        password = bcrypt.generate_password_hash(request.form['psw']).decode('utf-8')
         email = request.form['email']
         
         with mysql.connector.connect(host="localhost",user="root",password="",database="bakemates") as con:
@@ -155,7 +154,7 @@ def baker_signup():
         global password
         current_user = request.form['usrnm']
         bakery_name = request.form['bname']
-        password = request.form['psw']
+        password = bcrypt.generate_password_hash(request.form['psw']).decode('utf-8')
         email = request.form['email']
         
         with mysql.connector.connect(host="localhost", user="root", password = "", database = "bakemates") as con:
@@ -196,7 +195,7 @@ def listings():
     if current_user == None:
                 con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
     else:
-        con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+        con = mysql.connector.connect(host="localhost",user=current_user,password=password,database = "bakemates")
 
     cur = con.cursor(buffered=True)
         
@@ -380,11 +379,42 @@ def baker_profile():
 
 @app.route('/buyer_profile')
 def buyer_profile():
-    return render_template('buyerprofile.html')
+    with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM User WHERE UserID = %s", (current_user,))
+        user_info = cur.fetchall()[0]
+        cur.execute("SELECT * FROM Buyer WHERE BuyerID = %s", (current_user,))
+        buyer_info = cur.fetchall()[0]
+    return render_template('buyerprofile.html', user = current_user, user_info = user_info, buyer_info = buyer_info)
 
 @app.route('/edit_buyer', methods=['GET', 'POST'])
 def edit_buyer():
-    return render_template('editbuyer.html')
+    if request.method == "POST":
+        name = request.form['name']
+        email = request.form['email']
+        phone = request.form['phone']
+        address = request.form['address']
+        dietary_restrictions = request.form['dietary_restrictions']
+        bio = request.form['bio']
+
+        with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+            cur = con.cursor()
+            if name:
+                cur.execute('UPDATE User SET Name = %s WHERE UserID = %s', (name, current_user))
+            if email:
+                cur.execute('UPDATE User SET Email = %s WHERE UserID = %s', (email, current_user))
+            if phone:
+                cur.execute('UPDATE User SET Phone = %s WHERE UserID = %s', (phone, current_user))
+            if address:
+                cur.execute('UPDATE User SET Address = %s WHERE UserID = %s', (address, current_user))
+            if dietary_restrictions:
+                cur.execute('UPDATE Buyer SET DietaryRestrictions = %s WHERE BuyerID = %s', (dietary_restrictions, current_user))
+            if bio:
+                cur.execute('UPDATE Buyer SET Bio = %s WHERE BuyerID = %s', (bio, current_user))
+            con.commit()
+        return redirect(url_for('buyer_profile'))
+        
+    return render_template('editbuyer.html', user = current_user)
 
 @app.route('/checkout')
 def checkout():
