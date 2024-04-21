@@ -521,25 +521,36 @@ def submit_custom_order():
 
 @app.route('/bakery/<bakery_id>')
 def bakery(bakery_id):
+
     # Connect to the database
-    if current_user == None:
-        con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
-    else:
-        con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+    db_user = "guest" if current_user is None else current_user
+    db_password = "" if current_user is None else password
+    con = mysql.connector.connect(host="localhost", user=db_user, password=db_password, database="bakemates")
 
     cur = con.cursor()
-    
-    # SQL query to fetch all items for a specific bakery
+
+    # Fetch all items for a specific bakery and the bakery name, description, and image path
     cur.execute('''
-        SELECT Item.ItemID, Item.ItemName, Item.ItemCount, Item.ItemType, 
-                Item.ItemDescription, Item.Price 
+        SELECT Item.ItemID, Item.ItemName, Item.ItemCount, Item.ItemType, Item.ItemDescription, 
+               Item.GlutenFree, Item.Vegan, Item.DairyFree, Item.NutFree, Item.Price, Item.ImagePath, 
+               Baker.BakeryName, Baker.Description, Baker.ImagePath
         FROM Item 
         JOIN Baker ON Item.BakerID = Baker.BakerID
         WHERE Baker.BakerID = %s
     ''', (bakery_id,))
     items = cur.fetchall()
+    con.commit()
 
-    return render_template('bakerylistings.html', bakery_id=bakery_id, items=items, user=current_user)
+    bakery_details = {
+        "name": items[0][11],
+        "description": items[0][12],
+        "image_path": items[0][13]
+    }
+
+    cur.close()
+    con.close()
+
+    return render_template('bakerylistings.html', bakery=bakery_details, items=items, user=current_user)
 
 if __name__ == "__main__":
     app.run(debug=True)
