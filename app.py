@@ -323,11 +323,11 @@ def edit_baker():
                 cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
                 
                 # Get the current image path from the database
-                '''cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
+                cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
                 existing_image = cur.fetchone()
                 existing_image_path = existing_image[0] if existing_image else None
                 if existing_image_path:
-                    os.remove(existing_image_path)'''
+                    os.remove(existing_image_path)
 
             # Update statement for bakery details
             if name:
