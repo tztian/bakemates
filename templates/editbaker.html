@@ -99,7 +99,7 @@
     <div id="edit-baker-form">
         <br><br><br><br><br><br>
         <h1 align="center">Edit Baker Profile</h1>
-        <form action="/edit_baker" method="post">
+        <form action="/edit_baker" method="post" enctype="multipart/form-data">
 
             <label for="name">Name:</label>
             <input type="text" id="name" name="name">
@@ -116,7 +116,7 @@
             <label for="description">Description:</label>
             <textarea id="description" name="description"></textarea>
             <label for="image">Image:</label>
-            <input type="file" id="image" name="image" enctype="multipart/form-data" accept="image/png, image/jpeg">
+            <input type="file" id="image" name="image" accept="image/png, image/jpeg">
         
             <div class="btn-container">
                 <input type="submit" value="Update Profile">

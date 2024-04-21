@@ -107,8 +107,8 @@ def signin_to_page():
         with mysql.connector.connect(host="localhost",user='root',password='',database="bakemates") as con:
             cur = con.cursor()
             cur.execute("SELECT Password FROM User WHERE UserID = %s", (current_user,))
-            password = cur.fetchone()[0]
-            if len(password) == 0:
+            password = cur.fetchone()
+            if not password:
                 flash('User does not exist')
                 current_user = None
                 password = None
@@ -183,8 +183,8 @@ def baker_signup():
             cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
             cur.execute("FLUSH PRIVILEGES")
             cur.execute("CREATE USER %s@'localhost' IDENTIFIED BY %s", (current_user, password))
-            cur.execute("GRANT 'Buyer' TO %s@'localhost'", (current_user,))
-            cur.execute("SET DEFAULT ROLE 'Buyer' TO %s@'localhost'", (current_user,))
+            cur.execute("GRANT 'Baker' TO %s@'localhost'", (current_user,))
+            cur.execute("SET DEFAULT ROLE 'Baker' TO %s@'localhost'", (current_user,))
             #cur.execute("FLUSH PRIVILEGES")
 
             cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
@@ -300,8 +300,7 @@ def delete_item():
 @app.route('/edit_baker', methods = ['POST','GET'])
 def edit_baker():
     #edit what is displayed to buyers when they look at the bakery profile
-    try:
-        con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
         cur = con.cursor()
 
         if request.method == 'POST':
@@ -317,18 +316,18 @@ def edit_baker():
 
             if bakery_image and bakery_image.filename != '':
                 #Combine a timestamp with the filename for a unique filename to prevent overwrites
-                timestamp = int(datetime.datetime.now())
+                timestamp = int(datetime.datetime.now().timestamp())
                 unique_filename = f"{timestamp}_{bakery_image.filename}"
                 bakery_image_path = os.path.join('./static/bakers', unique_filename)
                 bakery_image.save(bakery_image_path)
                 cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
                 
                 # Get the current image path from the database
-                cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
+                '''cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
                 existing_image = cur.fetchone()
                 existing_image_path = existing_image[0] if existing_image else None
                 if existing_image_path:
-                    os.remove(existing_image_path)
+                    os.remove(existing_image_path)'''
 
             # Update statement for bakery details
             if name:
@@ -351,25 +350,6 @@ def edit_baker():
             con.commit()
                 
             return redirect(url_for('baker_home'))
-
-        else:
-            cur.execute("SELECT BakeryName, Description, Website, ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
-            baker_data = cur.fetchone()
-            if baker_data:  
-                baker_info = {
-                    'name': baker_data[0],
-                    'description': baker_data[1],
-                    'website': baker_data[2],
-                    'image_path': baker_data[3]
-                }
-            else:
-                baker_info = {'error': 'No bakery information found for this user.'}
-    except mysql.connector.Error as err:
-        print("Error: ", err)
-        baker_info = {'error': 'Database connection or execution issue'}
-    finally:
-        cur.close()
-        con.close()
         
     return render_template('editbaker.html')
 
@@ -448,7 +428,7 @@ def edit_buyer():
                 cur.execute('UPDATE Buyer SET Bio = %s WHERE BuyerID = %s', (bio, current_user))
             con.commit()
         return redirect(url_for('buyer_profile'))
-        
+    
     return render_template('editbuyer.html', user = current_user)
 
 @app.route('/checkout')
