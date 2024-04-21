@@ -424,7 +424,7 @@ def execute():
     cur.close()
     con.close()
 
-    return render_template("landing.html")
+    return render_template("buyerprofile.html")
 
 
 
