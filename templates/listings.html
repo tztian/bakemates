@@ -12,9 +12,14 @@
 <body>
     <!-- Navigation Bar -->
     <div id="listings-nav">
+        {% if user == None %}
         <a href="{{ url_for('signin') }}" class="listings-nav-item">Sign In</a>
         <a href="{{ url_for('signup') }}" class="listings-nav-item">Sign Up</a>
+        {% else %}
+        <a href="{{ url_for('logout') }}" class="listings-nav-item">Log Out</a>
         <a href="{{ url_for('custom_order') }}" class="listings-nav-item">Place Custom Order</a>
+        <a href="{{ url_for('buyer_profile') }}" class="listings-nav-item">Hello {{ user }}!!</a>
+        {% endif %}
         <!-- Filters Section -->
         <div class="box">
             <a href="#popup-box" >Filter Results</a>

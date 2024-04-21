@@ -1,13 +1,15 @@
 from dotenv import load_dotenv
 load_dotenv()
-from flask import Flask, render_template, request, redirect, url_for
 import mysql as sql
+from flask import Flask, render_template, request, redirect, url_for, flash
 import mysql.connector
 import os
 import paypalrestsdk
 import time
 
+# create flask application
 app = Flask(__name__, static_url_path='/static')
+app.config['SECRET_KEY'] = 'secret_key'
 
 # Global variable to store the user's information
 user_location = None
@@ -74,7 +76,7 @@ def search():
 
             if len(items) > 0:
                 print(items)
-                return render_template("listings.html", items=items)
+                return render_template("listings.html", items=items, user = current_user)
             return render_template("error.html", msg="no results found")
         except Exception as e:
             print(e)
@@ -102,12 +104,23 @@ def signin_to_page():
         current_user = request.form['usrnm']
         password = request.form['psw']
 
-        with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
+        with mysql.connector.connect(host="localhost",user='root',password='',database="bakemates") as con:
             cur = con.cursor()
+            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
+            num = cur.fetchone()[0]
+            if num < 1:
+                flash('User does not exist')
+                current_user = None
+                password = None
+                return redirect(url_for('signin'))
+            
             cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s AND Password = %s", (current_user, password))
             num = cur.fetchone()[0]
-            if num != 1:
-                return render_template("error.html")
+            if num < 1:
+                flash('Password incorrect')
+                current_user = None
+                password = None
+                return redirect(url_for('signin'))
             
             cur.execute("SELECT COUNT(*) FROM Buyer WHERE BuyerID = %s", (current_user,))
             num = cur.fetchone()[0]
@@ -117,13 +130,8 @@ def signin_to_page():
                 return redirect(url_for('baker_home'))
 
 
-@app.route('/buyersignup')
+@app.route('/buyersignup', methods=['GET', 'POST'])
 def buyer_signup():
-    return render_template('buyersignup.html')
-
-@app.route('/signupbuyer', methods=['POST'])
-def signupbuyer():
-    # get the form data
     if request.method == 'POST':
         global current_user
         global password
@@ -131,12 +139,15 @@ def signupbuyer():
         password = request.form['psw']
         email = request.form['email']
         
-        with mysql.connector.connect(host="localhost", user="root", password = "", database = "bakemates") as con:
+        with mysql.connector.connect(host="localhost",user="root",password="",database="bakemates") as con:
             cur = con.cursor()
             cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
             num = cur.fetchone()[0]
             if num > 0:
-                return render_template("error.html", msg = "user already exists")
+                flash('User already exists')
+                current_user = None
+                password = None
+                return redirect(url_for('buyer_signup'))
 
             cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
             cur.execute("FLUSH PRIVILEGES")
@@ -148,16 +159,12 @@ def signupbuyer():
             cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
             cur.execute("INSERT INTO Buyer(BuyerID) VALUES(%s)", (current_user,))
             con.commit()
-
         return redirect(url_for('listings'))
 
-@app.route('/bakersignup')
-def baker_signup():
-    return render_template('bakersignup.html')
+    return render_template('buyersignup.html')
 
-@app.route('/signupbaker', methods=['POST'])
-def signupbaker():
-    # get the form data
+@app.route('/bakersignup', methods=['GET', 'POST'])
+def baker_signup():
     if request.method == 'POST':
         global current_user
         global password
@@ -171,7 +178,10 @@ def signupbaker():
             cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
             num = cur.fetchone()[0]
             if num > 0:
-                return render_template("error.html", msg = "user already exists")
+                flash('User already exists')
+                current_user = None
+                password = None
+                return redirect(url_for('baker_signup'))
 
             cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
             cur.execute("FLUSH PRIVILEGES")
@@ -183,8 +193,18 @@ def signupbaker():
             cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
             cur.execute("INSERT INTO Baker(BakerID, BakeryName) VALUES(%s, %s)", (current_user, bakery_name))
             con.commit()
+            return redirect(url_for('baker_home'))
+        
+    return render_template('bakersignup.html')
 
-    return redirect(url_for('baker_home'))
+@app.route('/logout')
+def logout():
+    global current_user
+    global password
+    current_user = None
+    password = None
+
+    return redirect(url_for('home'))
 
 @app.route('/listings', methods = ['POST','GET'])
 def listings():
@@ -198,7 +218,7 @@ def listings():
     cur.execute("SELECT * From Item")
 
     items = cur.fetchall()
-    return render_template("listings.html", items = items)
+    return render_template("listings.html", items = items, user = current_user)
 
 @app.route('/displayItem/', methods=['POST','GET'])
 def display_item():
@@ -236,7 +256,7 @@ def filter_items():
     if len(items) == 0:
         print("here")
         return render_template('error.html', msg = 'No Sweet Treats Found ☹')
-    return render_template('listings.html', items = items)
+    return render_template('listings.html', items = items, user = current_user)
     
 @app.route('/clear', methods = ['POST'])
 def clear_filters():
@@ -250,17 +270,15 @@ def baker_home():
     #all items from the database for that bakery
     #return render_template('bakerhome.html', bakery_name=bakery_name, items=items)
 
-    with mysql.connector.connect(host="localhost", user=current_user, password = password, database = "bakemates") as con:
+    with mysql.connector.connect(host="localhost",user=current_user,password = password,database = "bakemates") as con:
         cur = con.cursor()
-        cur.execute("SELECT Name FROM User WHERE UserID = %s", (current_user,))
-        baker_name = cur.fetchone()
-        if baker_name:
-            baker_name = baker_name[0]
+        cur.execute('''SELECT BakeryName FROM Baker WHERE BakerID = %s''', (current_user,))
+        bakery_name = cur.fetchone()[0]
         cur.execute('''SELECT ItemID, ItemName, ItemCount, ItemType,
                     ItemDescription, Price FROM Item WHERE BakerID = %s''', (current_user,))
         rows = cur.fetchall()
 
-    return render_template('bakerhome.html', baker_name = baker_name, rows = rows)
+    return render_template('bakerhome.html', bakery_name = bakery_name, rows = rows)
 
 @app.route('/add_item')
 def add_item():
@@ -442,6 +460,14 @@ def execute():
 def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
     return render_template('bakerprofile.html')
+
+@app.route('/buyer_profile')
+def buyer_profile():
+    return render_template('buyerprofile.html')
+
+@app.route('/edit_buyer', methods=['GET', 'POST'])
+def edit_buyer():
+    return render_template('editbuyer.html')
 
 @app.route('/checkout')
 def checkout():
