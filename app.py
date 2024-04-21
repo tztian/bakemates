@@ -379,10 +379,41 @@ def baker_profile():
 
 @app.route('/buyer_profile')
 def buyer_profile():
-    return render_template('buyerprofile.html')
+    with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM User WHERE UserID = %s", (current_user,))
+        user_info = cur.fetchall()[0]
+        cur.execute("SELECT * FROM Buyer WHERE BuyerID = %s", (current_user,))
+        buyer_info = cur.fetchall()[0]
+    return render_template('buyerprofile.html', user = current_user, user_info = user_info, buyer_info = buyer_info)
 
 @app.route('/edit_buyer', methods=['GET', 'POST'])
 def edit_buyer():
+    if request.method == "POST":
+        name = request.form['name']
+        email = request.form['email']
+        phone = request.form['phone']
+        address = request.form['address']
+        dietary_restrictions = request.form['dietary_restrictions']
+        bio = request.form['bio']
+
+        with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+            cur = con.cursor()
+            if name:
+                cur.execute('UPDATE User SET Name = %s WHERE UserID = %s', (name, current_user))
+            if email:
+                cur.execute('UPDATE User SET Email = %s WHERE UserID = %s', (email, current_user))
+            if phone:
+                cur.execute('UPDATE User SET Phone = %s WHERE UserID = %s', (phone, current_user))
+            if address:
+                cur.execute('UPDATE User SET Address = %s WHERE UserID = %s', (address, current_user))
+            if dietary_restrictions:
+                cur.execute('UPDATE Buyer SET DietaryRestrictions = %s WHERE BuyerID = %s', (dietary_restrictions, current_user))
+            if bio:
+                cur.execute('UPDATE Buyer SET Bio = %s WHERE BuyerID = %s', (bio, current_user))
+            con.commit()
+        return redirect(url_for('buyer_profile'))
+        
     return render_template('editbuyer.html')
 
 @app.route('/checkout')
