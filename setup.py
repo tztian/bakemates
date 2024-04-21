@@ -39,7 +39,7 @@ cur.execute('''CREATE TABLE User
                 Name VARCHAR(50),
                 Phone VARCHAR(50),
                 Address TEXT,
-                Password CHAR(50))''')
+                Password CHAR(250))''')
 
 # Buyer table
 cur.execute('''CREATE TABLE Buyer
