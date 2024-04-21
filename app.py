@@ -519,23 +519,27 @@ def submit_custom_order():
     # Redirect to another page after processing
     return redirect(url_for('order_confirmation'))  # Redirect to an order confirmation page
 
-@app.route('/bakery/<bakery_name>')
-def bakery(bakery_name):
+@app.route('/bakery/<bakery_id>')
+def bakery(bakery_id):
     # Connect to the database
-    with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
-        cur = con.cursor()
-        
-        # SQL query to fetch all items for a specific bakery
-        cur.execute('''
-            SELECT Item.ItemID, Item.ItemName, Item.ItemCount, Item.ItemType, 
-                   Item.ItemDescription, Item.Price 
-            FROM Item 
-            JOIN Baker ON Item.BakerID = Baker.BakerID
-            WHERE Baker.BakeryName = %s
-        ''', (bakery_name,))
-        items = cur.fetchall()
+    if current_user == None:
+        con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
+    else:
+        con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+
+    cur = con.cursor()
     
-    return render_template('bakerylistings.html', bakery_name=bakery_name, items=items, user=current_user)
+    # SQL query to fetch all items for a specific bakery
+    cur.execute('''
+        SELECT Item.ItemID, Item.ItemName, Item.ItemCount, Item.ItemType, 
+                Item.ItemDescription, Item.Price 
+        FROM Item 
+        JOIN Baker ON Item.BakerID = Baker.BakerID
+        WHERE Baker.BakerID = %s
+    ''', (bakery_id,))
+    items = cur.fetchall()
+
+    return render_template('bakerylistings.html', bakery_id=bakery_id, items=items, user=current_user)
 
 if __name__ == "__main__":
     app.run(debug=True)
