@@ -315,6 +315,13 @@ def edit_baker():
             bakery_image = request.files['image']
 
             if bakery_image and bakery_image.filename != '':
+                # Get the current image path from the database
+                cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
+                existing_image = cur.fetchone()
+                existing_image_path = existing_image[0] if existing_image else None
+                if existing_image_path:
+                    os.remove(existing_image_path)
+                
                 #Combine a timestamp with the filename for a unique filename to prevent overwrites
                 timestamp = int(datetime.datetime.now().timestamp())
                 unique_filename = f"{timestamp}_{bakery_image.filename}"
@@ -322,12 +329,6 @@ def edit_baker():
                 bakery_image.save(bakery_image_path)
                 cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
                 
-                # Get the current image path from the database
-                cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
-                existing_image = cur.fetchone()
-                existing_image_path = existing_image[0] if existing_image else None
-                if existing_image_path:
-                    os.remove(existing_image_path)
 
             # Update statement for bakery details
             if name:
