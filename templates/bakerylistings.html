@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates-Bakery</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rampart+One&display=swap" rel="stylesheet">
+</head>
+<style>
+    table {
+    width: 100%; /* Full width tables */
+    border-collapse: collapse; 
+}
+table, th, td {
+    border: 1px solid black;
+}
+h1 {
+    font-family: 'Rampart One', cursive; 
+}
+</style>
+<body>
+    <!-- Navigation Bar -->
+    <div id="listings-nav">
+        {% if user == None %}
+        <a href="{{ url_for('signin') }}" class="listings-nav-item">Sign In</a>
+        <a href="{{ url_for('signup') }}" class="listings-nav-item">Sign Up</a>
+        {% else %}
+        <a href="{{ url_for('logout') }}" class="listings-nav-item">Log Out</a>
+        <a href="{{ url_for('custom_order') }}" class="listings-nav-item">Place Custom Order</a>
+        {% endif %}
+        <!-- Filters Section -->
+        <div class="box">
+            <a href="#popup-box" >Filter Results</a>
+        </div>
+        <div id="popup-box" class="modal">
+            <div class="filters">
+                <!-- Form for filtering items -->
+                <form action="/filter" method="POST">
+                    <div class="filter-item">
+                        <input type="checkbox" id="type-dropdown">
+                        <label class="dropdown-label" for="type-dropdown">Type of Treat</label>
+                        <div class="dropdown-content">
+                            <label><input type="checkbox" name="type" value="Pastry"> Pastry</label>
+                            <label><input type="checkbox" name="type" value="Bread"> Bread</label>
+                            <label><input type="checkbox" name="type" value="Cake"> Cakes</label>
+                            <label><input type="checkbox" name="type" value="Cookie"> Cookies</label>
+                            <label><input type="checkbox" name="type" value="Ice Cream"> Ice Cream</label>
+                            <!-- Add more options as needed -->
+                            <!-- would be cool if we could figure out how to auto add these based on existing items in db -->
+                        </div>
+                    </div>
+                    <div class="filter-item">
+                        <input type="checkbox" id="diet-dropdown">
+                        <label class="dropdown-label" for="diet-dropdown">Dietary Restrictions</label>
+                        <div class="dropdown-content">
+                            <label><input type="checkbox" name="diet" value="GlutenF"> Gluten Free</label>
+                            <label><input type="checkbox" name="diet" value="GlutenF"> Dairy Free</label>
+                            <label><input type="checkbox" name="diet" value="Vegan"> Vegan</label>
+                            <label><input type="checkbox" name="diet" value="GlutenF"> Nut Free</label>
+                            <!-- Add more options as needed -->
+                        </div>
+                    </div>
+                <button type="apply">Apply Filters</button>
+                </form>
+                <form action = "/clear" method="POST">
+                    <button type="apply">Clear Filters</button></form>
+                <a
+                    href="#"
+                    style="
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        color: #fe0606;
+                        font-size: 30px;
+                        text-decoration: none;
+                    "
+                    >&times;</a
+                >
+            </div>
+        </div>
+        <!-- Add more links/buttons as needed -->
+    </div>
+    <div id = "listingsPage" class = "container">
+        <img src = "../static/photos/beth-macdonald-V6LEV6CBVLw-unsplash.jpg">
+        <!-- Listings Section -->
+        <div class="listings-container">
+            <!-- Loop through items and display them in a grid -->
+            
+            {% for item in items %}
+            <div class="item-box">
+                <a href = "/displayItem/?item={{item}}", style = "text-decoration: none; color: rgb(99, 48, 48); font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+                    <!-- for some reason the indexes are all wrong on this page??? -->
+                    <!-- the wrong indexes go to the item page too ??? -->
+                    <img src= "{{item[11]}}">
+                    <h3>{{ item[1] }}</h3>
+                    <p>{{ item[4] }}</p>
+                    <p>bakery name</p>
+                    <p>Price: ${{ item[10] }}</p>   
+            </a>     
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+</html>
