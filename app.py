@@ -474,18 +474,21 @@ def edit_buyer():
 
 @app.route('/checkout')
 def checkout():
-    item_id = request.args.get('item_id')
-    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
-    cur = con.cursor()
-    cur.execute("SELECT * FROM Item WHERE ItemID = %s", (item_id,))
-    item = cur.fetchone()
-    cur.close()
-    con.close()
-    
-    if item:
-        return render_template('checkout.html', client_id=paypal_client_id, item=item)
+    if current_user == None:
+        return redirect(url_for('signin'))
     else:
-        return "Item not found", 404
+        item_id = request.args.get('item_id')
+        con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+        cur = con.cursor()
+        cur.execute("SELECT * FROM Item WHERE ItemID = %s", (item_id,))
+        item = cur.fetchone()
+        cur.close()
+        con.close()
+        
+        if item:
+            return render_template('checkout.html', client_id=paypal_client_id, item=item)
+        else:
+            return "Item not found", 404
 
 @app.route('/custom_order')
 def custom_order():
