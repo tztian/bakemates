@@ -422,8 +422,7 @@ def execute():
     con.commit()
     cur.close()
     con.close()
-
-    return render_template("buyerprofile.html")
+    return redirect(url_for('buyer_profile'))
 
 
 
