@@ -28,8 +28,9 @@
     <div class = signup-container>
         <br><br><br>
         <div class = signup-title>Sign Up</div>
+
         <div class="signup-form">
-            <form action="/signupbuyer" method="post">
+            <form action="/buyersignup" method="post">
 
                 <div class="input-container">
                     <i class="fa fa-user icon"></i>
@@ -52,7 +53,13 @@
 
         <!-- lower on the page -->
         <div class = switch-to-login>
-            <h2>already have an account?</h2>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                    <h2>{{ messages[0] }}</h2>
+            {% else %}
+                <h2>already have an account?</h2>
+            {% endif %}
+            {% endwith %}
         </div>
             <a href="{{ url_for('signin') }}" class="signin-btn-2">Sign In</a>
     </div>
