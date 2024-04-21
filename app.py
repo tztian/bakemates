@@ -107,8 +107,8 @@ def signin_to_page():
         with mysql.connector.connect(host="localhost",user='root',password='',database="bakemates") as con:
             cur = con.cursor()
             cur.execute("SELECT Password FROM User WHERE UserID = %s", (current_user,))
-            password = cur.fetchone()[0]
-            if len(password) == 0:
+            password = cur.fetchone()
+            if not password:
                 flash('User does not exist')
                 current_user = None
                 password = None
@@ -183,8 +183,8 @@ def baker_signup():
             cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
             cur.execute("FLUSH PRIVILEGES")
             cur.execute("CREATE USER %s@'localhost' IDENTIFIED BY %s", (current_user, password))
-            cur.execute("GRANT 'Buyer' TO %s@'localhost'", (current_user,))
-            cur.execute("SET DEFAULT ROLE 'Buyer' TO %s@'localhost'", (current_user,))
+            cur.execute("GRANT 'Baker' TO %s@'localhost'", (current_user,))
+            cur.execute("SET DEFAULT ROLE 'Baker' TO %s@'localhost'", (current_user,))
             #cur.execute("FLUSH PRIVILEGES")
 
             cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
@@ -269,13 +269,14 @@ def baker_home():
 
     with mysql.connector.connect(host="localhost",user=current_user,password = password,database = "bakemates") as con:
         cur = con.cursor()
-        cur.execute('''SELECT BakeryName FROM Baker WHERE BakerID = %s''', (current_user,))
-        bakery_name = cur.fetchone()[0]
-        cur.execute('''SELECT ItemID, ItemName, ItemCount, ItemType,
-                    ItemDescription, Price FROM Item WHERE BakerID = %s''', (current_user,))
-        rows = cur.fetchall()
+        cur.execute("SELECT * FROM User WHERE UserID = %s", (current_user,))
+        user_info = cur.fetchall()[0]
+        cur.execute('''SELECT * FROM Baker WHERE BakerID = %s''', (current_user,))
+        baker_info = cur.fetchall()[0]
+        cur.execute('''SELECT * FROM Item WHERE BakerID = %s''', (current_user,))
+        items = cur.fetchall()
 
-    return render_template('bakerhome.html', bakery_name = bakery_name, rows = rows)
+    return render_template('bakerhome.html', user_info = user_info, baker_info = baker_info, rows = items)
 
 @app.route('/add_item')
 def add_item():
@@ -296,94 +297,62 @@ def delete_item():
     #also needs to send everything from the form into the database
     return render_template('deleteitem.html')
 
-@app.route('/editbaker', methods = ['POST','GET'])
+@app.route('/edit_baker', methods = ['POST','GET'])
 def edit_baker():
     #edit what is displayed to buyers when they look at the bakery profile
-    try:
-        con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
         cur = con.cursor()
 
         if request.method == 'POST':
             # Retrieve form data
-            bakery_name = request.form.get('bakery_name')
-            bakery_description = request.form.get('bakery_description')
-            bakery_website = request.form.get('bakery_website')
-            bakery_image = request.files['bakery_image']
+            name = request.form['name']
+            bakery_name = request.form['bakery_name']
+            email = request.form['email']
+            phone = request.form['phone']
+            address = request.form['address']
+            website = request.form['website']
+            description = request.form['description']
+            bakery_image = request.files['image']
 
             if bakery_image and bakery_image.filename != '':
-                #Combine a timestamp with the filename for a unique filename to prevent overwrites
-                timestamp = int(datetime.datetime.now())
-                unique_filename = f"{timestamp}_{bakery_image.filename}"
-                bakery_image_path = os.path.join('./static/bakers', unique_filename)
-                bakery_image.save(bakery_image_path)
-                
                 # Get the current image path from the database
                 cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
                 existing_image = cur.fetchone()
                 existing_image_path = existing_image[0] if existing_image else None
-
-                # Update statement for bakery details
-                update_query = """
-                UPDATE Baker SET
-                    BakeryName = %s,
-                    Description = %s,
-                    Website = %s,
-                    ImagePath = %s
-                WHERE BakerID = %s
-                """
-                update_values = (
-                    bakery_name,
-                    bakery_description,
-                    bakery_website,
-                    bakery_image_path,
-                    current_user
-                )
-                cur.execute(update_query, update_values)
-                con.commit()
-
                 if existing_image_path:
                     os.remove(existing_image_path)
                 
-                return redirect(url_for('baker_home'))
+                #Combine a timestamp with the filename for a unique filename to prevent overwrites
+                timestamp = int(datetime.datetime.now().timestamp())
+                unique_filename = f"{timestamp}_{bakery_image.filename}"
+                bakery_image_path = os.path.join('./static/bakers', unique_filename)
+                bakery_image.save(bakery_image_path)
+                cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
+                
+
             # Update statement for bakery details
-            update_query = """
-            UPDATE Baker SET
-                BakeryName = %s,
-                Description = %s,
-                Website = %s
-            WHERE BakerID = %s
-            """
-            update_values = (
-                bakery_name,
-                bakery_description,
-                bakery_website,
-                current_user
-            )
-            cur.execute(update_query, update_values)
+            if name:
+                cur.execute('UPDATE User SET Name = %s WHERE UserID = %s', (name, current_user))
+            if email:
+                cur.execute('UPDATE User SET Email = %s WHERE UserID = %s', (email, current_user))
+            if phone:
+                cur.execute('UPDATE User SET Phone = %s WHERE UserID = %s', (phone, current_user))
+            if address:
+                cur.execute('UPDATE User SET Address = %s WHERE UserID = %s', (address, current_user))
+            if bakery_name:
+                cur.execute('UPDATE Baker SET BakeryName = %s WHERE BakerID = %s', (bakery_name, current_user))
+            if website:
+                cur.execute('UPDATE Baker SET Website = %s WHERE BakerID = %s', (website, current_user))    
+            if description:
+                cur.execute('UPDATE Baker SET Description = %s WHERE BakerID = %s', (description, current_user))
+            if bakery_image:
+                cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
+            
             con.commit()
                 
             return redirect(url_for('baker_home'))
-
-        else:
-            cur.execute("SELECT BakeryName, Description, Website, ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
-            baker_data = cur.fetchone()
-            if baker_data:  
-                baker_info = {
-                    'name': baker_data[0],
-                    'description': baker_data[1],
-                    'website': baker_data[2],
-                    'image_path': baker_data[3]
-                }
-            else:
-                baker_info = {'error': 'No bakery information found for this user.'}
-    except mysql.connector.Error as err:
-        print("Error: ", err)
-        baker_info = {'error': 'Database connection or execution issue'}
-    finally:
-        cur.close()
-        con.close()
-
-    return render_template('editbaker.html', baker=baker_info)
+        
+    return render_template('editbaker.html')
 
 @app.route('/pay', methods=['POST'])
 def pay():
@@ -423,14 +392,6 @@ def execute():
     cur.close()
     con.close()
     return redirect(url_for('buyer_profile'))
-
-
-
-
-@app.route('/bakerprofile')
-def baker_profile():
-    #edit what is displayed to buyers when they look at the bakery profile
-    return render_template('bakerprofile.html')
 
 @app.route('/buyer_profile')
 def buyer_profile():
@@ -477,7 +438,7 @@ def edit_buyer():
                 cur.execute('UPDATE Buyer SET Bio = %s WHERE BuyerID = %s', (bio, current_user))
             con.commit()
         return redirect(url_for('buyer_profile'))
-        
+    
     return render_template('editbuyer.html', user = current_user)
 
 @app.route('/checkout')
