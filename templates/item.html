@@ -24,7 +24,7 @@
                     Nut-Free: {{ 'Yes' if item[9] else 'No' }} <br>
                 </div>
                 <br>
-                <a href="{{ url_for('checkout') }}" class="checkout-btn">Buy Now</a>
+                <a href="{{ url_for('checkout', item_id=item[0]) }}" class="checkout-btn">Buy Now</a>
             </div>
         </div>
     </body>

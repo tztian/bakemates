@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import mysql as sql
 import mysql.connector
 import os
+import paypalrestsdk
 import time
 
 app = Flask(__name__, static_url_path='/static')
@@ -10,6 +11,15 @@ app = Flask(__name__, static_url_path='/static')
 user_location = None
 current_user = None 
 password = None
+
+#Paypal information
+paypalrestsdk.configure({
+    "mode": "sandbox",
+    "client_id": "PAYPAL_CLIENT_ID",
+    "client_secret": "PAYPAL_CLIENT_SECRET"
+})
+
+
 
 @app.route('/')
 def index():
@@ -356,6 +366,74 @@ def edit_baker():
 
     return render_template('editbaker.html', baker=baker_info)
 
+@app.route('/pay', methods=['POST'])
+def pay():
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+    # Extracting form data from the checkout page
+    name = request.form['firstname']
+    buyer_email = request.form['email']
+    address = request.form['address']
+    city = request.form['city']
+    state = request.form['state']
+    zip_code = request.form['zip']
+    item_id = request.form['item_id']
+    total = request.form['item_id']
+
+    payment = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"},
+        "redirect_urls": {
+            "return_url": "http://localhost:5000/payment/execute",
+            "cancel_url": "http://localhost:5000/payment/cancel"},
+        "transactions": [{
+            "amount": {
+                "total": total,
+                "currency": "USD"},
+            "description": "Purchase from My Shop"}]})
+
+    if payment.create():
+        #do this later
+        order_id = str("Put an order ID")
+        add_order = ("INSERT INTO Orders "
+                     "(OrderID, BuyerID, Notes, Status, Time, Cost) "
+                     "VALUES (%s, %s, %s, %s, %s, %s)")
+        data_order = (order_id, buyer_email, 'Payment initiated', 'Initiated', time.datetime.now(), total)
+        cur.execute(add_order, data_order)
+        con.commit()
+        cur.close()
+        con.close()
+
+        for link in payment.links:
+            if link.rel == "approval_url":
+                return jsonify({'approval_url': link.href}), 200
+    else:
+        return jsonify({'error': payment.error}), 500
+
+@app.route('/payment/execute', methods=['GET'])
+def execute():
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+    payment_id = request.args.get('paymentId')
+    payer_id = request.args.get('PayerID')
+    payment = paypalrestsdk.Payment.find(payment_id)
+
+    if payment.execute({"payer_id": payer_id}):
+        update_order = ("UPDATE Orders SET Status = %s WHERE OrderID = %s")
+        data_update = ('Completed', payment_id)
+        cur.execute(update_order, data_update)
+        con.commit()
+        cur.close()
+        conn.close()
+        return render_template("landing.html")
+    else:
+        #put error code here
+        return ""
+
+
+
+
 @app.route('/bakerprofile')
 def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
@@ -363,7 +441,18 @@ def baker_profile():
 
 @app.route('/checkout')
 def checkout():
-    return render_template('checkout.html')
+    item_id = request.args.get('item_id')
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+    cur.execute("SELECT * FROM Item WHERE ItemID = %s", (item_id,))
+    item = cur.fetchone()
+    cur.close()
+    con.close()
+    
+    if item:
+        return render_template('checkout.html', item=item)
+    else:
+        return "Item not found", 404
 
 @app.route('/custom_order')
 def custom_order():
