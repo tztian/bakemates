@@ -1,16 +1,31 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from dotenv import load_dotenv
+load_dotenv()
+import mysql as sql
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask_bcrypt import Bcrypt
 import mysql.connector
 import os
-import time
+import paypalrestsdk
+import datetime
 
 # create flask application
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'secret_key'
+bcrypt = Bcrypt(app)
 
 # Global variable to store the user's information
 user_location = None
 current_user = None 
 password = None
+
+#Paypal information
+paypal_client_id = os.getenv('PAYPAL_CLIENT_ID')
+paypal_client_secret = os.getenv('PAYPAL_CLIENT_SECRET')
+paypalrestsdk.configure({
+    "mode": "sandbox",
+    "client_id": paypal_client_id,
+    "client_secret": paypal_client_secret
+})
 
 @app.route('/')
 def index():
@@ -84,24 +99,21 @@ def signin():
 @app.route('/signin', methods=['POST', 'GET'])
 def signin_to_page():
     if request.method == 'POST':
-        global current_user 
-        global password
+        global current_user
+        global password 
         current_user = request.form['usrnm']
-        password = request.form['psw']
+        unhashed_password = request.form['psw']
 
         with mysql.connector.connect(host="localhost",user='root',password='',database="bakemates") as con:
             cur = con.cursor()
-            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
-            num = cur.fetchone()[0]
-            if num < 1:
+            cur.execute("SELECT Password FROM User WHERE UserID = %s", (current_user,))
+            password = cur.fetchone()[0]
+            if len(password) == 0:
                 flash('User does not exist')
                 current_user = None
                 password = None
                 return redirect(url_for('signin'))
-            
-            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s AND Password = %s", (current_user, password))
-            num = cur.fetchone()[0]
-            if num < 1:
+            if not bcrypt.check_password_hash(password, unhashed_password):
                 flash('Password incorrect')
                 current_user = None
                 password = None
@@ -121,7 +133,7 @@ def buyer_signup():
         global current_user
         global password
         current_user = request.form['usrnm']
-        password = request.form['psw']
+        password = bcrypt.generate_password_hash(request.form['psw']).decode('utf-8')
         email = request.form['email']
         
         with mysql.connector.connect(host="localhost",user="root",password="",database="bakemates") as con:
@@ -155,7 +167,7 @@ def baker_signup():
         global password
         current_user = request.form['usrnm']
         bakery_name = request.form['bname']
-        password = request.form['psw']
+        password = bcrypt.generate_password_hash(request.form['psw']).decode('utf-8')
         email = request.form['email']
         
         with mysql.connector.connect(host="localhost", user="root", password = "", database = "bakemates") as con:
@@ -196,7 +208,7 @@ def listings():
     if current_user == None:
                 con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
     else:
-        con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+        con = mysql.connector.connect(host="localhost",user=current_user,password=password,database = "bakemates")
 
     cur = con.cursor(buffered=True)
         
@@ -300,7 +312,7 @@ def edit_baker():
 
             if bakery_image and bakery_image.filename != '':
                 #Combine a timestamp with the filename for a unique filename to prevent overwrites
-                timestamp = int(time.time())
+                timestamp = int(datetime.datetime.now())
                 unique_filename = f"{timestamp}_{bakery_image.filename}"
                 bakery_image_path = os.path.join('./static/bakers', unique_filename)
                 bakery_image.save(bakery_image_path)
@@ -373,6 +385,48 @@ def edit_baker():
 
     return render_template('editbaker.html', baker=baker_info)
 
+@app.route('/pay', methods=['POST'])
+def pay():
+    data = request.get_json()
+    order_id = data['orderID']
+    payer_id = data['payerID']
+    payment_id = data['paymentID']
+    item_id = data['item_id']
+    total = data['total']
+    notes = data['notes']
+
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+
+    add_order = ("INSERT INTO Orders (OrderID, ItemID, BuyerID, Notes, Status, Time, Cost) "
+                 "VALUES (%s, %s, %s, %s, %s, %s, %s)")
+    data_order = (order_id, item_id, current_user, notes, 'Pending', datetime.datetime.now(), total)
+    cur.execute(add_order, data_order)
+    con.commit()
+    cur.close()
+    con.close()
+
+    return jsonify({'success': True}), 200
+
+@app.route('/payment/execute', methods=['GET'])
+def execute():
+    payment_id = request.args.get('paymentId')
+    payer_id = request.args.get('PayerID')
+
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+
+    update_order = ("UPDATE Orders SET Status = %s WHERE OrderID = %s")
+    data_update = ('Paid', payment_id)
+    cur.execute(update_order, data_update)
+    con.commit()
+    cur.close()
+    con.close()
+    return redirect(url_for('buyer_profile'))
+
+
+
+
 @app.route('/bakerprofile')
 def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
@@ -380,18 +434,69 @@ def baker_profile():
 
 @app.route('/buyer_profile')
 def buyer_profile():
-    return render_template('buyerprofile.html')
+    with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+        cur = con.cursor()
+
+        # Fetch user information
+        cur.execute("SELECT * FROM User WHERE UserID = %s", (current_user,))
+        user_info = cur.fetchone()  # fetchone() if expecting single result per user
+
+        # Fetch buyer information
+        cur.execute("SELECT * FROM Buyer WHERE BuyerID = %s", (current_user,))
+        buyer_info = cur.fetchone()  # fetchone() for single result
+
+        # Fetch orders
+        cur.execute("SELECT * FROM Orders WHERE BuyerID = %s", (current_user,))
+        orders = cur.fetchall()  # Fetch all orders for the user
+
+    return render_template('buyerprofile.html', user=current_user, user_info=user_info, buyer_info=buyer_info, orders=orders)
 
 @app.route('/edit_buyer', methods=['GET', 'POST'])
 def edit_buyer():
-    return render_template('editbuyer.html')
+    if request.method == "POST":
+        name = request.form['name']
+        email = request.form['email']
+        phone = request.form['phone']
+        address = request.form['address']
+        dietary_restrictions = request.form['dietary_restrictions']
+        bio = request.form['bio']
+
+        with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+            cur = con.cursor()
+            if name:
+                cur.execute('UPDATE User SET Name = %s WHERE UserID = %s', (name, current_user))
+            if email:
+                cur.execute('UPDATE User SET Email = %s WHERE UserID = %s', (email, current_user))
+            if phone:
+                cur.execute('UPDATE User SET Phone = %s WHERE UserID = %s', (phone, current_user))
+            if address:
+                cur.execute('UPDATE User SET Address = %s WHERE UserID = %s', (address, current_user))
+            if dietary_restrictions:
+                cur.execute('UPDATE Buyer SET DietaryRestrictions = %s WHERE BuyerID = %s', (dietary_restrictions, current_user))
+            if bio:
+                cur.execute('UPDATE Buyer SET Bio = %s WHERE BuyerID = %s', (bio, current_user))
+            con.commit()
+        return redirect(url_for('buyer_profile'))
+        
+    return render_template('editbuyer.html', user = current_user)
 
 @app.route('/checkout')
 def checkout():
-    if current_user != None:
-        return render_template('checkout.html')
-    else:
+    if current_user == None:
         return redirect(url_for('signin'))
+    else:
+        item_id = request.args.get('item_id')
+        con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+        cur = con.cursor()
+        cur.execute("SELECT * FROM Item WHERE ItemID = %s", (item_id,))
+        item = cur.fetchone()
+        cur.close()
+        con.close()
+        
+        if item:
+            return render_template('checkout.html', client_id=paypal_client_id, item=item)
+        else:
+            return "Item not found", 404
 
 @app.route('/custom_order')
 def custom_order():

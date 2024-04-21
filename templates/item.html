@@ -26,7 +26,7 @@
                     <a href="{{ url_for('bakery', bakery_name = item[13]) }}" class="bakery-btn">View Bakery</a>
                 </div>
                 <br>
-                <a href="{{ url_for('checkout') }}" class="checkout-btn">Buy Now</a>
+                <a href="{{ url_for('checkout', item_id=item[0]) }}" class="checkout-btn">Buy Now</a>
             </div>
         </div>
     </body>

@@ -39,7 +39,7 @@ cur.execute('''CREATE TABLE User
                 Name VARCHAR(50),
                 Phone VARCHAR(50),
                 Address TEXT,
-                Password CHAR(50))''')
+                Password CHAR(250))''')
 
 # Buyer table
 cur.execute('''CREATE TABLE Buyer
@@ -144,8 +144,9 @@ cur.execute("CREATE ROLE Admin")
 cur.execute("GRANT ALL PRIVILEGES ON bakemates.* TO Admin")
 
 cur.execute("CREATE ROLE Baker")
-cur.execute("GRANT select, insert, update, delete ON bakemates.* TO Baker")
-#cur.execute("GRANT CREATE VIEW, DROP VIEW ON bakemates.* TO Baker")
+cur.execute("GRANT select ON bakemates.* TO Baker")
+cur.execute("GRANT select, insert, update, delete ON bakemates.User TO Baker")
+cur.execute("GRANT select, insert, update, delete ON bakemates.Baker TO Baker")
 cur.execute("GRANT insert, update, delete ON bakemates.Item TO Baker")
 cur.execute("GRANT update(Status) ON bakemates.Orders TO Baker")
 cur.execute("GRANT update(Description), update(Website) ON bakemates.Baker to Baker")
@@ -154,8 +155,10 @@ cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) O
 
 cur.execute("CREATE ROLE Buyer")
 cur.execute("GRANT select ON bakemates.* TO Buyer")
-#cur.execute("GRANT CREATE VIEW, DROP VIEW ON bakemates.* TO Buyer")
+cur.execute("GRANT insert, update ON bakemates.Orders TO Buyer")
 cur.execute("GRANT select, insert, update, delete ON bakemates.Review TO Buyer")
+cur.execute("GRANT select, insert, update, delete ON bakemates.User TO Buyer")
+cur.execute("GRANT select, insert, update, delete ON bakemates.Buyer TO Buyer")
 cur.execute("GRANT update(Notes) ON bakemates.Orders TO Buyer")
 cur.execute("GRANT update(Bio), update(DietaryRestrictions) ON bakemates.Buyer TO Buyer")
 cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) ON bakemates.User To Buyer")
