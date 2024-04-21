@@ -414,7 +414,7 @@ def edit_buyer():
             con.commit()
         return redirect(url_for('buyer_profile'))
         
-    return render_template('editbuyer.html')
+    return render_template('editbuyer.html', user = current_user)
 
 @app.route('/checkout')
 def checkout():
