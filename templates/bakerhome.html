@@ -8,9 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rampart+One&display=swap" rel="stylesheet">
 </head>
 <style>
-    table {
+table {
     width: 100%; /* Full width tables */
     border-collapse: collapse; /* Neater borders */
+    
 }
 table, th, td {
     border: 1px solid black;
@@ -32,9 +33,12 @@ h1 {
         
         <!-- Welcome Message -->
         <h1>Welcome to {{bakery_name}}!</h1>
-        
+        <a href="{{ url_for('add_item') }}" class="table-buttons add-btn">Add Item</a>
+        <a href="{{ url_for('edit_item') }}" class="table-buttons edit-btn">Edit Item</a>
+        <a href="{{ url_for('delete_item') }}" class="table-buttons delete-btn">Delete Item</a>
         <!-- Listings Section -->
         <h2>Your Listings</h2>
+        <br>
         <table>
             <table border = "1">
             <thead>
@@ -64,10 +68,8 @@ h1 {
                 {% endfor %}
             </tbody>
         </table>
+        <br>
+        
     </div>
-        <a href="{{ url_for('add_item') }}" class="nav-item add-btn">Add Item</a>
-        <!--<a href="{{ url_for('edit_item') }}" class="nav-item edit-btn">Edit Item</a>
-        <a href="{{ url_for('delete_item') }}" class="nav-item elete-btn">Delete Item</a>-->
-    
 </body>
 </html>

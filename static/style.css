@@ -582,17 +582,27 @@ body {font-family: Arial, Helvetica, sans-serif;}
     border-radius: 30px;
 }
 
-.nav-item .add-btn{
-    top: 50%;
-    right: 20%;
+.table-buttons{
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 54%;
+    border-radius: 30px;
+    background-color: rgb(255, 255, 255);
 }
-.nav-item .edit-btn{
-    top: 60%;
-    right: 20%;
+.add-btn{
+    right: 25%;
 }
-.nav-item .delete-btn{
-    top: 70%;
-    right: 20%;
+.edit-btn{
+    right: 15%;
+}
+.delete-btn{
+    right: 5%;
 }
 
 /* Content Styles */
