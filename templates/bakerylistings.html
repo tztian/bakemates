@@ -1,54 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Existing head elements -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates-Bakery</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Rampart+One&display=swap" rel="stylesheet">
 </head>
 <style>
-    /* Existing styles */
-    
-    /* Ensure images are full-width within their container */
-    .item-box img {
-        width: 100%; /* Full width */
-        height: auto; /* Maintain aspect ratio */
-        display: block; /* Remove any inline spacing */
-    }
-
-    /* Make sure the bakery name is visible */
-    .bakery-info h1 {
-        color: #333; /* A dark color for visibility */
-        margin-top: 20px; /* Add some space from the top */
-    }
-
-    /* Ensure the bakery-info section is visible and laid out correctly */
-    .bakery-info {
-        background-color: #fff; /* Background color for contrast */
-        padding: 20px;
-        text-align: center;
-    }
-
-    /* If the bakery name is still not visible, check z-index issues */
-    .bakery-info {
-        z-index: 10; /* Bring the section forward */
-        position: relative; /* Establish stacking context */
-    }
+    table {
+    width: 100%; /* Full width tables */
+    border-collapse: collapse; 
+}
+table, th, td {
+    border: 1px solid black;
+}
+h1 {
+    font-family: 'Rampart One', cursive; 
+}
 </style>
 <body>
-    <!-- Existing body elements -->
+    <div id="listings-nav">
+        <!-- Navigation Bar Logic -->
+        {% if user %}
+            <a href="{{ url_for('logout') }}" class="listings-nav-item">Log Out</a>
+            <a href="{{ url_for('custom_order') }}" class="listings-nav-item">Place Custom Order</a>
+        {% else %}
+            <a href="{{ url_for('signin') }}" class="listings-nav-item">Sign In</a>
+            <a href="{{ url_for('signup') }}" class="listings-nav-item">Sign Up</a>
+        {% endif %}
+    </div>
 
-    <!-- Adjusted bakery-info section -->
     <div class="bakery-info">
-        <img src="{{ bakery.image_path }}" alt="{{ bakery.name }} Image" style="width: 100%; max-height: 300px; object-fit: cover;">
+        <img src="{{ bakery.image_path }}" alt="{{ bakery.name }} Image" style="width:100%;">
         <h1>{{ bakery.name }}</h1>
         <p>{{ bakery.description }}</p>
     </div>
 
-    <!-- Adjusted listings-container section -->
     <div class="listings-container">
         {% for item in items %}
         <div class="item-box">
-            <!-- Ensure anchor tags don't reset image size -->
-            <a href="/displayItem/?item={{ item[0] }}" style="color: rgb(99, 48, 48); text-decoration: none;">
-                <img src="{{ item[10] }}" alt="{{ item[1] }}" style="width: 100%; height: auto;">
+            <a href="/displayItem/?item={{ item[0] }}" style="text-decoration: none; color: rgb(99, 48, 48);">
+                <img src="{{ item[10] }}" alt="{{ item[1] }}">
                 <h3>{{ item[1] }}</h3>
                 <p>{{ item[4] }}</p>
                 <p>Bakery: {{ bakery.name }}</p>
