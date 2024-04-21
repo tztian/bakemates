@@ -15,6 +15,8 @@ current_user = None
 password = None
 
 #Paypal information
+paypal_client_id = os.getenv('PAYPAL_CLIENT_ID')
+paypal_client_secret = os.getenv('PAYPAL_CLIENT_SECRET')
 paypalrestsdk.configure({
     "mode": "sandbox",
     "client_id": "PAYPAL_CLIENT_ID",
