@@ -306,10 +306,14 @@ def edit_baker():
 
         if request.method == 'POST':
             # Retrieve form data
-            bakery_name = request.form.get('bakery_name')
-            bakery_description = request.form.get('bakery_description')
-            bakery_website = request.form.get('bakery_website')
-            bakery_image = request.files['bakery_image']
+            name = request.form['name']
+            bakery_name = request.form['bakery_name']
+            email = request.form['email']
+            phone = request.form['phone']
+            address = request.form['address']
+            website = request.form['website']
+            description = request.form['description']
+            bakery_image = request.files['image']
 
             if bakery_image and bakery_image.filename != '':
                 #Combine a timestamp with the filename for a unique filename to prevent overwrites
@@ -317,50 +321,33 @@ def edit_baker():
                 unique_filename = f"{timestamp}_{bakery_image.filename}"
                 bakery_image_path = os.path.join('./static/bakers', unique_filename)
                 bakery_image.save(bakery_image_path)
+                cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
                 
                 # Get the current image path from the database
                 cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
                 existing_image = cur.fetchone()
                 existing_image_path = existing_image[0] if existing_image else None
-
-                # Update statement for bakery details
-                update_query = """
-                UPDATE Baker SET
-                    BakeryName = %s,
-                    Description = %s,
-                    Website = %s,
-                    ImagePath = %s
-                WHERE BakerID = %s
-                """
-                update_values = (
-                    bakery_name,
-                    bakery_description,
-                    bakery_website,
-                    bakery_image_path,
-                    current_user
-                )
-                cur.execute(update_query, update_values)
-                con.commit()
-
                 if existing_image_path:
                     os.remove(existing_image_path)
-                
-                return redirect(url_for('baker_home'))
+
             # Update statement for bakery details
-            update_query = """
-            UPDATE Baker SET
-                BakeryName = %s,
-                Description = %s,
-                Website = %s
-            WHERE BakerID = %s
-            """
-            update_values = (
-                bakery_name,
-                bakery_description,
-                bakery_website,
-                current_user
-            )
-            cur.execute(update_query, update_values)
+            if name:
+                cur.execute('UPDATE User SET Name = %s WHERE UserID = %s', (name, current_user))
+            if email:
+                cur.execute('UPDATE User SET Email = %s WHERE UserID = %s', (email, current_user))
+            if phone:
+                cur.execute('UPDATE User SET Phone = %s WHERE UserID = %s', (phone, current_user))
+            if address:
+                cur.execute('UPDATE User SET Address = %s WHERE UserID = %s', (address, current_user))
+            if bakery_name:
+                cur.execute('UPDATE Baker SET BakeryName = %s WHERE BakerID = %s', (bakery_name, current_user))
+            if website:
+                cur.execute('UPDATE Baker SET Website = %s WHERE BakerID = %s', (website, current_user))    
+            if description:
+                cur.execute('UPDATE Baker SET Description = %s WHERE BakerID = %s', (description, current_user))
+            if bakery_image:
+                cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
+            
             con.commit()
                 
             return redirect(url_for('baker_home'))
@@ -383,8 +370,8 @@ def edit_baker():
     finally:
         cur.close()
         con.close()
-
-    return render_template('editbaker.html', baker=baker_info)
+        
+    return render_template('editbaker.html')
 
 @app.route('/pay', methods=['POST'])
 def pay():
