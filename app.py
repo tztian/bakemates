@@ -269,13 +269,14 @@ def baker_home():
 
     with mysql.connector.connect(host="localhost",user=current_user,password = password,database = "bakemates") as con:
         cur = con.cursor()
-        cur.execute('''SELECT BakeryName FROM Baker WHERE BakerID = %s''', (current_user,))
-        bakery_name = cur.fetchone()[0]
-        cur.execute('''SELECT ItemID, ItemName, ItemCount, ItemType,
-                    ItemDescription, Price FROM Item WHERE BakerID = %s''', (current_user,))
-        rows = cur.fetchall()
+        cur.execute("SELECT * FROM User WHERE UserID = %s", (current_user,))
+        user_info = cur.fetchall()[0]
+        cur.execute('''SELECT * FROM Baker WHERE BakerID = %s''', (current_user,))
+        baker_info = cur.fetchall()[0]
+        cur.execute('''SELECT * FROM Item WHERE BakerID = %s''', (current_user,))
+        items = cur.fetchall()
 
-    return render_template('bakerhome.html', bakery_name = bakery_name, rows = rows)
+    return render_template('bakerhome.html', user_info = user_info, baker_info = baker_info, rows = items)
 
 @app.route('/add_item')
 def add_item():
