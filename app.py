@@ -278,12 +278,57 @@ def baker_home():
 
     return render_template('bakerhome.html', user_info = user_info, baker_info = baker_info, rows = items)
 
-@app.route('/add_item')
+@app.route('/add_item', methods=['GET', 'POST'])
 def add_item():
     #needs to work with the form from additem.html
-    #also needs to send everything from the form into the database
-    return render_template('additem.html')
+    #needs to send all the info to the item database
+    try:
+        con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+        cur = con.cursor()
 
+        if request.method == 'POST':
+            item_name = request.form.get('item_name')
+            item_type = request.form.get('item_type')
+            item_description = request.form.get('item_description')
+            item_price = request.form.get('item_price')
+            item_quantity = request.form.get('item_quantity')
+            gluten_free = 'gluten_free' in request.form
+            vegan = 'vegan' in request.form
+            dairy_free = 'dairy_free' in request.form
+            nut_free = 'nut_free' in request.form
+    
+            # i have no clue how we generate the item id so its unique everytime
+            # use timestamp to get id
+            timestamp = int(datetime.datetime.now().timestamp())
+            item_id = f"IT{timestamp}"
+
+
+            item_image = request.files.get('item_image')
+            if item_image and item_image.filename != '':
+                timestamp = int(datetime.datetime.now())
+                unique_filename = f"{timestamp}_{item_image.filename}"
+                item_image_path = os.path.join('./static/items', unique_filename)
+                item_image.save(item_image_path)
+
+            # Insert the new item into the database
+            cur.execute('''
+                INSERT INTO Item (ItemID, BakerID, ItemCount, ItemName, ItemType, ItemDescription, 
+                                GlutenFree, Vegan, DairyFree, NutFree, Price, ImagePath)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ''', (item_id, current_user, item_quantity, item_name, item_type, item_description, 
+                gluten_free, vegan, dairy_free, nut_free, item_price, item_image_path))
+            con.commit()
+            
+
+    
+    # Redirect to a new page, or flash success message
+            flash('Item added successfully!')
+            return redirect(url_for('baker_home'))
+        
+    except Exception as e:
+        flash(str(e), 'error')  # Display the error message
+        return redirect(url_for('add_item'))
+    
 
 @app.route('/edit_item')
 def edit_item():
