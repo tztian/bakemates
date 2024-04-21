@@ -1,8 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from dotenv import load_dotenv
+load_dotenv()
+import mysql as sql
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_bcrypt import Bcrypt
 import mysql.connector
 import os
-import time
+import paypalrestsdk
+import datetime
 
 # create flask application
 app = Flask(__name__, static_url_path='/static')
@@ -13,6 +17,15 @@ bcrypt = Bcrypt(app)
 user_location = None
 current_user = None 
 password = None
+
+#Paypal information
+paypal_client_id = os.getenv('PAYPAL_CLIENT_ID')
+paypal_client_secret = os.getenv('PAYPAL_CLIENT_SECRET')
+paypalrestsdk.configure({
+    "mode": "sandbox",
+    "client_id": paypal_client_id,
+    "client_secret": paypal_client_secret
+})
 
 @app.route('/')
 def index():
@@ -299,7 +312,7 @@ def edit_baker():
 
             if bakery_image and bakery_image.filename != '':
                 #Combine a timestamp with the filename for a unique filename to prevent overwrites
-                timestamp = int(time.time())
+                timestamp = int(datetime.datetime.now())
                 unique_filename = f"{timestamp}_{bakery_image.filename}"
                 bakery_image_path = os.path.join('./static/bakers', unique_filename)
                 bakery_image.save(bakery_image_path)
@@ -372,6 +385,49 @@ def edit_baker():
 
     return render_template('editbaker.html', baker=baker_info)
 
+@app.route('/pay', methods=['POST'])
+def pay():
+    data = request.get_json()
+    order_id = data['orderID']
+    payer_id = data['payerID']
+    payment_id = data['paymentID']
+    item_id = data['item_id']
+    total = data['total']
+    notes = data['notes']
+
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+
+    add_order = ("INSERT INTO Orders (OrderID, ItemID, BuyerID, Notes, Status, Time, Cost) "
+                 "VALUES (%s, %s, %s, %s, %s, %s, %s)")
+    data_order = (order_id, item_id, current_user, notes, 'Pending', datetime.datetime.now(), total)
+    cur.execute(add_order, data_order)
+    con.commit()
+    cur.close()
+    con.close()
+
+    return jsonify({'success': True}), 200
+
+@app.route('/payment/execute', methods=['GET'])
+def execute():
+    payment_id = request.args.get('paymentId')
+    payer_id = request.args.get('PayerID')
+
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+
+    update_order = ("UPDATE Orders SET Status = %s WHERE OrderID = %s")
+    data_update = ('Paid', payment_id)
+    cur.execute(update_order, data_update)
+    con.commit()
+    cur.close()
+    con.close()
+
+    return render_template("buyerprofile.html")
+
+
+
+
 @app.route('/bakerprofile')
 def baker_profile():
     #edit what is displayed to buyers when they look at the bakery profile
@@ -418,10 +474,18 @@ def edit_buyer():
 
 @app.route('/checkout')
 def checkout():
-    if current_user != None:
-        return render_template('checkout.html')
+    item_id = request.args.get('item_id')
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+    cur.execute("SELECT * FROM Item WHERE ItemID = %s", (item_id,))
+    item = cur.fetchone()
+    cur.close()
+    con.close()
+    
+    if item:
+        return render_template('checkout.html', client_id=paypal_client_id, item=item)
     else:
-        return redirect(url_for('signin'))
+        return "Item not found", 404
 
 @app.route('/custom_order')
 def custom_order():

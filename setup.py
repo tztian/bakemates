@@ -155,6 +155,7 @@ cur.execute("GRANT update(Email), update(Phone), update(Name), update(Address) O
 
 cur.execute("CREATE ROLE Buyer")
 cur.execute("GRANT select ON bakemates.* TO Buyer")
+cur.execute("GRANT insert, update ON bakemates.Orders TO Buyer")
 cur.execute("GRANT select, insert, update, delete ON bakemates.Review TO Buyer")
 cur.execute("GRANT select, insert, update, delete ON bakemates.User TO Buyer")
 cur.execute("GRANT select, insert, update, delete ON bakemates.Buyer TO Buyer")
