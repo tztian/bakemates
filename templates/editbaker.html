@@ -5,40 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bakemates-Your Bakery</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        form {
+            width: 50%;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 24px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        orm {
+            width: 50%;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="url"],
+        textarea {
+            width: calc(100% - 24px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
 </head>
 <body>
     <div id="listings-nav">
         <a href="{{ url_for('logout') }}" class="listings-nav-item">Log Out</a>
-        <a href="{{ url_for('baker_profile') }}" class="listings-nav-item">Profile</a>
-        <a href="{{ url_for('add_item') }}" class="listings-nav-item">Post Item</a>
-        <a href="{{ url_for('edit_baker') }}" class="listings-nav-item">Edit Profile</a>
-        <a href="{{ url_for('baker_home') }}" class="listings-nav-item">Home</a>
+            <a href="{{ url_for('add_item') }}" class="listings-nav-item">Post Item</a>
+            <a href="{{ url_for('baker_home') }}" class="listings-nav-item">Home</a>
     </div>
 
     <div id="edit-baker-form">
-        <br><br><br>
-        <h1>Edit Bakery Info</h1>
-        <form action="{{ url_for('edit_baker') }}" method="post" enctype="multipart/form-data">
-            <label for="bakery-name">Bakery Name:</label>
-            <input type="text" id="bakery-name" name="bakery_name" value="{{ baker.name if baker else '' }}">
-            <br>
-            <label for="bakery-description">Bakery Description:</label>
-            <textarea id="bakery-description" name="bakery_description" rows="4" cols="50">{{ baker.description if baker else '' }}</textarea>
-            <br>
-            <label for="bakery-website">Website:</label>
-            <input type="url" id="bakery-website" name="bakery_website" value="{{ baker.website if baker else '' }}">
-            <br>
-            <label for="bakery-image">Current Image:</label>
-            <br>
-            {% if baker and baker.image_path %}
-                <img src="{{ baker.image_path }}" alt="Current Bakery Image" style="width: 100px; height: auto;">
-            {% endif %}
-            <br>
-            <label for="bakery-image">Change Bakery Image:</label>
-            <input type="file" id="bakery-image" name="bakery_image" accept="image/png, image/jpeg">
-            <br>
-            <button type="submit">Update Bakery Info</button>
+        <br><br><br><br><br><br>
+        <h1 align="center">Edit Baker Profile</h1>
+        <form action="/edit_baker" method="post">
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+            <label for="name">Bakery Name:</label>
+            <input type="text" id="bakery_name" name="bakery_name">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email">
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone">
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address">
+            <label for="website">Website:</label>
+            <input type="url" id="website" name="website">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea>
+            <label for="image">Image:</label>
+            <input type="file" id="image" name="image" accept="image/png, image/jpeg">
+        
+            <div class="btn-container">
+                <input type="submit" value="Update Profile">
+            </div>
+
         </form>
+        <br><br><br><br><br><br>
     </div>
 </body>
 </html>

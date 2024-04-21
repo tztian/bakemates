@@ -297,7 +297,7 @@ def delete_item():
     #also needs to send everything from the form into the database
     return render_template('deleteitem.html')
 
-@app.route('/editbaker', methods = ['POST','GET'])
+@app.route('/edit_baker', methods = ['POST','GET'])
 def edit_baker():
     #edit what is displayed to buyers when they look at the bakery profile
     try:
@@ -424,14 +424,6 @@ def execute():
     cur.close()
     con.close()
     return redirect(url_for('buyer_profile'))
-
-
-
-
-@app.route('/bakerprofile')
-def baker_profile():
-    #edit what is displayed to buyers when they look at the bakery profile
-    return render_template('bakerprofile.html')
 
 @app.route('/buyer_profile')
 def buyer_profile():

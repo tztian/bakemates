@@ -89,6 +89,11 @@ h1 {
         <br>
         <br>
         <h1>Welcome to {{ baker_info[1] }}!</h1>
+
+        {% if baker_info[5] %}
+        <img src="{{ baker_info[5] }}" alt="Current Bakery Image" style="width: 100px; height: auto;">
+        {% endif %}
+
         <h2>Your Profile</h2>
         <table>
             <tr>
