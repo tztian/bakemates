@@ -436,11 +436,20 @@ def baker_profile():
 def buyer_profile():
     with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
         cur = con.cursor()
+
+        # Fetch user information
         cur.execute("SELECT * FROM User WHERE UserID = %s", (current_user,))
-        user_info = cur.fetchall()[0]
+        user_info = cur.fetchone()  # fetchone() if expecting single result per user
+
+        # Fetch buyer information
         cur.execute("SELECT * FROM Buyer WHERE BuyerID = %s", (current_user,))
-        buyer_info = cur.fetchall()[0]
-    return render_template('buyerprofile.html', user = current_user, user_info = user_info, buyer_info = buyer_info)
+        buyer_info = cur.fetchone()  # fetchone() for single result
+
+        # Fetch orders
+        cur.execute("SELECT * FROM Orders WHERE BuyerID = %s", (current_user,))
+        orders = cur.fetchall()  # Fetch all orders for the user
+
+    return render_template('buyerprofile.html', user=current_user, user_info=user_info, buyer_info=buyer_info, orders=orders)
 
 @app.route('/edit_buyer', methods=['GET', 'POST'])
 def edit_buyer():
