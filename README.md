@@ -25,21 +25,28 @@ On the landing page, select `Sign up` at the top right corner, then select `Tast
 
 
 ## List of Libraries
-
+- Flask
+- Bcrypt
+- mysql.connector
+- paypalrestsdk
 
 ## List of Other Resources
 
 
 ## Extra Features
+- **Checkout with Paypal**:
+- **Placing custom orders**:
 
 
 ## Division of Labor
 - **Database set up**: Rohith Gottiparthi, Tina Tian
 - **Role-based access control**: Tina Tian
-- **HTML/CSS for the web pages**: Haleigh Gahan, Clara Martinson
+- **HTML/CSS for most of the web pages**: Haleigh Gahan, Clara Martinson
 - **Sign up/login**: Tina Tian
-- **Editing user profile**: Rohith Gottiparthi
+- **Editing user profile**: Rohith Gottiparthi, Tina Tian
 - **Search for items**: Haleigh Gahan
-- **Add, update, delete items**: Haleigh Gahan, Tina Tian
-- **Placing and fulfilling orders**: Clara Martinson, Tina Tian
+- **Add, update, delete items**: Clara Martinson, Tina Tian
+- **Public profile for the bakers**: Rohith Gottiparthi, Clara Martinson
+- **Placing and fulfilling orders**: Rohith Gottiparthi, Clara Martinson
 - **Reviews**:
+- **Documentation and paper on distribution**:

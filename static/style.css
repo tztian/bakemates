@@ -580,6 +580,10 @@ body {font-family: Arial, Helvetica, sans-serif;}
     border-radius: 30px;
 }
 
+.button-container .table-buttons {
+    display: inline-block;
+}
+
 .table-buttons{
     color: rgb(0, 0, 0);
     text-decoration: none;
@@ -588,19 +592,11 @@ body {font-family: Arial, Helvetica, sans-serif;}
     font-weight: 500;
     border: none;
     cursor: pointer;
-    position: absolute;
-    top: 81%;
+    position: relative;
+    display:inline-block;
+    top: 75%;
     border-radius: 30px;
     background-color: #ffe5ec;
-}
-.add-btn{
-    right: 32%;
-}
-.edit-btn{
-    right: 22%;
-}
-.delete-btn{
-    right: 12%;
 }
 
 /* Content Styles */
