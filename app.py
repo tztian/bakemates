@@ -323,55 +323,64 @@ def edit_item():
         cur = con.cursor()
 
         if request.method == 'POST':
-            # get data from the form
+            # get item ID
             itemID = request.form.get('itemID')
-            new_name = request.form.get('new_name')
-            new_price = request.form.get('new_price')
-            new_count = request.form.get('new_count')
-            new_type = request.form.get('new_type')
-            new_description = request.form.get('new_description')
-            gluten_free = 'gluten_free' in request.form
-            vegan = 'vegan' in request.form
-            dairy_free = 'dairy_free' in request.form
-            nut_free = 'nut_free' in request.form
-            new_image = request.files.get('new_image')
 
-            # make new image path
-            if new_image and new_image.filename != '':
-                # remove the current image path from the database
-                cur.execute("SELECT ImagePath FROM Item WHERE ItemID = %s", (itemID,))
-                existing_image = cur.fetchone()
-                existing_image_path = existing_image[0] if existing_image else None
-                if existing_image_path:
-                    os.remove(existing_image_path)
+            # check if the item belongs to the baker
+            cur.execute('SELECT BakerID FROM Item WHERE ItemID = %s', (itemID,))
+            baker = cur.fetchone()
+            if not baker or baker[0] != current_user:
+                flash('Cannot update this item')
+                return redirect(url_for('edit_item'))
+            else:
+                new_name = request.form.get('new_name')
+                new_price = request.form.get('new_price')
+                new_count = request.form.get('new_count')
+                new_type = request.form.get('new_type')
+                new_description = request.form.get('new_description')
+                gluten_free = 'gluten_free' in request.form
+                vegan = 'vegan' in request.form
+                dairy_free = 'dairy_free' in request.form
+                nut_free = 'nut_free' in request.form
+                new_image = request.files.get('new_image')
 
-                timestamp = int(datetime.datetime.now().timestamp())
-                unique_filename = f"{timestamp}_{new_image.filename}"
-                new_image_path = os.path.join('./static/items', unique_filename)
-                new_image.save(new_image_path)
-                cur.execute('UPDATE Item SET ImagePath = %s WHERE ItemID = %s', (new_image_path, itemID))
+                # make new image path
+                if new_image and new_image.filename != '':
+                    # remove the current image path from the database
+                    cur.execute("SELECT ImagePath FROM Item WHERE ItemID = %s", (itemID,))
+                    existing_image = cur.fetchone()
+                    existing_image_path = existing_image[0] if existing_image else None
+                    if existing_image_path:
+                        os.remove(existing_image_path)
 
-            # update all the categories
-            if new_name:
-                cur.execute('UPDATE Item SET ItemName = %s WHERE ItemID = %s', (new_name, itemID))
-            if new_price:
-                cur.execute('UPDATE Item SET PRICE = %s WHERE ItemID = %s', (new_price, itemID))
-            if new_count:
-                cur.execute('UPDATE Item SET ItemCount = %s WHERE ItemID = %s', (new_count, itemID))
-            if new_type:
-                cur.execute('UPDATE Item SET ItemType = %s WHERE ItemID = %s', (new_type, itemID))
-            if new_description:
-                cur.execute('UPDATE Item SET ItemDescription = %s WHERE ItemID = %s', (new_description, itemID))
-            if new_name:
-                cur.execute('UPDATE Item SET ItemName = %s WHERE ItemID = %s', (new_name, itemID))
+                    timestamp = int(datetime.datetime.now().timestamp())
+                    unique_filename = f"{timestamp}_{new_image.filename}"
+                    new_image_path = os.path.join('./static/items', unique_filename)
+                    new_image.save(new_image_path)
+                    cur.execute('UPDATE Item SET ImagePath = %s WHERE ItemID = %s', (new_image_path, itemID))
 
-            cur.execute('UPDATE Item SET GlutenFree = %s WHERE ItemID = %s', (gluten_free, itemID))
-            cur.execute('UPDATE Item SET Vegan = %s WHERE ItemID = %s', (vegan, itemID))
-            cur.execute('UPDATE Item SET DairyFree = %s WHERE ItemID = %s', (dairy_free, itemID))
-            cur.execute('UPDATE Item SET NutFree = %s WHERE ItemID = %s', (nut_free, itemID))
-            
-            con.commit()
-            return redirect(url_for('baker_home'))
+                # update all the categories
+                if new_name:
+                    cur.execute('UPDATE Item SET ItemName = %s WHERE ItemID = %s', (new_name, itemID))
+                if new_price:
+                    cur.execute('UPDATE Item SET PRICE = %s WHERE ItemID = %s', (new_price, itemID))
+                if new_count:
+                    cur.execute('UPDATE Item SET ItemCount = %s WHERE ItemID = %s', (new_count, itemID))
+                if new_type:
+                    cur.execute('UPDATE Item SET ItemType = %s WHERE ItemID = %s', (new_type, itemID))
+                if new_description:
+                    cur.execute('UPDATE Item SET ItemDescription = %s WHERE ItemID = %s', (new_description, itemID))
+                if new_name:
+                    cur.execute('UPDATE Item SET ItemName = %s WHERE ItemID = %s', (new_name, itemID))
+
+                cur.execute('UPDATE Item SET GlutenFree = %s WHERE ItemID = %s', (gluten_free, itemID))
+                cur.execute('UPDATE Item SET Vegan = %s WHERE ItemID = %s', (vegan, itemID))
+                cur.execute('UPDATE Item SET DairyFree = %s WHERE ItemID = %s', (dairy_free, itemID))
+                cur.execute('UPDATE Item SET NutFree = %s WHERE ItemID = %s', (nut_free, itemID))
+                
+                con.commit()
+                flash('Item successfully updated')
+                return redirect(url_for('edit_item'))
 
     return render_template('updateitem.html')
 
@@ -381,9 +390,16 @@ def delete_item():
         itemID = request.form['itemID']
         with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
             cur = con.cursor()
-            cur.execute('DELETE FROM Item WHERE ItemID = %s', (itemID,))
-            con.commit()
-            return redirect(url_for('baker_home'))
+            cur.execute('SELECT BakerID FROM Item WHERE ItemID = %s', (itemID,))
+            baker = cur.fetchone()
+            if baker and baker[0] == current_user:
+                cur.execute('DELETE FROM Item WHERE ItemID = %s', (itemID,))
+                con.commit()
+                flash('Item successfully deleted')
+                return redirect(url_for('delete_item'))
+            else:
+                flash('Cannot delete this item')
+                return redirect(url_for('delete_item'))
 
     return render_template('deleteitem.html')
 

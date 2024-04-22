@@ -86,6 +86,12 @@
             </div>
 
         </form>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                    <br><br>
+                    <div align="center">{{ messages[0] }}</div>
+            {% endif %}
+            {% endwith %}
         <br><br><br><br><br><br>
     </div>
 </body>

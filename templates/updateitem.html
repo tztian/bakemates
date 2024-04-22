@@ -75,6 +75,11 @@
 
     <div id="edit-item-form">
         <br><br><br><br><br><br>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                    <div align="center">{{ messages[0] }}</div>
+            {% endif %}
+            {% endwith %}
         <h1 align="center">Update an Item</h1>
         <form action="/edit_item" method="post" enctype="multipart/form-data">
 
