@@ -656,6 +656,31 @@ def bakery_listings(bakery_id):
             return render_template("error.html", msg = str(e))
 
 
+@app.route('/submit_review/<bakery_id>', methods=['POST'])
+def submit_review(bakery_id):
+    if not current_user:
+        return redirect(url_for('signin'))
+
+    rating = request.form['rating']
+    comments = request.form['comments']
+
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+    review_id = f"{bakery_id}_{current_user}"
+    try:
+        cur.execute('''
+            INSERT INTO Review (ReviewID, BakerID, BuyerID, Comments, Rating)
+            VALUES (%s, %s, %s, %s, %s)
+        ''', (review_id, bakery_id, current_user, comments, rating))
+        con.commit()
+    except Exception as e:
+        con.rollback()
+        print("You have already reviewed this baker", e)
+    finally:
+        con.close()
+
+    return redirect(url_for('bakery', bakery_id=bakery_id))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
