@@ -34,12 +34,12 @@ h1 {
     <div class="listings-container">
         {% for item in items %}
         <div class="item-box">
-            <a href="/displayItem/?item=(%27{{ item[0] }}%27,%20%27{{ bakery.bakery_id }}%27,%20{{ item[9] }},%20%27{{ item[1] | replace("'", "%27") }}%27,%20None,%20%27{{ item[4] | replace("'", "%27") }}%27,%20None,%20None,%20None,%20None,%20{{ item[9] }},%20%27{{ item[10] | replace("'", "%27") | replace("/", "%2F") }}%27,%20%27{{ bakery.bakery_id }}%27,%20%27{{ bakery.name | replace("'", "%27") }}%27,%20%27{{ bakery.description | replace("'", "%27") }}%27,%204.9,%20%27http://bk003.com%27,%20%27./static/baker/BK002%27,%20%27{{ bakery.bakery_id }}%27,%20%27hello@bk003.com%27,%20%27Baker%20Three%27,%20%27345-678-9012%27,%20%27789%20Pastry%20Rd%27,%20%27baker%27)" style="text-decoration: none; color: rgb(99, 48, 48);">
-                <img src="{{ item[10] }}" alt="{{ item[1] }}">
+            <a href="/displayItem/?item=(%27{{ item[0] }}%27,%20%27{{ bakery.bakery_id }}%27,%20{{ item[9] }},%20%27{{ item[1] | replace("'", "%27") }}%27,%20None,%20%27{{ item[4] | replace("'", "%27") }}%27,%20None,%20None,%20None,%20None,%20{{ item[11] }},%20%27{{ item[10] | replace("'", "%27") | replace("/", "%2F") }}%27,%20%27{{ bakery.bakery_id }}%27,%20%27{{ bakery.name | replace("'", "%27") }}%27,%20%27{{ bakery.description | replace("'", "%27") }}%27,%204.9,%20%27http://bk003.com%27,%20%27./static/baker/BK002%27,%20%27{{ bakery.bakery_id }}%27,%20%27hello@bk003.com%27,%20%27Baker%20Three%27,%20%27345-678-9012%27,%20%27789%20Pastry%20Rd%27,%20%27baker%27)" style="text-decoration: none; color: rgb(99, 48, 48);">
+                <img src="{{ item[9] }}" alt="{{ item[1] }}">
                 <h3>{{ item[1] }}</h3>
                 <p>{{ item[4] }}</p>
                 <p>Bakery: {{ bakery.name }}</p>
-                <p>Price: ${{ '%.2f'|format(item[9]) }}</p>
+                <p>Price: ${{ '%.2f'|format(item[10]) }}</p>
             </a>
         </div>
         {% endfor %}

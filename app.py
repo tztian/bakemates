@@ -228,6 +228,7 @@ def display_item():
         if val[0] == "'":
             val = val[1:len(val)-1]
         result.append(val)
+    print("item:", item[0])
     return render_template('item.html', item = result)
 
 @app.route('/filter', methods=['POST'])
@@ -619,29 +620,40 @@ def bakery(bakery_id):
 
 @app.route('/bakery/listings/<bakery_id>')
 def bakery_listings(bakery_id):
-    db_user = "guest" if current_user is None else current_user
-    db_password = "" if current_user is None else password
-    con = mysql.connector.connect(host="localhost", user=db_user, password=db_password, database="bakemates")
+        try:
+            # also check for items containing one word/ substring of item name
+            sub = item_name.split(' ')
+            if current_user == None:
+                con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
+            else:
+                con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+            
+            cur = con.cursor(buffered=True)
 
-    cur = con.cursor()
+                # cur.execute("DROP VIEW IF EXISTS Results")
+                # cur.execute("CREATE VIEW Results AS SELECT * FROM Baker INNER JOIN User ON Baker.BakerID = User.UserID")
+                # cur.execute('''SELECT * From Item JOIN Results ON Item.BakerID = Results.BakerID 
+                #            WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%'))) 
+                #            AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))''', [s, user_location])
 
-    # Fetch all items for a specific bakery
-    cur.execute('''
-        SELECT ItemID, ItemName, ItemCount, ItemType, ItemDescription, GlutenFree, Vegan, DairyFree, NutFree, Price, ImagePath
-        FROM Item
-        WHERE BakerID = %s
-    ''', (bakery_id,))
-    items = cur.fetchall()
-    con.close()
+            cur.execute('''SELECT *
+                                FROM Item
+                                JOIN (
+                                    SELECT *
+                                    FROM Baker
+                                    INNER JOIN User ON Baker.BakerID = User.UserID
+                                ) AS Results ON Item.BakerID = Results.BakerID WHERE Item.BakerID =%s''', [bakery_id])
+        
 
-    if items:
-        bakery_details = {
-            "bakery_id": bakery_id,
-            "name": items[0][1]
-        }
-        return render_template('bakerylistings.html', bakery=bakery_details, items=items, user=current_user)
-    else:
-        return render_template("error.html", msg="No items found for this bakery")
+            items = cur.fetchall()  
+
+            if len(items) > 0:
+                print(items)
+                return render_template("listings.html", items=items, user = current_user)
+            return render_template("error.html", msg="no results found")
+        except Exception as e:
+            print(e)
+            return render_template("error.html", msg = str(e))
 
 
 
