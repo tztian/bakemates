@@ -6,22 +6,24 @@ BAKEMATES is a platform connecting bakers and dessert enthusiasts.
 
 ## User Instructions
 
-### Buyers
+### For Buyers
 #### Creating an Account
 On the landing page, select `Sign up` at the top right corner, then select `Taster`. Fill out your information to create your account. To see your profile and order history go to `Hello [username]!!`. To edit your information, click on `Edit Profile` and fill out the optional information. Once you are finished purchasing baked goods to your heart's content, don't forget to `Log Out` of the application. `Sign in` to access your account again in the future.
 
 #### Searching for Baked Goods
-On the landing page, search for your desired pastries within your city using the search bar. This will bring you to the listing page displaying the 
+On the landing page, search for your desired pastries within your city using the search bar. This will bring you to the listing page displaying the items in your area. Once you have signed in, you would be automatically redirected to the same page. 
 
 #### Placing Orders
-Clicking on the image of an item will bring your to the items page, where 
+Clicking on the image of an item will bring your to the items page, where you can purchase the item by clicking `Buy now`. This will bring you to the checkout form. Enter your payment information and 
 
 #### Leaving a Review
 
-### Bakers
+### For Bakers
 #### Creating an Account
+On the landing page, select `Sign up` at the top right corner, then select `Baker`. Fill out your information to create your account. To edit your information, click on `Edit Profile` in your home page and fill out the optional information. Once you have finished setting up your shop, `Log Out` of the application. `Sign in` to access your account again in the future.
 
 #### Managing Your Items
+On the baker home page, scroll down to "Your Listings", which shows the details of all of your current items available to customers. There, you can add new items, update existing items, or delete existing items by clicking on the respective buttons, then fill out the information about the item you want to add/modify/delete.
 
 #### Checking and Fulfilling Orders
 
@@ -45,7 +47,7 @@ Clicking on the image of an item will bring your to the items page, where
 - **Role-based access control**: Tina Tian
 - **HTML/CSS for most of the web pages**: Haleigh Gahan, Clara Martinson
 - **Sign up/login**: Tina Tian
-- **Editing user profile**: Rohith Gottiparthi, Tina Tian
+- **User profiles**: Rohith Gottiparthi, Tina Tian
 - **Search for items**: Haleigh Gahan
 - **Add, update, delete items**: Clara Martinson, Tina Tian
 - **Public profile for the bakers**: Rohith Gottiparthi, Clara Martinson
