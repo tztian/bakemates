@@ -590,7 +590,6 @@ def submit_custom_order():
 
 @app.route('/bakery/<bakery_id>')
 def bakery(bakery_id):
-
     # Connect to the database
     db_user = "guest" if current_user is None else current_user
     db_password = "" if current_user is None else password
@@ -598,28 +597,53 @@ def bakery(bakery_id):
 
     cur = con.cursor()
 
-    # Fetch all items for a specific bakery and the bakery name, description, and image path
+    # Fetch bakery details
     cur.execute('''
-        SELECT Item.ItemID, Item.ItemName, Item.ItemCount, Item.ItemType, Item.ItemDescription, 
-               Item.GlutenFree, Item.Vegan, Item.DairyFree, Item.NutFree, Item.Price, Item.ImagePath, 
-               Baker.BakeryName, Baker.Description, Baker.ImagePath
-        FROM Item 
-        JOIN Baker ON Item.BakerID = Baker.BakerID
-        WHERE Baker.BakerID = %s
+        SELECT BakeryName, Description, ImagePath
+        FROM Baker 
+        WHERE BakerID = %s
     ''', (bakery_id,))
-    items = cur.fetchall()
-    con.commit()
-
-    bakery_details = {
-        "name": items[0][11],
-        "description": items[0][12],
-        "image_path": items[0][13]
-    }
-
-    cur.close()
+    bakery = cur.fetchone()
     con.close()
 
-    return render_template('bakerylistings.html', bakery=bakery_details, items=items, user=current_user)
+    if bakery:
+        bakery_details = {
+            "bakery_id": bakery_id,
+            "name": bakery[0],
+            "description": bakery[1],
+            "image_path": bakery[2]
+        }
+        return render_template('bakerprofile.html', bakery=bakery_details, user=current_user)
+    else:
+        return render_template("error.html", msg="Bakery not found")
+
+@app.route('/bakery/listings/<bakery_id>')
+def bakery_listings(bakery_id):
+    db_user = "guest" if current_user is None else current_user
+    db_password = "" if current_user is None else password
+    con = mysql.connector.connect(host="localhost", user=db_user, password=db_password, database="bakemates")
+
+    cur = con.cursor()
+
+    # Fetch all items for a specific bakery
+    cur.execute('''
+        SELECT ItemID, ItemName, ItemCount, ItemType, ItemDescription, GlutenFree, Vegan, DairyFree, NutFree, Price, ImagePath
+        FROM Item
+        WHERE BakerID = %s
+    ''', (bakery_id,))
+    items = cur.fetchall()
+    con.close()
+
+    if items:
+        bakery_details = {
+            "bakery_id": bakery_id,
+            "name": items[0][1]
+        }
+        return render_template('bakerylistings.html', bakery=bakery_details, items=items, user=current_user)
+    else:
+        return render_template("error.html", msg="No items found for this bakery")
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
