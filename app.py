@@ -228,8 +228,10 @@ def display_item():
         print (val)
         if val[0] == "'":
             val = val[1:len(val)-1]
-        if i == 10:
+        elif i == 10:
             val = float(val)
+        elif val[0] == "\"":
+            val = val[1:len(val)-1]
         result.append(val)
     return render_template('item.html', item = result)
 
