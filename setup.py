@@ -72,7 +72,7 @@ cur.execute('''CREATE TABLE Item
                 Vegan BOOL,
                 DairyFree BOOL,
                 NutFree BOOL,
-                Price FLOAT(2),
+                Price DECIMAL(10,2),
                 ImagePath VARCHAR(255),
                 FOREIGN KEY (BakerID) REFERENCES Baker (BakerID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')

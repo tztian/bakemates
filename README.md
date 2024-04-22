@@ -8,18 +8,20 @@ BAKEMATES is a platform connecting bakers and dessert enthusiasts.
 
 ### Buyers
 #### Creating an Account
-On the landing page, select `Sign up` at the top right corner, then select `Taster`. Fill out your information to create your account. To edit your profile, go to `Edit Profile` and fill out the optional fields; this will make your items 
+On the landing page, select `Sign up` at the top right corner, then select `Taster`. Fill out your information to create your account. To see your profile and order history go to `Hello [username]!!`. To edit your information, click on `Edit Profile` and fill out the optional information. Once you are finished purchasing baked goods to your heart's content, don't forget to `Log Out` of the application. `Sign in` to access your account again in the future.
 
 #### Searching for Baked Goods
+On the landing page, search for your desired pastries within your city using the search bar. This will bring you to the listing page displaying the 
 
 #### Placing Orders
+Clicking on the image of an item will bring your to the items page, where 
 
 #### Leaving a Review
 
 ### Bakers
 #### Creating an Account
 
-#### Adding Items to the Listing
+#### Managing Your Items
 
 #### Checking and Fulfilling Orders
 

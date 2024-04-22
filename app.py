@@ -107,13 +107,13 @@ def signin_to_page():
         with mysql.connector.connect(host="localhost",user='root',password='',database="bakemates") as con:
             cur = con.cursor()
             cur.execute("SELECT Password FROM User WHERE UserID = %s", (current_user,))
-            password = cur.fetchone()[0]
+            password = cur.fetchone()
             if not password:
                 flash('User does not exist')
                 current_user = None
                 password = None
                 return redirect(url_for('signin'))
-            if not bcrypt.check_password_hash(password, unhashed_password):
+            if not bcrypt.check_password_hash(password[0], unhashed_password):
                 flash('Password incorrect')
                 current_user = None
                 password = None
