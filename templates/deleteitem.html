@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakemates-Your Bakery</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        form {
+            width: 50%;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="url"],
+        textarea {
+            width: calc(100% - 24px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="listings-nav">
+        <a href="{{ url_for('logout') }}" class="listings-nav-item">Log Out</a>
+            <a href="{{ url_for('add_item') }}" class="listings-nav-item">Post Item</a>
+            <a href="{{ url_for('baker_home') }}" class="listings-nav-item">Home</a>
+    </div>
+
+    <div id="delete-item-form">
+        <br><br><br><br><br><br>
+        <h1 align="center">Delete an Item</h1>
+        <form action="/delete_item" method="post">
+
+            <label for="itemID">ID of Item to be Deleted:</label>
+            <input type="text" id="itemID" name="itemID">
+
+            <div class="btn-container">
+                <input type="submit" value="Delete Item">
+            </div>
+
+        </form>
+        <br><br><br><br><br><br>
+    </div>
+</body>
+</html>

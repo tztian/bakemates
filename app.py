@@ -375,10 +375,16 @@ def edit_item():
 
     return render_template('updateitem.html')
 
-@app.route('/delete_item')
+@app.route('/delete_item', methods=['GET', 'POST'])
 def delete_item():
-    #needs to work with the form from additem.html
-    #also needs to send everything from the form into the database
+    if request.method == 'POST':
+        itemID = request.form['itemID']
+        with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+            cur = con.cursor()
+            cur.execute('DELETE FROM Item WHERE ItemID = %s', (itemID,))
+            con.commit()
+            return redirect(url_for('baker_home'))
+
     return render_template('deleteitem.html')
 
 @app.route('/edit_baker', methods = ['POST','GET'])
