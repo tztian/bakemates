@@ -122,9 +122,9 @@ with open('./data/bakers.json', 'r') as file:
     bakers = data['bakers']
     for baker in bakers:
         cur.execute('''
-        INSERT INTO Baker (BakerID, BakeryName, Description, Rating, Website)
-        VALUES (%s, %s, %s, %s, %s)
-        ''', (baker['BakerID'], baker['BakeryName'], baker['Description'], baker['Rating'], baker['Website']))
+        INSERT INTO Baker (BakerID, BakeryName, Description, Rating, Website, ImagePath)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (baker['BakerID'], baker['BakeryName'], baker['Description'], baker['Rating'], baker['Website'], baker['ImagePath']))
     con.commit()
 
 # Load and insert data from items.json

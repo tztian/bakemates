@@ -14,7 +14,7 @@
         <div class = item-container >
             <div class = item-title>{{ item[3] }}</div>
             <img src= "{{item[9]}}"> 
-            <div class = "bakery">bakery name
+            <div class = "bakery">{{ item[13] }}
                 <div class = "info">
                     {{ item[5] }} <br>
                     Price: ${{ item[10] }} <br>
@@ -22,6 +22,8 @@
                     Vegan: {{ 'Yes' if item[7] else 'No' }} <br>
                     Dairy-Free: {{ 'Yes' if item[8] else 'No' }} <br>
                     Nut-Free: {{ 'Yes' if item[9] else 'No' }} <br>
+                    <!-- button for the bakery name to redir to bakery listings-->
+                    <a href="{{ url_for('bakery', bakery_id = item[1]) }}" class="bakery-btn">View Bakery</a>
                 </div>
                 <br>
                 <a href="{{ url_for('checkout', item_id=item[0]) }}" class="checkout-btn">Buy Now</a>

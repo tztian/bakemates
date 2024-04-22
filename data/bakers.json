@@ -5,21 +5,24 @@
             "BakeryName": "Blake's Cakes",
             "Description": "Specializes in cakes",
             "Rating": 4.5,
-            "Website": "http://bk001.com"
+            "Website": "http://bk001.com",
+            "ImagePath":"../static/bakers/BK003.jpg"
         },
         {
             "BakerID": "BK002",
             "BakeryName": "Bread Kingdom",
             "Description": "Artisan breads",
             "Rating": 4.8,
-            "Website": "http://bk002.com"
+            "Website": "http://bk002.com",
+            "ImagePath":"../static/bakers/BK001.jpg"
         },
         {
             "BakerID": "BK003",
             "BakeryName": "La boulangerie",
             "Description": "French pastries",
             "Rating": 4.9,
-            "Website": "http://bk003.com"
+            "Website": "http://bk003.com",
+            "ImagePath":"../static/bakers/BK002.jpg"
         }
     ]
 }
