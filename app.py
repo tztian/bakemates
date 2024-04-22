@@ -224,10 +224,12 @@ def display_item():
     item = request.args.get('item')
     item = item[1:len(item)-1]
     result = []
-    for val in item.split(', '):
+    for i, val in enumerate(item.split(', ')):
         print (val)
         if val[0] == "'":
             val = val[1:len(val)-1]
+        if i == 10:
+            val = float(val)
         result.append(val)
     return render_template('item.html', item = result)
 

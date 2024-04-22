@@ -82,7 +82,7 @@
                 <a href = "/displayItem/?item={{item}}", style = "text-decoration: none; color: rgb(99, 48, 48); font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
                     <img src= "{{item[11]}}">
                     <h3>{{ item[3] }}</h3>
-                    <p>Price: ${{ item[10] }}</p>   
+                    <p>Price: ${{ '%.2f'|format(item[10]) }}</p>   
                 </a>     
             </div>
             {% endfor %}
