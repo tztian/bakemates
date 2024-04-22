@@ -128,15 +128,15 @@ with open('./data/bakers.json', 'r') as file:
     con.commit()
 
 # Load and insert data from items.json
-"""with open('./data/items.json', 'r') as file:
+with open('./data/items.json', 'r') as file:
     data = json.load(file)
     items = data['items']
     for item in items:
         cur.execute('''
-        INSERT INTO Item (ItemID, BakerID, ItemCount, ItemName, ItemDescription, Price, ImagePath)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        ''', (item['ItemID'], item['BakerID'], item['ItemCount'], item['ItemName'], item['ItemDescription'], item['Price'], item['ImagePath']))
-    con.commit()"""
+        INSERT INTO Item (BakerID, ItemCount, ItemName, ItemDescription, Price, ImagePath)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (item['BakerID'], item['ItemCount'], item['ItemName'], item['ItemDescription'], item['Price'], item['ImagePath']))
+    con.commit()
 # role based access
 
 

@@ -107,7 +107,7 @@ def signin_to_page():
         with mysql.connector.connect(host="localhost",user='root',password='',database="bakemates") as con:
             cur = con.cursor()
             cur.execute("SELECT Password FROM User WHERE UserID = %s", (current_user,))
-            password = cur.fetchone()
+            password = cur.fetchone()[0]
             if not password:
                 flash('User does not exist')
                 current_user = None

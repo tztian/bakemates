@@ -1,7 +1,6 @@
 {
     "items": [
         {
-            "ItemID": "001",
             "BakerID": "BK001",
             "ItemCount": 50,
             "ItemName": "Chocolate Cake",
@@ -10,7 +9,6 @@
             "ImagePath": "../static/items/chocolate-cake.jpg"
         },
         {
-            "ItemID": "002",
             "BakerID": "BK002",
             "ItemCount": 30,
             "ItemName": "Blueberry Muffin",
@@ -19,7 +17,6 @@
             "ImagePath": "../static/items/blueberry-muffins.jpg"
         },
         {
-            "ItemID": "003",
             "BakerID": "BK003",
             "ItemCount": 40,
             "ItemName": "Banana Bread",
@@ -28,7 +25,6 @@
             "ImagePath": "../static/items/banana-bread.jpg"
         },
         {
-            "ItemID": "004",
             "BakerID": "BK001",
             "ItemCount": 25,
             "ItemName": "Apple Pie",
@@ -37,7 +33,6 @@
             "ImagePath": "../static/items/apple-pie.jpg"
         },
         {
-            "ItemID": "005",
             "BakerID": "BK002",
             "ItemCount": 60,
             "ItemName": "Croissant",
