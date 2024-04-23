@@ -190,6 +190,7 @@ def baker_signup():
         
         try:
             with mysql.connector.connect(host="localhost", user="root", password = "", database = "bakemates") as con:
+                print("here")
                 cur = con.cursor()
                 cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
                 num = cur.fetchone()[0]
@@ -261,7 +262,39 @@ def display_item():
 @app.route('/filter', methods=['POST'])
 def filter_items():
     categories = request.form.getlist('type')
+    diets = request.form.getlist('diet')
     items = []
+    restrictions = ""
+    for diet in diets:
+        if current_user == None:
+            con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
+        else:
+            con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+
+        cur = con.cursor(buffered=True)
+        if diet == "Gluten Free":
+            if len(restrictions > 0):
+                restrictions += " AND "
+            restrictions += "GlutenFree = TRUE"
+        if diet == "Dairy Free":
+            if len(restrictions > 0):
+                restrictions += " AND "
+            restrictions += "DairyFree = TRUE"
+        if diet == "Vegan":
+            if len(restrictions > 0):
+                restrictions += " AND "
+            restrictions += "Vegan = TRUE"
+        if diet == "Nut Free":
+            if len(restrictions > 0):
+                restrictions += " AND "
+            restrictions += "NutFree = TRUE"
+
+        if categories == None:
+            cur.execute("SELECT * FROM Item WHERE %s", [restrictions])
+            items += cur.fetchall()
+            if len(items) == 0:
+                return render_template('error.html', msg = 'No Sweet Treats Found ☹')
+            return render_template('listings.html', items = items, user = current_user, is_baker = False)
     for category in categories:
         if category == 'All':
             return redirect('/listings')
@@ -275,18 +308,30 @@ def filter_items():
             cur = con.cursor(buffered=True)
             cur.execute("SELECT * From Item WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [category])
             if category == "Bread":
-                cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Bread",))
+                if len(restrictions) > 0:
+                    cur.execute("SELECT * FROM Item WHERE ItemType = %s AND %s", ["Bread", restrictions])
+                else:
+                    cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Bread",))
             if category == "Pastry":
-                cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Pastry",))
+                if len(restrictions) > 0:
+                    cur.execute("SELECT * FROM Item WHERE ItemType = %s AND %s", ["Pastry", restrictions])
+                else:
+                    cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Pastry",))
             if category == "Cake":
-                cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Cake",))
+                if len(restrictions) > 0:
+                    cur.execute("SELECT * FROM Item WHERE ItemType = %s AND %s", ["Cake", restrictions])
+                else:
+                    cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Cake",))
             if category == "Cookie":
-                cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Cookie",))
-            
+                if len(restrictions) > 0:
+                    cur.execute("SELECT * FROM Item WHERE ItemType = %s AND %s", ["Cookie", restrictions])
+                else:
+                    cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Cookie",))
                         
         items += cur.fetchall() 
+    
+
     if len(items) == 0:
-        print("here")
         return render_template('error.html', msg = 'No Sweet Treats Found ☹')
     return render_template('listings.html', items = items, user = current_user, is_baker = False)
     
