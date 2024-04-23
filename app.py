@@ -654,7 +654,7 @@ def bakery(bakery_id):
 def bakery_listings(bakery_id):
         try:
             # also check for items containing one word/ substring of item name
-            sub = item_name.split(' ')
+            # sub = item_name.split(' ')
             if current_user == None:
                 con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
             else:
