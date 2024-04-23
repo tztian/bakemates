@@ -306,8 +306,14 @@ def baker_home():
             baker_info = cur.fetchall()[0]
             cur.execute('''SELECT * FROM Item WHERE BakerID = %s''', (current_user,))
             items = cur.fetchall()
+            # Fetch orders
+            cur.execute('''SELECT * FROM Orders o
+                        JOIN Item i ON o.ItemID = i.ItemID
+                        JOIN Baker b ON i.BakerID = b.BakerID
+                        WHERE b.BakerID = %s''', (current_user,))
+            orders = cur.fetchall()
 
-        return render_template('bakerhome.html', user_info = user_info, baker_info = baker_info, rows = items)
+        return render_template('bakerhome.html', user_info = user_info, baker_info = baker_info, rows = items, orders=orders)
     
     except Exception as e:
         print(e)
@@ -554,15 +560,15 @@ def buyer_profile():
 
         # Fetch user information
         cur.execute("SELECT * FROM User WHERE UserID = %s", (current_user,))
-        user_info = cur.fetchone()  # fetchone() if expecting single result per user
+        user_info = cur.fetchone()
 
         # Fetch buyer information
         cur.execute("SELECT * FROM Buyer WHERE BuyerID = %s", (current_user,))
-        buyer_info = cur.fetchone()  # fetchone() for single result
+        buyer_info = cur.fetchone()
 
         # Fetch orders
         cur.execute("SELECT * FROM Orders WHERE BuyerID = %s", (current_user,))
-        orders = cur.fetchall()  # Fetch all orders for the user
+        orders = cur.fetchall()
 
     return render_template('buyerprofile.html', user=current_user, user_info=user_info, buyer_info=buyer_info, orders=orders)
 
