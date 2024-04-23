@@ -21,6 +21,8 @@
         <a href="{{ url_for('buyer_profile') }}" class="listings-nav-item">Hello {{ user }}!!</a>
         {% endif %}
         <!-- Filters Section -->
+
+        {% if not is_baker %}
         <div class="box">
             <a href="#popup-box" >Filter Results</a>
         </div>
@@ -70,17 +72,26 @@
                 >
             </div>
         </div>
+        {% endif %}
         <!-- Add more links/buttons as needed -->
     </div>
     <div id = "listingsPage" class = "container">
-        <img src = "../static/photos/beth-macdonald-V6LEV6CBVLw-unsplash.jpg">
+        {% if is_baker %}
+            <img src = "../../static/photos/beth-macdonald-V6LEV6CBVLw-unsplash.jpg">
+        {% else %}
+            <img src = "../static/photos/beth-macdonald-V6LEV6CBVLw-unsplash.jpg">
+        {% endif %}
         <!-- Listings Section -->
         <div class="listings-container">
             <!-- Loop through items and display them in a grid -->
             {% for item in items %}
             <div class="item-box">
                 <a href = "/displayItem/?item={{item}}", style = "text-decoration: none; color: rgb(99, 48, 48); font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
-                    <img src= "{{item[11]}}">
+                    {% if is_baker %}
+                        <img src= "../{{item[11]}}">
+                    {% else %}
+                        <img src= "{{item[11]}}">
+                    {% endif %}
                     <h3>{{ item[3] }}</h3>
                     <p>Price: ${{ '%.2f'|format(item[10]) }}</p>   
                 </a>     
