@@ -42,6 +42,28 @@
             text-align: center;
             margin-top: 20px;
         }
+
+        .order-table {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+        }
+
+        .order-table table {
+            width: 100%;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-table th {
+            background-color: #ffe5ec;
+        }
+
     </style>
 
 </head>
@@ -97,7 +119,9 @@
         <a href="/edit_buyer" class="edit-btn">Edit Profile</a>
     </div>
 
+    <br>
    <h2 align="center">Order History</h2>
+   <div class="order-table">
    <table>
        <tr>
            <th>Order ID</th>
@@ -118,4 +142,6 @@
        </tr>
        {% endfor %}
    </table>
+   <br><br><br>
+    </div>
 </body>
