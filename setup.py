@@ -57,6 +57,7 @@ cur.execute('''CREATE TABLE Baker
                 Rating FLOAT,
                 Website TEXT,
                 ImagePath VARCHAR(255),
+                NumReviews INT,
                 FOREIGN KEY (BakerID) REFERENCES User (UserID)
                     ON DELETE CASCADE ON UPDATE NO ACTION)''')
 
@@ -121,9 +122,9 @@ with open('./data/bakers.json', 'r') as file:
     bakers = data['bakers']
     for baker in bakers:
         cur.execute('''
-        INSERT INTO Baker (BakerID, BakeryName, Description, Rating, Website, ImagePath)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        ''', (baker['BakerID'], baker['BakeryName'], baker['Description'], baker['Rating'], baker['Website'], baker['ImagePath']))
+        INSERT INTO Baker (BakerID, BakeryName, Description, Rating, Website, ImagePath, NumReviews)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        ''', (baker['BakerID'], baker['BakeryName'], baker['Description'], baker['Rating'], baker['Website'], baker['ImagePath'], baker['NumReviews']))
     con.commit()
 
 # Load and insert data from items.json
