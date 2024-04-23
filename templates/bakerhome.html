@@ -191,8 +191,30 @@ h1 {
 
         <br><br>
         <h2 align="center">Order History</h2>
+        <div class="listing-table">
+        <table>
+            <tr>
+                <th>Order ID</th>
+                <th>Item ID</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>Cost</th>
+                <th>Notes</th>
+            </tr>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order[0] }}</td>
+                <td>{{ order[1] }}</td>
+                <td>{{ order[4] }}</td>
+                <td>{{ order[5] }}</td>
+                <td>${{ "%.2f"|format(order[6]) }}</td>
+                <td>{{ order[3] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br><br><br>
+        </div>
     </div>
 
-    
 </body>
 </html>
