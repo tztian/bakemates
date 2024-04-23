@@ -11,49 +11,69 @@
     h1 {
         font-family: 'Rampart One', cursive;
     }
+
+    .edit-btn {
+        display: inline-block;
+        background-color: #ffe5ec;
+        color: #000000;
+        padding: 8px 12px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .edit-btn-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .edit-btn:hover {
+        background-color: #ff8cea;
+    }
 </style>
 <body>
     <div id="listings-nav">
         <!-- Navigation Bar Logic -->
         {% if user %}
             <a href="{{ url_for('logout') }}" class="listings-nav-item">Log Out</a>
-            <a href="{{ url_for('custom_order') }}" class="listings-nav-item">Place Custom Order</a>
         {% else %}
             <a href="{{ url_for('signin') }}" class="listings-nav-item">Sign In</a>
             <a href="{{ url_for('signup') }}" class="listings-nav-item">Sign Up</a>
         {% endif %}
     </div>
 
-    <div class="bakery-info">
-        <img src="{{ bakery.image_path }}" alt="{{ bakery.name }} Image" style="width:100%;">
+    <div class="baker-home-container">
+        <br><br><br>
+        <img src="{{ bakery.image_path }}" alt="{{ bakery.name }} Image" height="400">
         <h1>{{ bakery.name }}</h1>
         <p>{{ bakery.description }}</p>
-    </div>
 
-    <!-- Review Form -->
-    {% if user %}
-    <div>
-        <h2>Leave a Review</h2>
-        <form action="{{ url_for('submit_review', bakery_id=bakery.bakery_id) }}" method="post">
-            <label for="rating">Rating (1-5):</label>
-            <select name="rating" id="rating">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-            <br>
-            <label for="comments">Comments:</label>
-            <textarea name="comments" id="comments" rows="4" cols="50"></textarea>
-            <br>
-            <input type="submit" value="Submit Review">
-        </form>
-    </div>
-    {% endif %}
+        <!-- Review Form -->
+        {% if user %}
+        <div>
+            <h2>Leave a Review</h2>
+            <form action="{{ url_for('submit_review', bakery_id=bakery.bakery_id) }}" method="post">
+                <label for="rating">Rating (1-5):</label>
+                <select name="rating" id="rating">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <br>
+                <label for="comments">Comments:</label>
+                <textarea name="comments" id="comments" rows="4" cols="50"></textarea>
+                <br>
+                <input type="submit" value="Submit Review">
+            </form>
+        </div>
+        {% endif %}
 
-    <div class="edit-btn-container">
-        <a href="/bakery/listings/{{ bakery.bakery_id }}" class="edit-btn">View Bakery Listings</a>
+        <div class="edit-btn-container">
+            <a href="/bakery/listings/{{ bakery.bakery_id }}" class="edit-btn">View Bakery Listings</a>
+        </div>
+
     </div>
 
 </body>
