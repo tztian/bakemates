@@ -6,7 +6,7 @@
             "ItemName": "Chocolate Cake",
             "ItemDescription": "Rich and moist chocolate layer cake with chocolate frosting.",
             "Price": 20.00,
-            "ImagePath": "../static/items/chocolate-cake.jpg"
+            "ImagePath": "./static/items/chocolate-cake.jpg"
         },
         {
             "BakerID": "BK002",
@@ -14,7 +14,7 @@
             "ItemName": "Blueberry Muffin",
             "ItemDescription": "Soft and fluffy muffins loaded with fresh blueberries.",
             "Price": 3.50,
-            "ImagePath": "../static/items/blueberry-muffins.jpg"
+            "ImagePath": "./static/items/blueberry-muffins.jpg"
         },
         {
             "BakerID": "BK003",
@@ -22,7 +22,7 @@
             "ItemName": "Banana Bread",
             "ItemDescription": "Moist bread made with ripe bananas and a hint of cinnamon.",
             "Price": 12.00,
-            "ImagePath": "../static/items/banana-bread.jpg"
+            "ImagePath": "./static/items/banana-bread.jpg"
         },
         {
             "BakerID": "BK001",
@@ -30,7 +30,7 @@
             "ItemName": "Apple Pie",
             "ItemDescription": "Traditional apple pie with a buttery crust and a hint of cinnamon.",
             "Price": 15.00,
-            "ImagePath": "../static/items/apple-pie.jpg"
+            "ImagePath": "./static/items/apple-pie.jpg"
         },
         {
             "BakerID": "BK002",
@@ -38,7 +38,7 @@
             "ItemName": "Croissant",
             "ItemDescription": "Buttery and flaky French pastries: freshly baked.",
             "Price": 2.50,
-            "ImagePath": "../static/items/croissant.jpg"
+            "ImagePath": "./static/items/croissant.jpg"
         }
     ]
 }
