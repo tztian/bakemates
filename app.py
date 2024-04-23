@@ -99,66 +99,80 @@ def signin():
 @app.route('/signin', methods=['POST', 'GET'])
 def signin_to_page():
     if request.method == 'POST':
-        global current_user
-        global password 
-        current_user = request.form['usrnm']
-        unhashed_password = request.form['psw']
+        try:
+            global current_user
+            global password 
+            current_user = request.form['usrnm']
+            unhashed_password = request.form['psw']
 
-        with mysql.connector.connect(host="localhost",user='root',password='',database="bakemates") as con:
-            cur = con.cursor()
-            cur.execute("SELECT Password FROM User WHERE UserID = %s", (current_user,))
-            password = cur.fetchone()
-            if password:
-                password = password[0]
-            if not password:
-                flash('User does not exist')
-                current_user = None
-                password = None
-                return redirect(url_for('signin'))
-            if not bcrypt.check_password_hash(password, unhashed_password):
-                flash('Password incorrect')
-                current_user = None
-                password = None
-                return redirect(url_for('signin'))
-            
-            cur.execute("SELECT COUNT(*) FROM Buyer WHERE BuyerID = %s", (current_user,))
-            num = cur.fetchone()[0]
-            if num  == 1:
-                return redirect(url_for('listings'))
-            else:
-                return redirect(url_for('baker_home'))
+            with mysql.connector.connect(host="localhost",user='root',password='',database="bakemates") as con:
+                cur = con.cursor()
+                cur.execute("SELECT Password FROM User WHERE UserID = %s", (current_user,))
+                password = cur.fetchone()
+                if password:
+                    password = password[0]
+                if not password:
+                    flash('User does not exist')
+                    current_user = None
+                    password = None
+                    return redirect(url_for('signin'))
+                if not bcrypt.check_password_hash(password, unhashed_password):
+                    flash('Password incorrect')
+                    current_user = None
+                    password = None
+                    return redirect(url_for('signin'))
+                
+                cur.execute("SELECT COUNT(*) FROM Buyer WHERE BuyerID = %s", (current_user,))
+                num = cur.fetchone()[0]
+                if num  == 1:
+                    return redirect(url_for('listings'))
+                else:
+                    return redirect(url_for('baker_home'))
+                
+        except Exception as e:
+            print(e)
+            return render_template("error.html", msg = str(e))
+
 
 
 @app.route('/buyersignup', methods=['GET', 'POST'])
 def buyer_signup():
     if request.method == 'POST':
-        global current_user
-        global password
-        current_user = request.form['usrnm']
-        password = bcrypt.generate_password_hash(request.form['psw']).decode('utf-8')
-        email = request.form['email']
+        try: 
+            global current_user
+            global password
+            current_user = request.form['usrnm']
+            password = bcrypt.generate_password_hash(request.form['psw']).decode('utf-8')
+            email = request.form['email']
+            
+            with mysql.connector.connect(host="localhost",user="root",password="",database="bakemates") as con:
+                cur = con.cursor()
+                cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
+                num = cur.fetchone()[0]
+                if num > 0:
+                    flash('User already exists')
+                    current_user = None
+                    password = None
+                    return redirect(url_for('buyer_signup'))
+
+                cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
+                cur.execute("FLUSH PRIVILEGES")
+                cur.execute("CREATE USER %s@'localhost' IDENTIFIED BY %s", (current_user, password))
+                cur.execute("GRANT 'Buyer' TO %s@'localhost'", (current_user,))
+                cur.execute("SET DEFAULT ROLE 'Buyer' TO %s@'localhost'", (current_user,))
+                #cur.execute("FLUSH PRIVILEGES")
+
+                cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
+                cur.execute("INSERT INTO Buyer(BuyerID) VALUES(%s)", (current_user,))
+                con.commit()
         
-        with mysql.connector.connect(host="localhost",user="root",password="",database="bakemates") as con:
-            cur = con.cursor()
-            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
-            num = cur.fetchone()[0]
-            if num > 0:
-                flash('User already exists')
-                current_user = None
-                password = None
-                return redirect(url_for('buyer_signup'))
+        except Exception as e:
+            con.rollback()
+            print(e)
+            return render_template("error.html", msg = str(e))
 
-            cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
-            cur.execute("FLUSH PRIVILEGES")
-            cur.execute("CREATE USER %s@'localhost' IDENTIFIED BY %s", (current_user, password))
-            cur.execute("GRANT 'Buyer' TO %s@'localhost'", (current_user,))
-            cur.execute("SET DEFAULT ROLE 'Buyer' TO %s@'localhost'", (current_user,))
-            #cur.execute("FLUSH PRIVILEGES")
-
-            cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
-            cur.execute("INSERT INTO Buyer(BuyerID) VALUES(%s)", (current_user,))
-            con.commit()
-        return redirect(url_for('listings'))
+        else:
+            return redirect(url_for('listings'))
 
     return render_template('buyersignup.html')
 
