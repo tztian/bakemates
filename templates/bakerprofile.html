@@ -43,11 +43,13 @@
     </div>
 
     <div class="baker-home-container">
-        <br><br><br>
-        <img src="{{ bakery.image_path }}" alt="{{ bakery.name }} Image" height="400">
-        <h1>{{ bakery.name }}</h1>
-        <p>{{ bakery.description }}</p>
-
+        <div class="bakery-info">
+            <img src="{{ bakery.image_path }}" alt="{{ bakery.name }} Image" height="400">
+            <h1>{{ bakery.name }}</h1>
+            <p>{{ bakery.description }}</p>
+            <h3>Average Rating: {{ bakery.average_rating }}</h3>
+        </div>
+        
         <!-- Review Form -->
         {% if user %}
         <div>
@@ -55,11 +57,9 @@
             <form action="{{ url_for('submit_review', bakery_id=bakery.bakery_id) }}" method="post">
                 <label for="rating">Rating (1-5):</label>
                 <select name="rating" id="rating">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
+                    {% for i in range(1, 6) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
                 </select>
                 <br>
                 <label for="comments">Comments:</label>
@@ -69,10 +69,25 @@
             </form>
         </div>
         {% endif %}
-
+        
+        <!-- Reviews Section -->
+        <div>
+            <h2>Reviews</h2>
+            {% if bakery.reviews %}
+            <ul>
+                {% for review in bakery.reviews %}
+                <li><strong>{{ review[2] }}</strong>: {{ review[0] }} - <em>{{ review[1] | int }}/5</em></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No reviews yet.</p>
+            {% endif %}
+        </div>
+        
         <div class="edit-btn-container">
             <a href="/bakery/listings/{{ bakery.bakery_id }}" class="edit-btn">View Bakery Listings</a>
         </div>
+    </div>
 
     </div>
 

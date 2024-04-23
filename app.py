@@ -637,6 +637,21 @@ def bakery(bakery_id):
         WHERE BakerID = %s
     ''', (bakery_id,))
     bakery = cur.fetchone()
+
+    # Fetch reviews for the bakery and average rating
+    cur.execute('''
+        SELECT Comments, Rating, BuyerID
+        FROM Review
+        WHERE BakerID = %s
+    ''', (bakery_id,))
+    reviews = cur.fetchall()
+
+    # Calculate average rating
+    if reviews:
+        average_rating = sum([review[1] for review in reviews]) / len(reviews)
+    else:
+        average_rating = "n/a"
+
     con.close()
 
     if bakery:
@@ -644,7 +659,9 @@ def bakery(bakery_id):
             "bakery_id": bakery_id,
             "name": bakery[0],
             "description": bakery[1],
-            "image_path": bakery[2]
+            "image_path": bakery[2],
+            "reviews": reviews,
+            "average_rating": average_rating
         }
         return render_template('bakerprofile.html', bakery=bakery_details, user=current_user)
     else:
@@ -654,7 +671,6 @@ def bakery(bakery_id):
 def bakery_listings(bakery_id):
         try:
             # also check for items containing one word/ substring of item name
-            sub = item_name.split(' ')
             if current_user == None:
                 con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
             else:
