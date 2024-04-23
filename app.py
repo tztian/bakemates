@@ -55,12 +55,6 @@ def search():
             cur = con.cursor(buffered=True)
 
             for s in sub:
-                # cur.execute("DROP VIEW IF EXISTS Results")
-                # cur.execute("CREATE VIEW Results AS SELECT * FROM Baker INNER JOIN User ON Baker.BakerID = User.UserID")
-                # cur.execute('''SELECT * From Item JOIN Results ON Item.BakerID = Results.BakerID 
-                #            WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%'))) 
-                #            AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))''', [s, user_location])
-
                 cur.execute('''SELECT *
                                 FROM Item
                                 JOIN (
@@ -71,13 +65,14 @@ def search():
                                 WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))
                                 AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))''', [s, user_location])
         
-
             items = cur.fetchall()  
+            con.close()
 
             if len(items) > 0:
                 print(items)
                 return render_template("listings.html", items=items, user = current_user, is_baker = False)
             return render_template("error.html", msg="no results found")
+        
         except Exception as e:
             print(e)
             return render_template("error.html", msg = str(e))
@@ -99,12 +94,12 @@ def signin():
 @app.route('/signin', methods=['POST', 'GET'])
 def signin_to_page():
     if request.method == 'POST':
-        try:
-            global current_user
-            global password 
-            current_user = request.form['usrnm']
-            unhashed_password = request.form['psw']
+        global current_user
+        global password 
+        current_user = request.form['usrnm']
+        unhashed_password = request.form['psw']
 
+        try:
             with mysql.connector.connect(host="localhost",user='root',password='',database="bakemates") as con:
                 cur = con.cursor()
                 cur.execute("SELECT Password FROM User WHERE UserID = %s", (current_user,))
@@ -134,17 +129,16 @@ def signin_to_page():
             return render_template("error.html", msg = str(e))
 
 
-
 @app.route('/buyersignup', methods=['GET', 'POST'])
 def buyer_signup():
     if request.method == 'POST':
-        try: 
-            global current_user
-            global password
-            current_user = request.form['usrnm']
-            password = bcrypt.generate_password_hash(request.form['psw']).decode('utf-8')
-            email = request.form['email']
-            
+        global current_user
+        global password
+        current_user = request.form['usrnm']
+        password = bcrypt.generate_password_hash(request.form['psw']).decode('utf-8')
+        email = request.form['email']
+        
+        try:
             with mysql.connector.connect(host="localhost",user="root",password="",database="bakemates") as con:
                 cur = con.cursor()
                 cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
@@ -186,26 +180,33 @@ def baker_signup():
         password = bcrypt.generate_password_hash(request.form['psw']).decode('utf-8')
         email = request.form['email']
         
-        with mysql.connector.connect(host="localhost", user="root", password = "", database = "bakemates") as con:
-            cur = con.cursor()
-            cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
-            num = cur.fetchone()[0]
-            if num > 0:
-                flash('User already exists')
-                current_user = None
-                password = None
-                return redirect(url_for('baker_signup'))
+        try:
+            with mysql.connector.connect(host="localhost", user="root", password = "", database = "bakemates") as con:
+                cur = con.cursor()
+                cur.execute("SELECT COUNT(*) FROM User WHERE UserID = %s", (current_user,))
+                num = cur.fetchone()[0]
+                if num > 0:
+                    flash('User already exists')
+                    current_user = None
+                    password = None
+                    return redirect(url_for('baker_signup'))
 
-            cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
-            cur.execute("FLUSH PRIVILEGES")
-            cur.execute("CREATE USER %s@'localhost' IDENTIFIED BY %s", (current_user, password))
-            cur.execute("GRANT 'Baker' TO %s@'localhost'", (current_user,))
-            cur.execute("SET DEFAULT ROLE 'Baker' TO %s@'localhost'", (current_user,))
-            #cur.execute("FLUSH PRIVILEGES")
+                cur.execute("DROP USER IF EXISTS %s@'localhost'", (current_user,))
+                cur.execute("FLUSH PRIVILEGES")
+                cur.execute("CREATE USER %s@'localhost' IDENTIFIED BY %s", (current_user, password))
+                cur.execute("GRANT 'Baker' TO %s@'localhost'", (current_user,))
+                cur.execute("SET DEFAULT ROLE 'Baker' TO %s@'localhost'", (current_user,))
 
-            cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
-            cur.execute("INSERT INTO Baker(BakerID, BakeryName) VALUES(%s, %s)", (current_user, bakery_name))
-            con.commit()
+                cur.execute("INSERT INTO User(UserID, Email, Password) VALUES(%s, %s, %s)", (current_user, email, password))
+                cur.execute("INSERT INTO Baker(BakerID, BakeryName) VALUES(%s, %s)", (current_user, bakery_name))
+                con.commit()
+        
+        except Exception as e:
+            con.rollback()
+            print(e)
+            return render_template("error.html", msg = str(e))
+        
+        else:
             return redirect(url_for('baker_home'))
         
     return render_template('bakersignup.html')
@@ -222,7 +223,7 @@ def logout():
 @app.route('/listings', methods = ['POST','GET'])
 def listings():
     if current_user == None:
-                con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
+        con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
     else:
         con = mysql.connector.connect(host="localhost",user=current_user,password=password,database = "bakemates")
 
@@ -266,9 +267,14 @@ def filter_items():
             cur = con.cursor(buffered=True)
             cur.execute("SELECT * From Item WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [category])
             if category == "Bread":
-                cur.execute("SELECT * FROM Item WHERE (LOWER(Item.ItemName) LIKE'%muffin%' OR '%loaf%')")
+                cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Bread",))
             if category == "Pastry":
-                cur.execute("SELECT * From Item WHERE (LOWER(Item.ItemName) LIKE'%pie%' OR '%tart%' OR '%puff%' OR CONCAT('%', 'roll%') OR CONCAT('%', 'eclair%')) ")
+                cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Pastry",))
+            if category == "Cake":
+                cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Cake",))
+            if category == "Cookie":
+                cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Cookie",))
+            
                         
         items += cur.fetchall() 
     if len(items) == 0:
@@ -283,125 +289,135 @@ def clear_filters():
 # Routes for baker-specific functionality
 @app.route('/bakerhome')
 def baker_home():
-    #retrieve and display information for the baker's home page
-    #get bakery name from database, and somehow knowing whos logged in.
-    #all items from the database for that bakery
-    #return render_template('bakerhome.html', bakery_name=bakery_name, items=items)
+    try:
+        with mysql.connector.connect(host="localhost",user=current_user,password = password,database = "bakemates") as con:
+            cur = con.cursor()
+            cur.execute("SELECT * FROM User WHERE UserID = %s", (current_user,))
+            user_info = cur.fetchall()[0]
+            cur.execute('''SELECT * FROM Baker WHERE BakerID = %s''', (current_user,))
+            baker_info = cur.fetchall()[0]
+            cur.execute('''SELECT * FROM Item WHERE BakerID = %s''', (current_user,))
+            items = cur.fetchall()
 
-    with mysql.connector.connect(host="localhost",user=current_user,password = password,database = "bakemates") as con:
-        cur = con.cursor()
-        cur.execute("SELECT * FROM User WHERE UserID = %s", (current_user,))
-        user_info = cur.fetchall()[0]
-        cur.execute('''SELECT * FROM Baker WHERE BakerID = %s''', (current_user,))
-        baker_info = cur.fetchall()[0]
-        cur.execute('''SELECT * FROM Item WHERE BakerID = %s''', (current_user,))
-        items = cur.fetchall()
-
-    return render_template('bakerhome.html', user_info = user_info, baker_info = baker_info, rows = items)
+        return render_template('bakerhome.html', user_info = user_info, baker_info = baker_info, rows = items)
+    
+    except Exception as e:
+        print(e)
+        return render_template("error.html", msg = str(e))
 
 @app.route('/add_item', methods=['GET', 'POST'])
 def add_item():
+    if request.method == 'POST':
+        item_name = request.form.get('item_name')
+        item_type = request.form.get('item_type')
+        item_description = request.form.get('item_description')
+        item_price = request.form.get('item_price')
+        item_quantity = request.form.get('item_quantity')
+        gluten_free = 'gluten_free' in request.form
+        vegan = 'vegan' in request.form
+        dairy_free = 'dairy_free' in request.form
+        nut_free = 'nut_free' in request.form
 
-    with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
-        cur = con.cursor()
+        try:
+            with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+                cur = con.cursor()
 
-        if request.method == 'POST':
-            item_name = request.form.get('item_name')
-            item_type = request.form.get('item_type')
-            item_description = request.form.get('item_description')
-            item_price = request.form.get('item_price')
-            item_quantity = request.form.get('item_quantity')
-            gluten_free = 'gluten_free' in request.form
-            vegan = 'vegan' in request.form
-            dairy_free = 'dairy_free' in request.form
-            nut_free = 'nut_free' in request.form
-    
+                item_image = request.files.get('item_image')
+                if item_image and item_image.filename != '':
+                    timestamp = int(datetime.datetime.now().timestamp())
+                    unique_filename = f"{timestamp}_{item_image.filename}"
+                    item_image_path = os.path.join('./static/items', unique_filename)
+                    item_image.save(item_image_path)
 
-            item_image = request.files.get('item_image')
-            if item_image and item_image.filename != '':
-                timestamp = int(datetime.datetime.now().timestamp())
-                unique_filename = f"{timestamp}_{item_image.filename}"
-                item_image_path = os.path.join('./static/items', unique_filename)
-                item_image.save(item_image_path)
-
-            # Insert the new item into the database
-            cur.execute('''
-                INSERT INTO Item (BakerID, ItemCount, ItemName, ItemType, ItemDescription, 
-                                GlutenFree, Vegan, DairyFree, NutFree, Price, ImagePath)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            ''', (current_user, item_quantity, item_name, item_type, item_description, 
-                gluten_free, vegan, dairy_free, nut_free, item_price, item_image_path))
-            con.commit()
-            
+                # Insert the new item into the database
+                cur.execute('''
+                    INSERT INTO Item (BakerID, ItemCount, ItemName, ItemType, ItemDescription, 
+                                    GlutenFree, Vegan, DairyFree, NutFree, Price, ImagePath)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ''', (current_user, item_quantity, item_name, item_type, item_description, 
+                    gluten_free, vegan, dairy_free, nut_free, item_price, item_image_path))
+                con.commit()
+        
+        except Exception as e:
+            con.rollback
+            print(e)
+            return render_template("error.html", msg = str(e))
+        
+        else:
             return redirect(url_for('baker_home'))
         
-        return render_template("additem.html")
+    return render_template("additem.html")
     
 
 @app.route('/edit_item', methods=['GET', 'POST'])
 def edit_item():
-    with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
-        cur = con.cursor()
+    if request.method == 'POST':
+        itemID = request.form.get('itemID')
+        try: 
+            with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+                cur = con.cursor()
 
-        if request.method == 'POST':
-            # get item ID
-            itemID = request.form.get('itemID')
+                # check if the item belongs to the baker
+                cur.execute('SELECT BakerID FROM Item WHERE ItemID = %s', (itemID,))
+                baker = cur.fetchone()
+                if not baker or baker[0] != current_user:
+                    flash('Cannot update this item')
+                    return redirect(url_for('edit_item'))
+                else:
+                    new_name = request.form.get('new_name')
+                    new_price = request.form.get('new_price')
+                    new_count = request.form.get('new_count')
+                    new_type = request.form.get('new_type')
+                    new_description = request.form.get('new_description')
+                    gluten_free = 'gluten_free' in request.form
+                    vegan = 'vegan' in request.form
+                    dairy_free = 'dairy_free' in request.form
+                    nut_free = 'nut_free' in request.form
+                    new_image = request.files.get('new_image')
 
-            # check if the item belongs to the baker
-            cur.execute('SELECT BakerID FROM Item WHERE ItemID = %s', (itemID,))
-            baker = cur.fetchone()
-            if not baker or baker[0] != current_user:
-                flash('Cannot update this item')
-                return redirect(url_for('edit_item'))
-            else:
-                new_name = request.form.get('new_name')
-                new_price = request.form.get('new_price')
-                new_count = request.form.get('new_count')
-                new_type = request.form.get('new_type')
-                new_description = request.form.get('new_description')
-                gluten_free = 'gluten_free' in request.form
-                vegan = 'vegan' in request.form
-                dairy_free = 'dairy_free' in request.form
-                nut_free = 'nut_free' in request.form
-                new_image = request.files.get('new_image')
+                    # make new image path
+                    if new_image and new_image.filename != '':
+                        # remove the current image path from the database
+                        cur.execute("SELECT ImagePath FROM Item WHERE ItemID = %s", (itemID,))
+                        existing_image = cur.fetchone()
+                        existing_image_path = existing_image[0] if existing_image else None
+                        if existing_image_path:
+                            os.remove(existing_image_path)
 
-                # make new image path
-                if new_image and new_image.filename != '':
-                    # remove the current image path from the database
-                    cur.execute("SELECT ImagePath FROM Item WHERE ItemID = %s", (itemID,))
-                    existing_image = cur.fetchone()
-                    existing_image_path = existing_image[0] if existing_image else None
-                    if existing_image_path:
-                        os.remove(existing_image_path)
+                        timestamp = int(datetime.datetime.now().timestamp())
+                        unique_filename = f"{timestamp}_{new_image.filename}"
+                        new_image_path = os.path.join('./static/items', unique_filename)
+                        new_image.save(new_image_path)
+                        cur.execute('UPDATE Item SET ImagePath = %s WHERE ItemID = %s', (new_image_path, itemID))
 
-                    timestamp = int(datetime.datetime.now().timestamp())
-                    unique_filename = f"{timestamp}_{new_image.filename}"
-                    new_image_path = os.path.join('./static/items', unique_filename)
-                    new_image.save(new_image_path)
-                    cur.execute('UPDATE Item SET ImagePath = %s WHERE ItemID = %s', (new_image_path, itemID))
+                    # update all the categories
+                    if new_name:
+                        cur.execute('UPDATE Item SET ItemName = %s WHERE ItemID = %s', (new_name, itemID))
+                    if new_price:
+                        cur.execute('UPDATE Item SET PRICE = %s WHERE ItemID = %s', (new_price, itemID))
+                    if new_count:
+                        cur.execute('UPDATE Item SET ItemCount = %s WHERE ItemID = %s', (new_count, itemID))
+                    if new_type:
+                        cur.execute('UPDATE Item SET ItemType = %s WHERE ItemID = %s', (new_type, itemID))
+                    if new_description:
+                        cur.execute('UPDATE Item SET ItemDescription = %s WHERE ItemID = %s', (new_description, itemID))
+                    if new_name:
+                        cur.execute('UPDATE Item SET ItemName = %s WHERE ItemID = %s', (new_name, itemID))
 
-                # update all the categories
-                if new_name:
-                    cur.execute('UPDATE Item SET ItemName = %s WHERE ItemID = %s', (new_name, itemID))
-                if new_price:
-                    cur.execute('UPDATE Item SET PRICE = %s WHERE ItemID = %s', (new_price, itemID))
-                if new_count:
-                    cur.execute('UPDATE Item SET ItemCount = %s WHERE ItemID = %s', (new_count, itemID))
-                if new_type:
-                    cur.execute('UPDATE Item SET ItemType = %s WHERE ItemID = %s', (new_type, itemID))
-                if new_description:
-                    cur.execute('UPDATE Item SET ItemDescription = %s WHERE ItemID = %s', (new_description, itemID))
-                if new_name:
-                    cur.execute('UPDATE Item SET ItemName = %s WHERE ItemID = %s', (new_name, itemID))
+                    cur.execute('UPDATE Item SET GlutenFree = %s WHERE ItemID = %s', (gluten_free, itemID))
+                    cur.execute('UPDATE Item SET Vegan = %s WHERE ItemID = %s', (vegan, itemID))
+                    cur.execute('UPDATE Item SET DairyFree = %s WHERE ItemID = %s', (dairy_free, itemID))
+                    cur.execute('UPDATE Item SET NutFree = %s WHERE ItemID = %s', (nut_free, itemID))
+                    
+                    con.commit()
 
-                cur.execute('UPDATE Item SET GlutenFree = %s WHERE ItemID = %s', (gluten_free, itemID))
-                cur.execute('UPDATE Item SET Vegan = %s WHERE ItemID = %s', (vegan, itemID))
-                cur.execute('UPDATE Item SET DairyFree = %s WHERE ItemID = %s', (dairy_free, itemID))
-                cur.execute('UPDATE Item SET NutFree = %s WHERE ItemID = %s', (nut_free, itemID))
-                
-                con.commit()
-                flash('Item successfully updated')
-                return redirect(url_for('edit_item'))
+        except Exception as e:
+            con.rollback
+            print(e)
+            return render_template("error.html", msg = str(e)) 
+        else:       
+            flash('Item successfully updated')
+            return redirect(url_for('edit_item'))
 
     return render_template('updateitem.html')
 
@@ -427,56 +443,63 @@ def delete_item():
 @app.route('/edit_baker', methods = ['POST','GET'])
 def edit_baker():
     #edit what is displayed to buyers when they look at the bakery profile
-    with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
-        cur = con.cursor()
+    if request.method == 'POST':
+        # Retrieve form data
+        name = request.form['name']
+        bakery_name = request.form['bakery_name']
+        email = request.form['email']
+        phone = request.form['phone']
+        address = request.form['address']
+        website = request.form['website']
+        description = request.form['description']
+        bakery_image = request.files['image']
 
-        if request.method == 'POST':
-            # Retrieve form data
-            name = request.form['name']
-            bakery_name = request.form['bakery_name']
-            email = request.form['email']
-            phone = request.form['phone']
-            address = request.form['address']
-            website = request.form['website']
-            description = request.form['description']
-            bakery_image = request.files['image']
+        try: 
+            with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+                cur = con.cursor()
 
-            if bakery_image and bakery_image.filename != '':
-                # remove the current image path from the database
-                cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
-                existing_image = cur.fetchone()
-                existing_image_path = existing_image[0] if existing_image else None
-                if existing_image_path:
-                    os.remove(existing_image_path)
-                
-                #Combine a timestamp with the filename for a unique filename to prevent overwrites
-                timestamp = int(datetime.datetime.now().timestamp())
-                unique_filename = f"{timestamp}_{bakery_image.filename}"
-                bakery_image_path = os.path.join('./static/bakers', unique_filename)
-                bakery_image.save(bakery_image_path)
-                cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
-                
+                if bakery_image and bakery_image.filename != '':
+                    # remove the current image path from the database
+                    cur.execute("SELECT ImagePath FROM Baker WHERE BakerID = %s", (current_user,))
+                    existing_image = cur.fetchone()
+                    existing_image_path = existing_image[0] if existing_image else None
+                    if existing_image_path:
+                        os.remove(existing_image_path)
+                    
+                    #Combine a timestamp with the filename for a unique filename to prevent overwrites
+                    timestamp = int(datetime.datetime.now().timestamp())
+                    unique_filename = f"{timestamp}_{bakery_image.filename}"
+                    bakery_image_path = os.path.join('./static/bakers', unique_filename)
+                    bakery_image.save(bakery_image_path)
+                    cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
+                    
 
-            # Update statement for bakery details
-            if name:
-                cur.execute('UPDATE User SET Name = %s WHERE UserID = %s', (name, current_user))
-            if email:
-                cur.execute('UPDATE User SET Email = %s WHERE UserID = %s', (email, current_user))
-            if phone:
-                cur.execute('UPDATE User SET Phone = %s WHERE UserID = %s', (phone, current_user))
-            if address:
-                cur.execute('UPDATE User SET Address = %s WHERE UserID = %s', (address, current_user))
-            if bakery_name:
-                cur.execute('UPDATE Baker SET BakeryName = %s WHERE BakerID = %s', (bakery_name, current_user))
-            if website:
-                cur.execute('UPDATE Baker SET Website = %s WHERE BakerID = %s', (website, current_user))    
-            if description:
-                cur.execute('UPDATE Baker SET Description = %s WHERE BakerID = %s', (description, current_user))
-            if bakery_image:
-                cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
-            
-            con.commit()
+                # Update statement for bakery details
+                if name:
+                    cur.execute('UPDATE User SET Name = %s WHERE UserID = %s', (name, current_user))
+                if email:
+                    cur.execute('UPDATE User SET Email = %s WHERE UserID = %s', (email, current_user))
+                if phone:
+                    cur.execute('UPDATE User SET Phone = %s WHERE UserID = %s', (phone, current_user))
+                if address:
+                    cur.execute('UPDATE User SET Address = %s WHERE UserID = %s', (address, current_user))
+                if bakery_name:
+                    cur.execute('UPDATE Baker SET BakeryName = %s WHERE BakerID = %s', (bakery_name, current_user))
+                if website:
+                    cur.execute('UPDATE Baker SET Website = %s WHERE BakerID = %s', (website, current_user))    
+                if description:
+                    cur.execute('UPDATE Baker SET Description = %s WHERE BakerID = %s', (description, current_user))
+                if bakery_image:
+                    cur.execute('UPDATE Baker SET ImagePath = %s WHERE BakerID = %s', (bakery_image_path, current_user))
                 
+                con.commit()
+
+        except Exception as e:
+            con.rollback
+            print(e)
+            return render_template("error.html", msg = str(e))
+        
+        else:        
             return redirect(url_for('baker_home'))
         
     return render_template('editbaker.html')
@@ -549,22 +572,30 @@ def edit_buyer():
         dietary_restrictions = request.form['dietary_restrictions']
         bio = request.form['bio']
 
-        with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
-            cur = con.cursor()
-            if name:
-                cur.execute('UPDATE User SET Name = %s WHERE UserID = %s', (name, current_user))
-            if email:
-                cur.execute('UPDATE User SET Email = %s WHERE UserID = %s', (email, current_user))
-            if phone:
-                cur.execute('UPDATE User SET Phone = %s WHERE UserID = %s', (phone, current_user))
-            if address:
-                cur.execute('UPDATE User SET Address = %s WHERE UserID = %s', (address, current_user))
-            if dietary_restrictions:
-                cur.execute('UPDATE Buyer SET DietaryRestrictions = %s WHERE BuyerID = %s', (dietary_restrictions, current_user))
-            if bio:
-                cur.execute('UPDATE Buyer SET Bio = %s WHERE BuyerID = %s', (bio, current_user))
-            con.commit()
-        return redirect(url_for('buyer_profile'))
+        try:
+            with mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates") as con:
+                cur = con.cursor()
+                if name:
+                    cur.execute('UPDATE User SET Name = %s WHERE UserID = %s', (name, current_user))
+                if email:
+                    cur.execute('UPDATE User SET Email = %s WHERE UserID = %s', (email, current_user))
+                if phone:
+                    cur.execute('UPDATE User SET Phone = %s WHERE UserID = %s', (phone, current_user))
+                if address:
+                    cur.execute('UPDATE User SET Address = %s WHERE UserID = %s', (address, current_user))
+                if dietary_restrictions:
+                    cur.execute('UPDATE Buyer SET DietaryRestrictions = %s WHERE BuyerID = %s', (dietary_restrictions, current_user))
+                if bio:
+                    cur.execute('UPDATE Buyer SET Bio = %s WHERE BuyerID = %s', (bio, current_user))
+                con.commit()
+        
+        except Exception as e:
+            con.rollback
+            print(e)
+            return render_template("error.html", msg = str(e))
+        
+        else:
+            return redirect(url_for('buyer_profile'))
     
     return render_template('editbuyer.html', user = current_user)
 
@@ -585,27 +616,6 @@ def checkout():
             return render_template('checkout.html', client_id=paypal_client_id, item=item)
         else:
             return "Item not found", 404
-
-@app.route('/custom_order')
-def custom_order():
-    return render_template('customorder.html')
-
-#CUSTOM ORDER FORM SUBMISSION
-@app.route('/submit_custom_order', methods=['POST'])
-def submit_custom_order():
-    # Extract form data to send to bakery somehow ??
-    item_name = request.form['item_name']
-    item_quantity = request.form['item_quantity']
-    item_date = request.form['item_date']
-    item_type = request.form['item_type']
-    dietary_restrictions = request.form['dietary-restrictions']
-    item_flavor = request.form['item_flavor']
-    item_description = request.form['item_description']
-    
-    # Process data (e.g., save to database, send email, etc.)
-    
-    # Redirect to another page after processing
-    return redirect(url_for('order_confirmation'))  # Redirect to an order confirmation page
 
 @app.route('/bakery/<bakery_id>')
 def bakery(bakery_id):
@@ -647,13 +657,6 @@ def bakery_listings(bakery_id):
                 con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
             
             cur = con.cursor(buffered=True)
-
-                # cur.execute("DROP VIEW IF EXISTS Results")
-                # cur.execute("CREATE VIEW Results AS SELECT * FROM Baker INNER JOIN User ON Baker.BakerID = User.UserID")
-                # cur.execute('''SELECT * From Item JOIN Results ON Item.BakerID = Results.BakerID 
-                #            WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%'))) 
-                #            AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))''', [s, user_location])
-
             cur.execute('''SELECT *
                                 FROM Item
                                 JOIN (

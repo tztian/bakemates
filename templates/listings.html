@@ -17,7 +17,6 @@
         <a href="{{ url_for('signup') }}" class="listings-nav-item">Sign Up</a>
         {% else %}
         <a href="{{ url_for('logout') }}" class="listings-nav-item">Log Out</a>
-        <a href="{{ url_for('custom_order') }}" class="listings-nav-item">Place Custom Order</a>
         <a href="{{ url_for('buyer_profile') }}" class="listings-nav-item">Hello {{ user }}!!</a>
         {% endif %}
         <!-- Filters Section -->
@@ -38,7 +37,6 @@
                             <label><input type="checkbox" name="type" value="Bread"> Bread</label>
                             <label><input type="checkbox" name="type" value="Cake"> Cakes</label>
                             <label><input type="checkbox" name="type" value="Cookie"> Cookies</label>
-                            <label><input type="checkbox" name="type" value="Ice Cream"> Ice Cream</label>
                             <!-- Add more options as needed -->
                             <!-- would be cool if we could figure out how to auto add these based on existing items in db -->
                         </div>

@@ -108,8 +108,8 @@
       </div>
       <div class="col-25">
           <div class="container item-info">
-              <h4>{{ item[3] }} <span class="price" style="color:black"><b>${{ item[10] }}</b></span></h4>
-              <img src="{{ item[9] }}" alt="Item Image">
+              <h4>{{ item[3] }} <span class="price" style="color:black"><b>${{ '%.2f'|format(item[10]) }}</b></span></h4>
+              <img src="{{ item[11] }}" alt="Item Image" width = "150">
               <p>{{ item[5] }}</p>
               <div id="paypal-button-container"></div>
           </div>
