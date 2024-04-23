@@ -12,16 +12,16 @@
      </head>
     <body style="background-color: #ddd;">
         <div class = item-container >
-            <div class = item-title>{{ item[3] }}</div>
-            <img src= "{{item[11]}}"> 
-            <div class = "bakery">{{ item[13] }}
+            <div class = item-title>{{ item[2] }}</div>
+            <img src= "{{item[10]}}"> 
+            <div class = "bakery">{{ item[12] }}
                 <div class = "info">
-                    {{ item[5] }} <br>
-                    Price: ${{ '%.2f'|format(item[10]) }} <br>
-                    Gluten-Free: {{ 'Yes' if item[6] else 'No' }} <br>
-                    Vegan: {{ 'Yes' if item[7] else 'No' }} <br>
-                    Dairy-Free: {{ 'Yes' if item[8] else 'No' }} <br>
-                    Nut-Free: {{ 'Yes' if item[9] else 'No' }} <br>
+                    {{ item[4] }} <br>
+                    Price: ${{ '%.2f'|format(item[9]) }} <br>
+                    Gluten-Free: {{ 'Yes' if item[5] else 'No' }} <br>
+                    Vegan: {{ 'Yes' if item[6] else 'No' }} <br>
+                    Dairy-Free: {{ 'Yes' if item[7] else 'No' }} <br>
+                    Nut-Free: {{ 'Yes' if item[8] else 'No' }} <br>
                     <!-- button for the bakery name to redir to bakery listings-->
                     <a href="{{ url_for('bakery', bakery_id = item[1]) }}" class="bakery-btn">View Bakery</a>
                 </div>

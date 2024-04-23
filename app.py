@@ -29,10 +29,18 @@ paypalrestsdk.configure({
 
 @app.route('/')
 def index():
+    global current_user
+    global password
+    current_user = None
+    password = None
     return render_template('landing.html')
 
 @app.route('/home')
 def home():
+    global current_user
+    global password
+    current_user = None
+    password = None
     return render_template('landing.html')
 
 @app.route('/search', methods=['POST', 'GET'])
@@ -243,7 +251,7 @@ def display_item():
         print (val)
         if val[0] == "'":
             val = val[1:len(val)-1]
-        elif i == 10:
+        elif i == 9:
             val = float(val)
         elif val[0] == "\"":
             val = val[1:len(val)-1]
@@ -312,7 +320,6 @@ def add_item():
         item_type = request.form.get('item_type')
         item_description = request.form.get('item_description')
         item_price = request.form.get('item_price')
-        item_quantity = request.form.get('item_quantity')
         gluten_free = 'gluten_free' in request.form
         vegan = 'vegan' in request.form
         dairy_free = 'dairy_free' in request.form
@@ -331,10 +338,10 @@ def add_item():
 
                 # Insert the new item into the database
                 cur.execute('''
-                    INSERT INTO Item (BakerID, ItemCount, ItemName, ItemType, ItemDescription, 
+                    INSERT INTO Item (BakerID, ItemName, ItemType, ItemDescription, 
                                     GlutenFree, Vegan, DairyFree, NutFree, Price, ImagePath)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                ''', (current_user, item_quantity, item_name, item_type, item_description, 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ''', (current_user, item_name, item_type, item_description, 
                     gluten_free, vegan, dairy_free, nut_free, item_price, item_image_path))
                 con.commit()
         
@@ -366,7 +373,6 @@ def edit_item():
                 else:
                     new_name = request.form.get('new_name')
                     new_price = request.form.get('new_price')
-                    new_count = request.form.get('new_count')
                     new_type = request.form.get('new_type')
                     new_description = request.form.get('new_description')
                     gluten_free = 'gluten_free' in request.form
@@ -395,8 +401,6 @@ def edit_item():
                         cur.execute('UPDATE Item SET ItemName = %s WHERE ItemID = %s', (new_name, itemID))
                     if new_price:
                         cur.execute('UPDATE Item SET PRICE = %s WHERE ItemID = %s', (new_price, itemID))
-                    if new_count:
-                        cur.execute('UPDATE Item SET ItemCount = %s WHERE ItemID = %s', (new_count, itemID))
                     if new_type:
                         cur.execute('UPDATE Item SET ItemType = %s WHERE ItemID = %s', (new_type, itemID))
                     if new_description:

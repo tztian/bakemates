@@ -108,9 +108,9 @@
       </div>
       <div class="col-25">
           <div class="container item-info">
-              <h4>{{ item[3] }} <span class="price" style="color:black"><b>${{ '%.2f'|format(item[10]) }}</b></span></h4>
-              <img src="{{ item[11] }}" alt="Item Image" width = "150">
-              <p>{{ item[5] }}</p>
+              <h4>{{ item[2] }} <span class="price" style="color:black"><b>${{ '%.2f'|format(item[9]) }}</b></span></h4>
+              <img src="{{ item[10] }}" alt="Item Image" width = "150">
+              <p>{{ item[4] }}</p>
               <div id="paypal-button-container"></div>
           </div>
       </div>
@@ -121,9 +121,9 @@
           createOrder: function(data, actions) {
               return actions.order.create({
                   purchase_units: [{
-                      description: "{{ item[3] }}",
+                      description: "{{ item[4] }}",
                       amount: {
-                          value: "{{ item[10] }}"
+                          value: "{{ item[9] }}"
                       }
                   }]
               });
@@ -152,7 +152,7 @@
                           payerID: data.payerID,
                           paymentID: details.id,
                           item_id: "{{ item[0] }}",
-                          total: "{{ item[10] }}",
+                          total: "{{ item[9] }}",
                           notes: notes
                       })
                   }).then(function(response) {

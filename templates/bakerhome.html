@@ -163,7 +163,6 @@ h1 {
                     <th>Item ID</th>
                     <th>Name </th>
                     <th>Price</th>
-                    <th>Count</th>
                     <th>Type</th>
                     <th>Description</th>
                     <th>Gluten Free</th>
@@ -176,15 +175,14 @@ h1 {
                 {% for row in rows %}
                 <tr>
                     <td>{{row[0]}}</td>
-                    <td>{{row[3]}}</td>
-                    <td>{{'%.2f'|format(row[10])}}</td>
                     <td>{{row[2]}}</td>
+                    <td>{{'%.2f'|format(row[9])}}</td>
+                    <td>{{row[3]}}</td>
                     <td>{{row[4]}}</td>
                     <td>{{row[5]}}</td>
                     <td>{{row[6]}}</td>
                     <td>{{row[7]}}</td>
                     <td>{{row[8]}}</td>
-                    <td>{{row[9]}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -64,7 +64,6 @@ cur.execute('''CREATE TABLE Baker
 cur.execute('''CREATE TABLE Item
                (ItemID INT AUTO_INCREMENT PRIMARY KEY,
                 BakerID VARCHAR(50),
-                ItemCount INT,
                 ItemName TEXT,
                 ItemType TEXT,
                 ItemDescription TEXT,
@@ -133,9 +132,9 @@ with open('./data/items.json', 'r') as file:
     items = data['items']
     for item in items:
         cur.execute('''
-        INSERT INTO Item (BakerID, ItemCount, ItemName, ItemDescription, Price, ImagePath)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        ''', (item['BakerID'], item['ItemCount'], item['ItemName'], item['ItemDescription'], item['Price'], item['ImagePath']))
+        INSERT INTO Item (BakerID, ItemName, ItemDescription, Price, ImagePath)
+        VALUES (%s, %s, %s, %s, %s)
+        ''', (item['BakerID'], item['ItemName'], item['ItemDescription'], item['Price'], item['ImagePath']))
     con.commit()
 # role based access
 
