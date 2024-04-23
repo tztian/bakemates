@@ -727,5 +727,20 @@ def submit_review(bakery_id):
 
     return redirect(url_for('bakery', bakery_id=bakery_id))
 
+@app.route('/update_order_status/<order_id>', methods=['POST'])
+def update_order_status(order_id):
+    new_status = request.form['status']
+    con = mysql.connector.connect(host="localhost", user=current_user, password=password, database="bakemates")
+    cur = con.cursor()
+    
+    cur.execute("UPDATE Orders SET Status = %s WHERE OrderID = %s", (new_status, order_id))
+    
+    con.commit()
+    con.close()
+    
+    return redirect(url_for('baker_home'))
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)

@@ -190,31 +190,43 @@ h1 {
         </div>
 
         <br><br>
+        <!-- Order History Section -->
         <h2 align="center">Order History</h2>
         <div class="listing-table">
-        <table>
-            <tr>
-                <th>Order ID</th>
-                <th>Item ID</th>
-                <th>Status</th>
-                <th>Time</th>
-                <th>Cost</th>
-                <th>Notes</th>
-            </tr>
-            {% for order in orders %}
-            <tr>
-                <td>{{ order[0] }}</td>
-                <td>{{ order[1] }}</td>
-                <td>{{ order[4] }}</td>
-                <td>{{ order[5] }}</td>
-                <td>${{ "%.2f"|format(order[6]) }}</td>
-                <td>{{ order[3] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        <br><br><br>
+            <table>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Item ID</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Cost</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+                {% for order in orders %}
+                <tr>
+                    <form action="{{ url_for('update_order_status', order_id=order[0]) }}" method="post">
+                        <td>{{ order[0] }}</td>
+                        <td>{{ order[1] }}</td>
+                        <td>
+                            <select name="status" id="status">
+                                <option value="{{ order[4] }}" selected>{{ order[4] }}</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Baking">Baking</option>
+                                <option value="Ready">Ready</option>
+                                <option value="Delivering">Delivering</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </td>
+                        <td>{{ order[5] }}</td>
+                        <td>${{ "%.2f"|format(order[6]) }}</td>
+                        <td>{{ order[3] }}</td>
+                        <td><input type="submit" value="Update Status"></td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
-    </div>
 
 </body>
 </html>
