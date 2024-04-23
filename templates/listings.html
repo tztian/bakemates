@@ -29,6 +29,7 @@
             <div class="filters">
                 <!-- Form for filtering items -->
                 <form action="/filter" method="POST">
+                    <br>
                     <div class="filter-item">
                         <input type="checkbox" id="type-dropdown">
                         <label class="dropdown-label" for="type-dropdown">Type of Treat</label>
@@ -41,17 +42,19 @@
                             <!-- would be cool if we could figure out how to auto add these based on existing items in db -->
                         </div>
                     </div>
+                    <br><br>
                     <div class="filter-item">
                         <input type="checkbox" id="diet-dropdown">
                         <label class="dropdown-label" for="diet-dropdown">Dietary Restrictions</label>
                         <div class="dropdown-content">
                             <label><input type="checkbox" name="diet" value="GlutenF"> Gluten Free</label>
-                            <label><input type="checkbox" name="diet" value="GlutenF"> Dairy Free</label>
+                            <label><input type="checkbox" name="diet" value="DairyF"> Dairy Free</label>
                             <label><input type="checkbox" name="diet" value="Vegan"> Vegan</label>
-                            <label><input type="checkbox" name="diet" value="GlutenF"> Nut Free</label>
+                            <label><input type="checkbox" name="diet" value="NutF"> Nut Free</label>
                             <!-- Add more options as needed -->
                         </div>
                     </div>
+                    <br><br>
                 <button type="apply">Apply Filters</button>
                 </form>
                 <form action = "/clear" method="POST">

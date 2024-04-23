@@ -268,37 +268,42 @@ def filter_items():
     diets = request.form.getlist('diet')
     items = []
     restrictions = ""
-    for diet in diets:
-        if current_user == None:
+
+    if current_user == None:
             con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
-        else:
-            con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
+    else:
+        con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
 
+    for diet in diets:
         cur = con.cursor(buffered=True)
-        if diet == "Gluten Free":
-            if len(restrictions > 0):
+        if diet == "GlutenF":
+            if len(restrictions) > 0:
                 restrictions += " AND "
-            restrictions += "GlutenFree = TRUE"
-        if diet == "Dairy Free":
-            if len(restrictions > 0):
+            restrictions += "GlutenFree = %s"
+        if diet == "DairyF":
+            if len(restrictions) > 0:
                 restrictions += " AND "
-            restrictions += "DairyFree = TRUE"
+            restrictions += "DairyFree = %s"
         if diet == "Vegan":
-            if len(restrictions > 0):
+            if len(restrictions) > 0:
                 restrictions += " AND "
-            restrictions += "Vegan = TRUE"
-        if diet == "Nut Free":
-            if len(restrictions > 0):
+            restrictions += "Vegan = %s"
+        if diet == "NutF":
+            if len(restrictions) > 0:
                 restrictions += " AND "
-            restrictions += "NutFree = TRUE"
+            restrictions += "NutFree = %s"
+        
+    # return render_template('error.html', msg = restrictions)
 
-        if categories == None:
-            cur.execute("SELECT * FROM Item WHERE %s", [restrictions])
-            items += cur.fetchall()
-            if len(items) == 0:
-                return render_template('error.html', msg = 'No Sweet Treats Found ☹')
-            return render_template('listings.html', items = items, user = current_user, is_baker = False)
-    for category in categories:
+    if categories == []:
+        query = "SELECT * FROM Item WHERE " + restrictions
+        cur.execute(query, [1]*restrictions.count('%s'))
+        items += cur.fetchall()
+        if len(items) == 0:
+            return render_template('error.html', msg = 'No Sweet Treats Found ☹')
+        return render_template('listings.html', items = items, user = current_user, is_baker = False)
+        
+    """for category in categories:
         if category == 'All':
             return redirect('/listings')
         else:
@@ -336,7 +341,7 @@ def filter_items():
 
     if len(items) == 0:
         return render_template('error.html', msg = 'No Sweet Treats Found ☹')
-    return render_template('listings.html', items = items, user = current_user, is_baker = False)
+    return render_template('listings.html', items = items, user = current_user, is_baker = False)"""
     
 @app.route('/clear', methods = ['POST'])
 def clear_filters():
