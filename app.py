@@ -339,7 +339,7 @@ def add_item():
                 if item_image and item_image.filename != '':
                     timestamp = int(datetime.datetime.now().timestamp())
                     unique_filename = f"{timestamp}_{item_image.filename}"
-                    item_image_path = os.path.join('./static/items', unique_filename)
+                    item_image_path = os.path.join('../static/items', unique_filename)
                     item_image.save(item_image_path)
 
                 # Insert the new item into the database
