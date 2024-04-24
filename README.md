@@ -80,9 +80,8 @@ https://www.freepik.com/free-photo/copy-space-ingredients-cookies_12242994.htm#q
 - **Add, update, delete items**: Clara Martinson, Tina Tian
 - **Public profile for the bakers**: Rohith Gottiparthi, Clara Martinson
 - **Placing and fulfilling orders**: Rohith Gottiparthi, Clara Martinson
-- **PayPal integration**: Rohith Gottiparthi
-- **Reviews**: Rohith Gottiparthi
-- **Documentation and paper on distribution**: Haleigh Gahan, Clara Martinson
+- **Reviews**: Rohith Gottiparthi, Tina Tian
+- **Documentation and paper on distribution**: Haleigh Gahan, Rohith Gottiparthi, Clara Martinson, Tina Tian
 
 ## Image Sources
 - **BK001.jpg**: https://www.yourfreecareertest.com/baker/
