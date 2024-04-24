@@ -6,27 +6,30 @@ BAKEMATES is a platform connecting bakers and dessert enthusiasts.
 
 ## User Instructions
 
-### For Buyers
-#### Creating an Account
-On the landing page, select `Sign up` at the top right corner, then select `Taster`. Fill out your information to create your account. To see your profile and order history go to `Hello [username]!!`. To edit your information, click on `Edit Profile` and fill out the optional information. Once you are finished purchasing baked goods to your heart's content, don't forget to `Log Out` of the application. `Sign in` to access your account again in the future.
-
+### For All Users
 #### Searching for Baked Goods
-On the landing page, search for your desired pastries within your city using the search bar. This will bring you to the listing page displaying the items in your area. Once you have signed in, you would be automatically redirected to the same page. 
+On the landing page, search for your desired pastries within your city using the search bar. This will bring you to the listing page displaying the items. If you do not type anything in the search bar, you can view all items in bakemates.
+
+
+### For Tasters
+#### Creating an Account
+On any page, select `Sign up` at the top right corner, then select `Taster`. Fill out your information to create your account. To see your profile and order history go to `Hello [username]!!`. To edit your information, click on `Edit Profile` and fill out the optional information. Once you are finished purchasing baked goods to your heart's content, don't forget to `Log Out` of the application. `Sign in` to access your account again in the future.
 
 #### Placing Orders
-Clicking on the image of an item will bring your to the items page, where you can purchase the item by clicking `Buy now`. This will bring you to the checkout form. Enter your payment information and 
+Clicking on the image of an item will bring your to the items page, where you can purchase the item by clicking `Buy now`. This will bring you to the checkout form. Here you can enter your address and information for the Baker to see. Clicking the Paypal button on the left side of the screen allows you to purchase the item with Paypal, after which you will be redirected to your profile where you can see your order information at the bottom of the screen.
 
 #### Leaving a Review
+On a Baker's public profile you are able leave a review by assigning a rating with comments. You are only able to leave one review that cannot be modified, so make sure your verdict is final.
 
 ### For Bakers
 #### Creating an Account
-On the landing page, select `Sign up` at the top right corner, then select `Baker`. Fill out your information to create your account. To edit your information, click on `Edit Profile` in your home page and fill out the optional information. Once you have finished setting up your shop, `Log Out` of the application. `Sign in` to access your account again in the future.
+On any page, select `Sign up` at the top right corner, then select `Baker`. Fill out your information to create your account. To edit your information, click on `Edit Profile` in your home page and fill out the optional information. Once you have finished setting up your shop, `Log Out` of the application. `Sign in` to access your account again in the future.
 
 #### Managing Your Items
-On the baker home page, scroll down to "Your Listings", which shows the details of all of your current items available to customers. There, you can add new items, update existing items, or delete existing items by clicking on the respective buttons, then fill out the information about the item you want to add/modify/delete.
+On the baker home page, scroll down to `Your Listings`, which shows the details of all of your current items available to customers. There, you can add new items, update existing items, or delete existing items by clicking on the respective buttons, then fill out the information about the item you want to add/modify/delete.
 
 #### Checking and Fulfilling Orders
-
+On the baker home page, scroll down to `Your Orders`, which shows the details of all of your current orders by customers. There, you update the status of orders for your customer to see.
 
 ## Dependencies
 - DBMS: mysql
