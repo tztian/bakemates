@@ -29,11 +29,14 @@ On the baker home page, scroll down to "Your Listings", which shows the details 
 
 
 ## Dependencies
-- DBMS: MySQL
-- Flask
-- Bcrypt
+- DBMS: mysql
+- flask
+- flask_bcrypt
 - mysql.connector
 - paypalrestsdk
+- os 
+- datetime
+- dotenv
 
 ## List of Other Resources
 
