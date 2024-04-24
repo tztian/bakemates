@@ -49,6 +49,10 @@
             border: 1px solid #ddd;
             border-radius: px;
         }
+    
+    body {
+        background:#ebbfcb;
+    }
 
 
 </style>
@@ -65,10 +69,18 @@
 
     <div class="baker-home-container">
         <div class="bakery-info">
+            <br><br><br><br>
+            {% if bakery.image_path != None%}
             <img src="{{ bakery.image_path }}" alt="{{ bakery.name }} Image" height="400">
+            {% endif %}
+            <br><br>
             <h1>{{ bakery.name }}</h1>
             <p>{{ bakery.description }}</p>
-            <h3>Average Rating: {{ bakery.average_rating }}</h3>
+            {% if bakery.average_rating is not number %}
+                <h3>No Ratings</h3>
+            {% else %}
+                <h3>Average Rating: {{ '%.1f'|format(bakery.average_rating) }}</h3>
+            {% endif %}
         </div>
         
         <!-- Review Form -->
