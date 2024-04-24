@@ -22,14 +22,35 @@
         transition: background-color 0.3s ease;
     }
 
-    .edit-btn-container {
-        text-align: center;
-        margin-top: 20px;
-    }
-
     .edit-btn:hover {
         background-color: #ff8cea;
     }
+
+    form {
+        width: 100%;
+        margin: auto;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    input[type="text"],
+        input[type="email"],
+        input[type="url"],
+        textarea {
+            width: calc(100% - 24px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: px;
+        }
+
+
 </style>
 <body>
     <div id="listings-nav">
@@ -53,7 +74,7 @@
         <!-- Review Form -->
         {% if user %}
         <div>
-            <h2>Leave a Review</h2>
+            <h2 align="center">Leave a Review</h2>
             <form action="{{ url_for('submit_review', bakery_id=bakery.bakery_id) }}" method="post">
                 <label for="rating">Rating (1-5):</label>
                 <select name="rating" id="rating">
@@ -65,7 +86,7 @@
                 <label for="comments">Comments:</label>
                 <textarea name="comments" id="comments" rows="4" cols="50"></textarea>
                 <br>
-                <input type="submit" value="Submit Review">
+                <input type="submit" value="Submit Review" class="edit-btn">
             </form>
         </div>
         {% endif %}
