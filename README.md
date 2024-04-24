@@ -39,6 +39,29 @@ On the baker home page, scroll down to "Your Listings", which shows the details 
 - dotenv
 
 ## List of Other Resources
+- Tutorial followed: https://www.w3schools.com/howto/howto_css_form_icon.asp
+- W3 schools for html & css info, https://www.w3schools.com/html/
+- search bar: https://www.youtube.com/watch?v=AmdIfgxMqY8&t=88s
+- how to import custom fonts: https://www.youtube.com/watch?v=g15mF_XAOB8&t=500s
+- Class slides for flask information
+- https://www.mysql.com for info on sql
+- SQL LIKE queries for searches: https://www.w3schools.com/sql/sql_like.asp
+- Paper on distribution: GCP Website, https://endjin.com/blog/2022/01/introduction-to-containers-and-docker#:~:text=Docker%20is%20a%20containerisation%20platform,source%20platform%2C%20free%20to%20download., https://www.docker.com/resources/what-container/, https://www.atlassian.com/microservices/microservices-architecture/kubernetes-vs-docker, https://kubernetes.io
+
+-Fonts: fonts.google.com
+
+-Icons: https://fontawesome.com/search?o=r&m=free
+
+- generated sample data using chatgpt
+
+- Background photos:
+https://unsplash.com/photos/brown-bread-on-silver-foil-V6LEV6CBVLw
+
+https://unsplash.com/photos/a-painting-of-pink-and-white-lines-on-a-wall-V1lmayjfBJc
+
+https://unsplash.com/photos/brown-and-white-round-pastry-on-white-ceramic-plate-71sp4JBYO-U
+
+https://www.freepik.com/free-photo/copy-space-ingredients-cookies_12242994.htm#query=baking&position=3&from_view=keyword&track=sph&uuid=33af41f4-c5cb-497d-8fa8-2ee033a2320b
 
 
 ## Extra Features
