@@ -18,10 +18,10 @@
                 <div class = "info">
                     {{ item[4] }} <br>
                     Price: ${{ '%.2f'|format(item[9]) }} <br>
-                    Gluten-Free: {{ 'Yes' if item[5] == 1 else 'No' }} <br>
-                    Vegan: {{ 'Yes' if item[6] == 1 else 'No' }} <br>
-                    Dairy-Free: {{ 'Yes' if item[7] == 1 else 'No' }} <br>
-                    Nut-Free: {{ 'Yes' if item[8] == 1 else 'No' }} <br>
+                    Gluten-Free: {{ 'Yes' if item[5] == '1' else 'No' }} <br>
+                    Vegan: {{ 'Yes' if item[6] == '1' else 'No' }} <br>
+                    Dairy-Free: {{ 'Yes' if item[7] == '1' else 'No' }} <br>
+                    Nut-Free: {{ 'Yes' if item[8] == '1' else 'No' }} <br>
                     <!-- button for the bakery name to redir to bakery listings-->
                     <a href="{{ url_for('bakery', bakery_id = item[1]) }}" class="bakery-btn">View Bakery</a>
                 </div>

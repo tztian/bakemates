@@ -38,9 +38,8 @@ On the baker home page, scroll down to "Your Listings", which shows the details 
 
 
 ## Extra Features
-- **Checkout with Paypal**:
+- **Checkout with PayPal**:
 - **Placing custom orders**:
-
 
 ## Division of Labor
 - **Database set up**: Rohith Gottiparthi, Tina Tian
@@ -48,9 +47,10 @@ On the baker home page, scroll down to "Your Listings", which shows the details 
 - **HTML/CSS for most of the web pages**: Haleigh Gahan, Clara Martinson
 - **Sign up/login**: Tina Tian
 - **User profiles**: Rohith Gottiparthi, Tina Tian
-- **Search for items**: Haleigh Gahan
+- **Search and filter items**: Haleigh Gahan, Tina Tian
 - **Add, update, delete items**: Clara Martinson, Tina Tian
 - **Public profile for the bakers**: Rohith Gottiparthi, Clara Martinson
 - **Placing and fulfilling orders**: Rohith Gottiparthi, Clara Martinson
-- **Reviews**:
-- **Documentation and paper on distribution**:
+- **PayPal integration**: Rohith Gottiparthi
+- **Reviews**: Rohith Gottiparthi
+- **Documentation and paper on distribution**: Haleigh Gahan, Clara Martinson
