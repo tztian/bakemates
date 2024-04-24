@@ -32,6 +32,7 @@ On the baker home page, scroll down to `Your Listings`, which shows the details 
 On the baker home page, scroll down to `Your Orders`, which shows the details of all of your current orders by customers. There, you update the status of orders for your customer to see.
 
 ## Dependencies
+- .env file: You must create a .env file with the paypal client id and paypal secret (see example.env)
 - DBMS: mysql
 - flask
 - flask_bcrypt
