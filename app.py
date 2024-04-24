@@ -45,19 +45,14 @@ def home():
 
 @app.route('/search', methods=['POST', 'GET'])
 def search():
-    global user_location
-    global item_name
-
     if request.method == 'POST':
         try:
-            user_location = request.form['location']
-            item_name = request.form['item']
+            term = request.form['item']
 
-            if not item_name:
+            if not term:
                 return redirect(url_for("listings"))
 
             # also check for items containing one word/ substring of item name
-            sub = item_name.split(' ')
             if current_user == None:
                 con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
             else:
@@ -65,16 +60,9 @@ def search():
             
             cur = con.cursor(buffered=True)
 
-            for s in sub:
-                cur.execute('''SELECT *
-                                FROM Item
-                                JOIN (
-                                    SELECT *
-                                    FROM Baker
-                                    INNER JOIN User ON Baker.BakerID = User.UserID
-                                ) AS Results ON Item.BakerID = Results.BakerID
-                                WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))
-                                AND LOWER(Results.Address) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))''', [s, user_location])
+            cur.execute('''SELECT *
+                            FROM Item
+                            WHERE LOWER(ItemName) LIKE LOWER(%s)''', ('%'+ term + '%',))
         
             items = cur.fetchall()  
             con.close()
@@ -87,8 +75,6 @@ def search():
         except Exception as e:
             print(e)
             return render_template("error.html", msg = str(e))
-    #  validate the location and perform any necessary processing
-    #return redirect(url_for('listings'))
         
 @app.route('/error')
 def error():
