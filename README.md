@@ -64,8 +64,8 @@ On the baker home page, scroll down to "Your Listings", which shows the details 
 - **blueberry-muffins.jpg**: https://kitchenswagger.com/the-best-blueberry-muffin-recipe/
 - **chocolate-cake.jpg**: https://bluebowlrecipes.com/chocolate-truffle-cake-with-milk-chocolate-buttercream/
 - **croissant.jpg**: https://en.wikipedia.org/wiki/Croissant
-- **.jpg**:
-- **.jpg**:
-- **.jpg**:
-- **.jpg**:
-- **.jpg**:
+- **beth-macdonald-V6LEV6CBVLw-unsplash.jpg**: https://unsplash.com/photos/brown-bread-on-silver-foil-V6LEV6CBVLw
+- **annie-spratt-V1lmayjfBJc-unsplash.jpg**: https://unsplash.com/photos/a-painting-of-pink-and-white-lines-on-a-wall-V1lmayjfBJc
+- **copy-space-ingredients-cookies.jpg**: https://www.freepik.com/free-photo/copy-space-ingredients-cookies_12242994.htm#query=baking&position=3&from_view=keyword&track=sph&uuid=33af41f4-c5cb-497d-8fa8-2ee033a2320b
+- **cupcake-icon-614x460.jpg**: https://fontawesome.com/search?o=r&m=free
+- **taylor-heery-71sp4JBYO-U-unsplash.jpg**: https://unsplash.com/photos/brown-and-white-round-pastry-on-white-ceramic-plate-71sp4JBYO-U
