@@ -54,3 +54,8 @@ On the baker home page, scroll down to "Your Listings", which shows the details 
 - **PayPal integration**: Rohith Gottiparthi
 - **Reviews**: Rohith Gottiparthi
 - **Documentation and paper on distribution**: Haleigh Gahan, Clara Martinson
+
+## Image Sources
+- **BK001.jpg**: https://www.yourfreecareertest.com/baker/
+- **BK002.jpg**: https://www.indeed.com/career-advice/finding-a-job/pastry-chef-vs-baker
+- **BK003.jpg**: https://www.seattletimes.com/life/food-drink/a-seattle-area-tax-accountant-and-baker-competes-on-top-chef-amateurs/ 
