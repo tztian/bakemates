@@ -66,15 +66,11 @@ https://unsplash.com/photos/brown-and-white-round-pastry-on-white-ceramic-plate-
 
 https://www.freepik.com/free-photo/copy-space-ingredients-cookies_12242994.htm#query=baking&position=3&from_view=keyword&track=sph&uuid=33af41f4-c5cb-497d-8fa8-2ee033a2320b
 
-
-## Extra Features
-- **Checkout with PayPal**:
-
 ## Division of Labor
 - **Database set up**: Rohith Gottiparthi, Tina Tian
 - **Role-based access control**: Tina Tian
 - **HTML/CSS for most of the web pages**: Haleigh Gahan, Clara Martinson
-- **Sign up/login**: Tina Tian
+- **Sign up/login**: Haleigh Gahan, Clara Martinson, Tina Tian
 - **User profiles**: Rohith Gottiparthi, Tina Tian
 - **Search and filter items**: Haleigh Gahan, Tina Tian
 - **Add, update, delete items**: Clara Martinson, Tina Tian
