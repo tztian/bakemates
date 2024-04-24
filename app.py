@@ -268,14 +268,17 @@ def filter_items():
     diets = request.form.getlist('diet')
     items = []
     restrictions = ""
+    types = ""
+    types_variables = []
 
     if current_user == None:
             con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
     else:
         con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
 
+    cur = con.cursor(buffered=True)
+
     for diet in diets:
-        cur = con.cursor(buffered=True)
         if diet == "GlutenF":
             if len(restrictions) > 0:
                 restrictions += " AND "
@@ -292,56 +295,48 @@ def filter_items():
             if len(restrictions) > 0:
                 restrictions += " AND "
             restrictions += "NutFree = %s"
+    
+    restrictions_variables = [1]*restrictions.count('%s')
         
+    for category in categories:
+        if category == "Cake":
+            if len(types) > 0:
+                types += " AND "
+            types += "ItemType = %s"
+            types_variables.append("Cake")
+        if category == "Bread":
+            if len(types) > 0:
+                types += " AND "
+            types += "ItemType = %s"
+            types_variables.append("Bread")
+        if category == "Pastry":
+            if len(types) > 0:
+                types += " AND "
+            types += "ItemType = %s"
+            types_variables.append("Pastry")
+        if category == "Cookie":
+            if len(types) > 0:
+                types += " AND "
+            types += "ItemType = %s"
+            types_variables.append("Cookie")
+
     # return render_template('error.html', msg = restrictions)
 
-    if categories == []:
-        query = "SELECT * FROM Item WHERE " + restrictions
-        cur.execute(query, [1]*restrictions.count('%s'))
-        items += cur.fetchall()
-        if len(items) == 0:
-            return render_template('error.html', msg = 'No Sweet Treats Found ☹')
-        return render_template('listings.html', items = items, user = current_user, is_baker = False)
-        
-    """for category in categories:
-        if category == 'All':
-            return redirect('/listings')
-        else:
-            # get items filtered by category from database
-            if current_user == None:
-                con = mysql.connector.connect(host="localhost",user="guest",password = "",database = "bakemates")
-            else:
-                con = mysql.connector.connect(host="localhost",user=current_user,password =password,database = "bakemates")
-
-            cur = con.cursor(buffered=True)
-            cur.execute("SELECT * From Item WHERE LOWER(Item.ItemName) LIKE LOWER(CONCAT('%', CONCAT(%s, '%')))", [category])
-            if category == "Bread":
-                if len(restrictions) > 0:
-                    cur.execute("SELECT * FROM Item WHERE ItemType = %s AND %s", ["Bread", restrictions])
-                else:
-                    cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Bread",))
-            if category == "Pastry":
-                if len(restrictions) > 0:
-                    cur.execute("SELECT * FROM Item WHERE ItemType = %s AND %s", ["Pastry", restrictions])
-                else:
-                    cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Pastry",))
-            if category == "Cake":
-                if len(restrictions) > 0:
-                    cur.execute("SELECT * FROM Item WHERE ItemType = %s AND %s", ["Cake", restrictions])
-                else:
-                    cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Cake",))
-            if category == "Cookie":
-                if len(restrictions) > 0:
-                    cur.execute("SELECT * FROM Item WHERE ItemType = %s AND %s", ["Cookie", restrictions])
-                else:
-                    cur.execute("SELECT * FROM Item WHERE ItemType = %s", ("Cookie",))
-                        
-        items += cur.fetchall() 
+    if len(restrictions) > 0 and len(types) > 0:
+        conditions = restrictions + " AND " + types
+    else:
+        conditions = restrictions + types
     
+    variables = restrictions_variables + types_variables
+
+    query = "SELECT * FROM Item WHERE " + conditions
+    cur.execute(query, variables)
+    items += cur.fetchall()
 
     if len(items) == 0:
         return render_template('error.html', msg = 'No Sweet Treats Found ☹')
-    return render_template('listings.html', items = items, user = current_user, is_baker = False)"""
+    return render_template('listings.html', items = items, user = current_user, is_baker = False)
+        
     
 @app.route('/clear', methods = ['POST'])
 def clear_filters():

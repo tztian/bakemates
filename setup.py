@@ -133,9 +133,9 @@ with open('./data/items.json', 'r') as file:
     items = data['items']
     for item in items:
         cur.execute('''
-        INSERT INTO Item (BakerID, ItemName, ItemDescription, Price, ImagePath)
-        VALUES (%s, %s, %s, %s, %s)
-        ''', (item['BakerID'], item['ItemName'], item['ItemDescription'], item['Price'], item['ImagePath']))
+        INSERT INTO Item (BakerID, ItemName, ItemType, ItemDescription, Price, ImagePath)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (item['BakerID'], item['ItemName'], item['ItemType'], item['ItemDescription'], item['Price'], item['ImagePath']))
     con.commit()
 # role based access
 
