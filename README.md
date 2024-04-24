@@ -28,7 +28,8 @@ On the baker home page, scroll down to "Your Listings", which shows the details 
 #### Checking and Fulfilling Orders
 
 
-## List of Libraries
+## Dependencies
+- DBMS: MySQL
 - Flask
 - Bcrypt
 - mysql.connector
@@ -39,7 +40,6 @@ On the baker home page, scroll down to "Your Listings", which shows the details 
 
 ## Extra Features
 - **Checkout with PayPal**:
-- **Placing custom orders**:
 
 ## Division of Labor
 - **Database set up**: Rohith Gottiparthi, Tina Tian
